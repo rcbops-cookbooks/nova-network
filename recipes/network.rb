@@ -26,7 +26,7 @@ else
   release = "essex-final"
 end
 
-platform_options = node["nova"]["platform"][release]
+platform_options = node["nova-network"]["platform"][release]
 
 platform_options["nova_network_packages"].each do |pkg|
   package pkg do

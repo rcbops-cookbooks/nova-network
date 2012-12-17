@@ -52,23 +52,23 @@ default["nova"]["network"]["multi_host"] = false
 
 case platform
 when "fedora", "redhat", "centos"
-	default["nova"]["platform"]["essex-final"] = {
+	default["nova-network"]["platform"]["essex-final"] = {
 	  "nova_network_packages" => ["iptables", "openstack-nova-network"],
 	  "nova_network_service" => "openstack-nova-network",
 	  "common_packages" => ["openstack-nova-common"]
         }
-	default["nova"]["platform"]["folsom"] = {
+	default["nova-network"]["platform"]["folsom"] = {
 	  "nova_network_packages" => ["iptables", "openstack-nova-network"],
 	  "nova_network_service" => "openstack-nova-network",
 	  "common_packages" => ["openstack-nova-common", "python-cinderclient"]
 	}
 when "ubuntu"
-	default["nova"]["platform"]["essex-final"] = {                                                   # node_attribute
+	default["nova-network"]["platform"]["essex-final"] = {                                                   # node_attribute
           "nova_network_packages" => ["iptables", "nova-network"],
           "nova_network_service" => "nova-network",
 	  "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
 	}
-	default["nova"]["platform"]["folsom"] = {                                                   # node_attribute
+	default["nova-network"]["platform"]["folsom"] = {                                                   # node_attribute
           "nova_network_packages" => ["iptables", "nova-network"],
           "nova_network_service" => "nova-network",
 	  "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
