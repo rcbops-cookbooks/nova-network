@@ -14,7 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-actions :create_fixed, :create_floating
+actions :create_fixed, :create_floating, :delete_fixed, :delete_floating
 
 # nova-manage network create cli options
 attribute :label, :kind_of => String
