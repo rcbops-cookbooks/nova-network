@@ -16,13 +16,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+default["nova"]["network"]["provider"] = "nova"
+
 # TODO(shep): This should probably be ['nova']['network']['fixed']
 default["nova"]["networks"] = [                                             # cluster_attribute
 {
     "label" => "public",
     "ipv4_cidr" => "192.168.100.0/24",
-    "num_networks" => "1",
-    "network_size" => "255",
+    "num_networks" => 1,
+    "network_size" => 255,
     "bridge" => "br100",
     "bridge_dev" => "eth2",
     "dns1" => "8.8.8.8",
@@ -31,8 +33,8 @@ default["nova"]["networks"] = [                                             # cl
 {
     "label" => "private",
     "ipv4_cidr" => "192.168.200.0/24",
-    "num_networks" => "1",
-    "network_size" => "255",
+    "num_networks" => 1,
+    "network_size" => 255,
     "bridge" => "br200",
     "bridge_dev" => "eth3",
     "dns1" => "8.8.8.8",
