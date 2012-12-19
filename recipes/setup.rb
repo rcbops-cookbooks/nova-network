@@ -38,5 +38,5 @@ nova_network_networks "create floating ip network" do
     pool node["nova"]["network"]["floating_pool_name"]
     float_range node["nova"]["network"]["floating"]["ipv4_cidr"]
     action :create_floating
-    only_if { node.has_key?(:floating) and node["nova"]["network"]["floating"].has_key?(:ipv4_cidr) }
+    only_if { node["nova"]["network"].has_key?(:floating) and node["nova"]["network"]["floating"].has_key?(:ipv4_cidr) }
 end
