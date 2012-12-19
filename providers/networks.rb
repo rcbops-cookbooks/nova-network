@@ -22,6 +22,7 @@ action :create_fixed do
 	    action :run
 	    not_if "nova-manage network list | grep #{new_resource.fixed_range}"
     end
+    new_resource.updated_by_last_action(true)
 end
 
 action :delete_fixed do
@@ -31,6 +32,7 @@ action :delete_fixed do
 	    action :run
 	    only_if "nova-manage network list | grep #{new_resource.fixed_range}"
     end
+    new_resource.updated_by_last_action(true)
 end
 
 action :create_floating do
@@ -41,6 +43,7 @@ action :create_floating do
 	    action :run
 	    only_if "nova-manage floating list | grep \"No floating IP addresses have been defined\""
     end
+    new_resource.updated_by_last_action(true)
 end
 
 action :delete_floating do
@@ -50,4 +53,5 @@ action :delete_floating do
 	    action :run
 	    only_if "nova-manage floating list | grep #{new_resource.float_range}"
     end
+    new_resource.updated_by_last_action(true)
 end
