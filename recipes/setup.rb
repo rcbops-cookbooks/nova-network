@@ -34,7 +34,7 @@ node["nova"]["networks"].each do |net|
     end
 end
 
-if node.has_key?(:floating) and node["nova"]["network"]["floating"].has_key?(:ipv4_cidr)
+if node["nova"]["network"]["floating"] and node["nova"]["network"]["floating"]["ipv4_cidr"]
     nova_network_networks "create floating ip network" do
         pool node["nova"]["network"]["floating_pool_name"]
 	float_range node["nova"]["network"]["floating"]["ipv4_cidr"]
