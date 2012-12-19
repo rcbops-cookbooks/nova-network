@@ -9,7 +9,7 @@ recipe		  "network", ""
 	  supports os
 end
 
-%w{ apt cinder database dsh glance keystone monitoring mysql openssh rabbitmq selinux osops-utils sysctl yum }.each do |dep|
+%w{ monitoring nova }.each do |dep|
 	  depends dep
 end
 
