@@ -16,6 +16,11 @@
 # limitations under the License.
 actions :create_fixed, :create_floating, :delete_fixed, :delete_floating
 
+def initialize(*args)
+    super
+    @action = :create
+end
+
 # nova-manage network create cli options
 attribute :label, :kind_of => String
 attribute :multi_host, :kind_of => [ TrueClass, FalseClass], :default => true
