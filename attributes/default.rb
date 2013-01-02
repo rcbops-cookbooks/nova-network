@@ -18,6 +18,9 @@
 #
 default["nova"]["network"]["provider"] = "nova"
 
+# ######################################################################### #
+# Nova-Network Configuration Attributes
+# ######################################################################### #
 # TODO(shep): This should probably be ['nova']['network']['fixed']
 default["nova"]["networks"] = [                                             # cluster_attribute
 {
@@ -51,6 +54,50 @@ default["nova"]["network"]["send_arp_for_ha"] = true                            
 default["nova"]["network"]["auto_assign_floating_ip"] = false                                  # cluster_attribute
 default["nova"]["network"]["floating_pool_name"] = "nova"                             # cluster_attribute
 default["nova"]["network"]["multi_host"] = false
+
+# ######################################################################### #
+# Quantum Configuration Attributes
+# ######################################################################### #
+# nova.conf options for quantum
+default["quantum"]["network_api_class"] = "nova.network.quantumv2.api.API"
+default["quantum"]["auth_strategy"] = "keystone"
+default["quantum"]["libvirt_vif_driver"] = "nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver"
+default["quantum"]["linuxnet_interface_driver"] = "nova.network.linux_net.LinuxOVSInterfaceDriver"
+default["quantum"]["firewall_driver"] = "nova.virt.libvirt.firewall.IptablesFirewallDriver"
+
+default["quantum"]["services"]["api"]["scheme"] = "http"
+default["quantum"]["services"]["api"]["network"] = "public"
+default["quantum"]["services"]["api"]["port"] = 9696
+default["quantum"]["services"]["api"]["path"] = ""
+
+default["quantum"]["db"]["name"] = "quantum"
+default["quantum"]["db"]["username"] = "quantum"
+
+default["quantum"]["service_tenant_name"] = "service"
+default["quantum"]["service_user"] = "quantum"
+default["quantum"]["service_role"] = "admin"
+default["quantum"]["debug"] = "False"
+default["quantum"]["verbose"] = "False"
+
+# Attention: the following parameter MUST be set to False if Quantum is
+# being used in conjunction with nova security groups and/or metadata service.
+default["quantum"]["overlap_ips"] = "False"
+default["quantum"]["use_namespaces"] = "False" # should correspond to overlap_ips used for dhcp agent and l3 agent.
+
+# Manage plugins here, currently only supports openvswitch (ovs)
+default["quantum"]["plugin"] = "ovs"
+
+# Plugin defaults
+# OVS
+default["quantum"]["ovs"]["packages"] = [ "quantum-plugin-openvswitch", "quantum-plugin-openvswitch-agent" ]
+default["quantum"]["ovs"]["service_name"] = "quantum-plugin-openvswitch-agent"
+default["quantum"]["ovs"]["network_type"] = "gre"
+default["quantum"]["ovs"]["tunneling"] = "True"                 # Must be true if network type is GRE
+default["quantum"]["ovs"]["tunnel_ranges"] = "1:1000"           # Enumerating ranges of GRE tunnel IDs that are available for tenant network allocation (if GRE)
+default["quantum"]["ovs"]["integration_bridge"] = "br-int"      # Don't change without a good reason..
+default["quantum"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if tunnel_ranges is set
+default["quantum"]["ovs"]["external_bridge"] = "br-ex"
+default["quantum"]["ovs"]["external_interface"] = "eth1"
 
 case platform
 when "fedora", "redhat", "centos"
