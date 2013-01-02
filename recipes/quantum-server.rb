@@ -168,6 +168,6 @@ template "/etc/quantum/quantum.conf" do
         "overlapping_ips" => node["quantum"]["overlap_ips"],
         "quantum_plugin" => node["quantum"]["plugin"]
 )
-notifies :restart, resources(:service => "quantum-server"), :immediately
-notifies :enable, resources(:service => "quantum-server"), :immediately
+    notifies :restart, resources(:service => "quantum-server"), :immediately
+    notifies :enable, resources(:service => "quantum-server"), :immediately
 end
