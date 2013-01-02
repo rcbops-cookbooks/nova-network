@@ -1,5 +1,5 @@
-# Cookbook Name:: quantum
-# Recipe:: l3 agent
+# Cookbook Name:: nova-network
+# Recipe:: quantum-l3-agent
 #
 # Copyright 2012, Rackspace US, Inc.
 #

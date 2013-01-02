@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: quantum
-# Recipe:: dhcp agent
+# Cookbook Name:: nova-network
+# Recipe:: quantum-dhcp-agent
 #
 # Copyright 2012, Rackspace US, Inc.
 #

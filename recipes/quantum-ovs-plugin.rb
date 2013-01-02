@@ -1,5 +1,5 @@
-# Cookbook Name:: quantum
-# Recipe:: ovs-plugin
+# Cookbook Name:: nova-network
+# Recipe:: quantum-ovs-plugin
 #
 # Copyright 2012, Rackspace US, Inc.
 #
