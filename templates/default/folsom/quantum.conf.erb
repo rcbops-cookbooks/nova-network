@@ -3,11 +3,9 @@ debug = <%= @quantum_debug %>
 verbose = <%= @quantum_verbose %>
 bind_host = <%= @quantum_ipaddress %>
 bind_port = <%= @quantum_port %>
-
 <% if @quantum_plugin == "ovs" %>
-	core_plugin = quantum.plugins.openvswitch.ovs_quantum_plugin.OVSQuantumPluginV2
+core_plugin = quantum.plugins.openvswitch.ovs_quantum_plugin.OVSQuantumPluginV2
 <% end %>
-
 api_paste_config = /etc/quantum/api-paste.ini
 auth_strategy = keystone
 control_exchange = quantum
