@@ -48,8 +48,9 @@ end
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
 ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
-api_endpoint = get_bind_endpoint("quantum", "api")
+api_endpoint = get_access_endpoint("nova-network-controller", "quantum", "api")
 local_ip = get_ip_for_net('nova', node)		### FIXME
+quantum_info = get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 
 template "/etc/quantum/api-paste.ini" do
     source "#{release}/api-paste.ini.erb"
@@ -60,9 +61,9 @@ template "/etc/quantum/api-paste.ini" do
         "keystone_api_ipaddress" => ks_admin_endpoint["host"],
         "keystone_admin_port" => ks_admin_endpoint["port"],
         "keystone_protocol" => ks_admin_endpoint["scheme"],
-        "service_tenant_name" => node["quantum"]["service_tenant_name"],
-        "service_user" => node["quantum"]["service_user"],
-        "service_pass" => node["quantum"]["service_pass"]
+        "service_tenant_name" => quantum_info["service_tenant_name"],
+        "service_user" => quantum_info["service_user"],
+        "service_pass" => quantum_info["service_pass"]
     )
 end
 
@@ -90,9 +91,9 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     mode "0644"
     variables(
         "db_ip_address" => mysql_info["host"],
-        "db_user" => node["quantum"]["db"]["username"],
-        "db_password" => node["quantum"]["db"]["password"],
-        "db_name" => node["quantum"]["db"]["name"],
+        "db_user" => quantum_info["db"]["username"],
+        "db_password" => quantum_info["db"]["password"],
+        "db_name" => quantum_info["db"]["name"],
         "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
         "ovs_enable_tunneling" => node["quantum"]["ovs"]["tunneling"],
         "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
