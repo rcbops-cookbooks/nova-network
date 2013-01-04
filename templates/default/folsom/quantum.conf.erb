@@ -10,7 +10,7 @@ api_paste_config = /etc/quantum/api-paste.ini
 auth_strategy = keystone
 control_exchange = quantum
 rabbit_host = <%= @rabbit_ipaddress %>
-notification_driver = quantum.openstack.common.notifier.rpc_notifier
+notification_driver = quantum.openstack.common.notifier.list_notifier
 
 [QUOTAS]
 # resource name(s) that are supported in quota features
