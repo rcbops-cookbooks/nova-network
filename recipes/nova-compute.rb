@@ -10,5 +10,6 @@
 if node["nova"]["network"]["provider"] == "quantum"
 	include_recipe "nova-network::quantum-plugin"
 else
+	include_recipe "nova::api-metadata"
 	include_recipe "nova-network::nova-network"
 end
