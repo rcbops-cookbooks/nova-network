@@ -11,6 +11,7 @@ auth_strategy = keystone
 control_exchange = quantum
 rabbit_host = <%= @rabbit_ipaddress %>
 notification_driver = quantum.openstack.common.notifier.list_notifier
+list_notifier_drivers = quantum.openstack.common.notifier.rabbit_notifier
 
 [QUOTAS]
 # resource name(s) that are supported in quota features
