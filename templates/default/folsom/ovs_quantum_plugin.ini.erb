@@ -1,5 +1,6 @@
 [DATABASE]
 sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
+reconnect_interval = 2
 
 [OVS]
 tenant_network_type = <%= @ovs_network_type %>
