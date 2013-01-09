@@ -151,6 +151,7 @@ template "/etc/quantum/api-paste.ini" do
 )
 end
 
+local_ip = get_ip_for_net('nova', node)         ### FIXME
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     source "#{release}/ovs_quantum_plugin.ini.erb"
     owner "root"
