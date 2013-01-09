@@ -151,7 +151,6 @@ template "/etc/quantum/api-paste.ini" do
 )
 end
 
-quantum_info = get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     source "#{release}/ovs_quantum_plugin.ini.erb"
     owner "root"
@@ -159,9 +158,9 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     mode "0644"
     variables(
         "db_ip_address" => mysql_info["host"],
-        "db_user" => quantum_info["db"]["username"],
-        "db_password" => quantum_info["db"]["password"],
-        "db_name" => quantum_info["db"]["name"],
+        "db_user" => mysql_info["username"],
+        "db_password" => mysql_info["password"],
+        "db_name" => mysql_info["name"],
         "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
         "ovs_enable_tunneling" => node["quantum"]["ovs"]["tunneling"],
         "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
