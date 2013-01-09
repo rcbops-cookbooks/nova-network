@@ -151,6 +151,7 @@ template "/etc/quantum/api-paste.ini" do
 )
 end
 
+quantum_info = get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     source "#{release}/ovs_quantum_plugin.ini.erb"
     owner "root"
