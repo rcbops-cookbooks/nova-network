@@ -16,6 +16,7 @@
 # limitations under the License.
 
 include_recipe "osops-utils"
+include_recipe "sysctl::default"
 
 if Chef::Config[:solo]
     Chef::Log.warn("This recipe uses search. Chef Solo does not support search.")
@@ -25,6 +26,10 @@ if not node["package_component"].nil?
     release = node["package_component"]
 else
     release = "folsom"
+end
+
+sysctl 'net.ipv4.ip_forward' do
+    value '1'
 end
 
 platform_options = node["quantum"]["platform"][release]
