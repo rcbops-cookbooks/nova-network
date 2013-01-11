@@ -159,9 +159,9 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     mode "0644"
     variables(
         "db_ip_address" => mysql_info["host"],
-        "db_user" => mysql_info["username"],
-        "db_password" => mysql_info["password"],
-        "db_name" => mysql_info["name"],
+        "db_user" => node["quantum"]["db"]["username"],
+        "db_password" => node["quantum"]["db"]["password"],
+        "db_name" => node["quantum"]["db"]["name"],
         "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
         "ovs_enable_tunneling" => node["quantum"]["ovs"]["tunneling"],
         "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
