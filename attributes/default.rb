@@ -87,6 +87,10 @@ default["quantum"]["use_namespaces"] = "False" # should correspond to overlap_ip
 # Manage plugins here, currently only supports openvswitch (ovs)
 default["quantum"]["plugin"] = "ovs"
 
+# l3 agent placeholders
+default["quantum"]["l3"]["router_id"] = ""
+default["quantum"]["l3"]["gateway_external_net_id"] = ""
+
 # Plugin defaults
 # OVS
 default["quantum"]["ovs"]["packages"] = [ "quantum-plugin-openvswitch", "quantum-plugin-openvswitch-agent" ]

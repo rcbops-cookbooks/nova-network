@@ -43,6 +43,12 @@ service "quantum-l3-agent" do
     action :nothing
 end
 
+execute "create external bridge" do
+	command "ovs-vsctl add-br #{node["quantum"]["ovs"]["external_bridge"]}"
+	action :run
+	not_if "ovs-vsctl show | grep 'Bridge br-ex'" ## FIXME
+end
+
 ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
 quantum_info = get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 #metadata_ip = get_ip_for_net("nova", search(:node, "recipes:nova-network\\:\\:nova-controller AND chef_environment:#{node.chef_environment}"))
@@ -67,7 +73,9 @@ template "/etc/quantum/l3_agent.ini" do
         "quantum_debug" => node["quantum"]["debug"],
         "quantum_verbose" => node["quantum"]["verbose"],
         "quantum_namespace" => node["quantum"]["use_namespaces"],
-        "quantum_plugin" => node["quantum"]["plugin"]
+        "quantum_plugin" => node["quantum"]["plugin"],
+	"l3_router_id" => node["quantum"]["l3"]["router_id"],
+	"l3_gateway_net_id" => node["quantum"]["l3"]["gateway_external_net_id"]
     )
     notifies :restart, resources(:service => "quantum-l3-agent"), :immediately
     notifies :enable, resources(:service => "quantum-l3-agent"), :immediately
