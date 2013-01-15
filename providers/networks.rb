@@ -15,19 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-### TODO: 
-# move node["quantum"]["external_interface"] to br-ex
-# move ip from node["quantum"]["external_interface"] to br-ex
-# add route to default gateway for external interface
-# create router
-# get router id and store to node["quantum"]["router_id"]
-# create fixed_network (private for instances)
-# add fixed_network port to router
-# create ex_network (public facing, need for metadata)
-# add to router
-# set as router gateway store to node["quantum"]["router_gw_ip"]
-# add router to private network via router gateway ip
-
 action :create_fixed do
     log "Creating network #{new_resource.label}"
     multi_host_bool_mangle="F"
