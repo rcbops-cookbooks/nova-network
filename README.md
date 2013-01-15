@@ -1,12 +1,15 @@
 Description
 ===========
+This cookbook configures the networking required for OpenStack, specifically for the compute service nova.
 
 Requirements
 ============
 
 Attributes
 ==========
-* `nova["network"]["provider"]` - The networking provider to use with nova. Only supports nova networking currently.
+* `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
+
+Nova Networking Attributes
 * `nova["network"]["public"]["label"]` - Network label to be assigned to the public network on creation
 * `nova["network"]["public"]["ipv4_cidr"]` - Network to be created (in CIDR notation, e.g., 192.168.100.0/24)
 * `nova["network"]["public"]["num_networks"]` - Number of networks to be created
@@ -15,7 +18,6 @@ Attributes
 * `nova["network"]["public"]["bridge_dev"]` - Physical device on which the bridge device should be attached (e.g., eth2)
 * `nova["network"]["public"]["dns1"]` - DNS server 1
 * `nova["network"]["public"]["dns2"]` - DNS server 2
-
 * `nova["network"]["private"]["label"]` - Network label to be assigned to the private network on creation
 * `nova["network"]["private"]["ipv4_cidr"]` - Network to be created (in CIDR notation e.g., 192.168.200.0/24)
 * `nova["network"]["private"]["num_networks"]` - Number of networks to be created
@@ -24,10 +26,29 @@ Attributes
 * `nova["network"]["private"]["bridge_dev"]` - Physical device on which the bridge device should be attached (e.g., eth3)
 * `nova["network"]["floating_pool_name"]` - if creating a floating ip pool, what to name it
 
+Quantum Networking Attributes
+* `quantum["network_api_class"]` - used in nova.conf.the quantum api driver class. 
+* `quantum["auth_strategy"]` - used in nova.conf. the authentication strategy to use, by default this is set to keystone
+* `quantum["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
+* `quantum["linuxnet_interface_driver"]` - used in nova.conf. the linux net interface driver, by default nova.network.linux_net.LinuxOVSInterfaceDriver
+* `quantum["firewall_driver"]` - used in nova.conf. the firewall driver to use, by default nova.virt.libvirt.firewall.IptablesFirewallDriver
+* `quantum["debug"]` - default log level is INFO
+* `quantum["verbose"]` - default log level is INFO
+* `quantum["overlap_ips"]` - Enable or disable overlapping IPs for subnets. MUST be set to False if Quantum is being used in conjunction with nova security groups and/or metadata service.
+* `quantum["use_namespaces"]` - should correspond to overlap_ips used for dhcp agent and l3 agent.
+* `quantum["plugin"]` - select the quantum backend driver plugin to use, currently only supports openvswitch
+* `quantum["l3"]["router_id"]` - once a default network and router are created update the environment with the router uuid
+* `quantum["l3"]["gateway_external_net_id"]` - once a default network and router are created update the environment with the external network uuid
+* `quantum["ovs"]["network_type"]` - used to select the network type, currently only supports gre tunnels.
+* `quantum["ovs"]["tunneling"]` - must be true if using GRE
+* `quantum["ovs"]["tunnel_ranges"]` - Enumerating ranges of GRE tunnel ID
+* `quantum["ovs"]["tunnel_bridge"]` - the tunnel interface name
+* `quantum["ovs"]["external_bridge"]` - the external interface name
+* `quantum["ovs"]["external_interface"]` - an available interface on the node that will access the external network
+
 Usage
 =====
-* recipe[nova-network::network] - install required nova network services, usually run anywhere nova-compute is running.
-* recipe[nova-network::setup] - create initial networks for nova
+The recipes nova-controller and nova-compute are used in their corresponding roles single-controller and single-compute. The role quantum-network-manager has been added to indicate a node that is running l3_agent, dhcp_agent, and ovs_plugin.
 
 Networks LWRP
 =============
