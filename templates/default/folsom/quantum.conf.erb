@@ -1,0 +1,33 @@
+[DEFAULT]
+debug = <%= @quantum_debug %>
+verbose = <%= @quantum_verbose %>
+bind_host = <%= @quantum_ipaddress %>
+bind_port = <%= @quantum_port %>
+<% if @quantum_plugin == "ovs" %>
+core_plugin = quantum.plugins.openvswitch.ovs_quantum_plugin.OVSQuantumPluginV2
+<% end %>
+api_paste_config = /etc/quantum/api-paste.ini
+auth_strategy = keystone
+control_exchange = quantum
+rabbit_host = <%= @rabbit_ipaddress %>
+notification_driver = quantum.openstack.common.notifier.list_notifier
+list_notifier_drivers = quantum.openstack.common.notifier.rabbit_notifier
+
+[QUOTAS]
+# resource name(s) that are supported in quota features
+# quota_items = network,subnet,port
+
+# default number of resource allowed per tenant, minus for unlimited
+# default_quota = -1
+
+# number of networks allowed per tenant, and minus means unlimited
+# quota_network = 10
+
+# number of subnets allowed per tenant, and minus means unlimited
+# quota_subnet = 10
+
+# number of ports allowed per tenant, and minus means unlimited
+# quota_port = 50
+
+# default driver to use for quota checks
+# quota_driver = quantum.quota.ConfDriver

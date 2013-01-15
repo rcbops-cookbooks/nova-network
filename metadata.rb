@@ -9,7 +9,7 @@ recipe		  "network", ""
 	  supports os
 end
 
-%w{ monitoring nova }.each do |dep|
+%w{ monitoring nova sysctl osops-utils mysql }.each do |dep|
 	  depends dep
 end
 

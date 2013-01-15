@@ -1,0 +1,18 @@
+[DATABASE]
+sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
+reconnect_interval = 2
+
+[OVS]
+tenant_network_type = <%= @ovs_network_type %>
+tunnel_id_ranges = <%= @ovs_tunnel_ranges %>
+integration_bridge = <%= @ovs_integration_bridge %>
+tunnel_bridge = <%= @ovs_tunnel_bridge %>
+local_ip = <%= @ovs_local_ip %>
+enable_tunneling = <%= @ovs_enable_tunneling %>
+
+[AGENT]
+root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
+state_path = /var/run/quantum
+polling_interval = 2
+debug = <%= @ovs_debug %>
+verbose = <%= @ovs_verbose %>
