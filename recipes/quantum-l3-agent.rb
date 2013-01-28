@@ -37,7 +37,7 @@ plugin = node["quantum"]["plugin"]
 
 platform_options["quantum_l3_packages"].each do |pkg|
     package pkg do
-        action :upgrade
+        action :install
         options platform_options["package_overrides"]
     end
 end
