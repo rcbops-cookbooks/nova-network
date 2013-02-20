@@ -27,7 +27,7 @@ The following cookbooks are dependencies:
 Attributes
 ==========
 
-Nova Networking Attributes
+Nova Networking
 ----
 * `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
 * `nova["networks"]` - An array of networks to be assigned to instances on creation
@@ -42,7 +42,7 @@ Nova Networking Attributes
 * `nova["network"]["multi_host"]` - Use multi-host mode?
 * `nova["network"]["platform"]` - Hash of platform specific package/service names and options
 
-Quantum Networking Attributes
+Quantum Networking
 ----
 * `quantum["network_api_class"]` - used in nova.conf.the quantum api driver class. 
 * `quantum["auth_strategy"]` - used in nova.conf. the authentication strategy to use, by default this is set to keystone
@@ -83,7 +83,7 @@ The nova-network cookbook has a resource and provider named networks. This LWRP 
 Usage
 -----
 
-### To create a fixed network:
+### Create a fixed network
     nova_network_networks "Create #{label}" do
         label label
         multi_host T|F
@@ -97,20 +97,20 @@ Usage
         action :create_fixed
     end
 
-### To Delete a fixed_network
+### Delete a fixed_network
     nova_network_networks "Delete #{label}" do
         fixed_range cidr
         action :delete_fixed
     end
 
-### To Create a floating ip network
+### Create a floating ip network
     nova_network_networks "Create floating ip network #{cidr}" do
         pool floating_pool_name
         float_range cidr
         action :create_floating
     end
 
-### To Delete a floating ip network
+### Delete a floating ip network
     nova_network_networks "Delete floating ip network #{cidr}" do
         float_range cidr
         action :delete_floating
