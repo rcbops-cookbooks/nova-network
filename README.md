@@ -5,26 +5,41 @@ This cookbook configures the networking required for OpenStack, specifically for
 Requirements
 ============
 
+Chef 0.10.0 or higher required (for Chef environment use)
+
+Platform
+--------
+
+* CentOS >= 6.3
+* Ubuntu >= 12.04
+
+Cookbooks
+---------
+
+The following cookbooks are dependencies:
+
+* mysql
+* monitoring
+* nova
+* osops-utils
+* sysctl
+
 Attributes
 ==========
 * `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
 
 Nova Networking Attributes
-* `nova["network"]["public"]["label"]` - Network label to be assigned to the public network on creation
-* `nova["network"]["public"]["ipv4_cidr"]` - Network to be created (in CIDR notation, e.g., 192.168.100.0/24)
-* `nova["network"]["public"]["num_networks"]` - Number of networks to be created
-* `nova["network"]["public"]["network_size"]` - Number of IP addresses to be used in this network
-* `nova["network"]["public"]["bridge"]` - Bridge to be created for accessing the VM network (e.g., br100)
-* `nova["network"]["public"]["bridge_dev"]` - Physical device on which the bridge device should be attached (e.g., eth2)
-* `nova["network"]["public"]["dns1"]` - DNS server 1
-* `nova["network"]["public"]["dns2"]` - DNS server 2
-* `nova["network"]["private"]["label"]` - Network label to be assigned to the private network on creation
-* `nova["network"]["private"]["ipv4_cidr"]` - Network to be created (in CIDR notation e.g., 192.168.200.0/24)
-* `nova["network"]["private"]["num_networks"]` - Number of networks to be created
-* `nova["network"]["private"]["network_size"]` - Number of IP addresses to be used in this network
-* `nova["network"]["private"]["bridge"]` - Bridge to be created for accessing the VM network (e.g., br200)
-* `nova["network"]["private"]["bridge_dev"]` - Physical device on which the bridge device should be attached (e.g., eth3)
+* `nova["networks"]` - An array of networks to be assigned to instances on creation
+* `nova["network"]["public_interface"]` - Interface for public IPs
+* `nova["network"]["dmz_cidr"]` - A dmz range that should be accepted
+* `nova["network"]["network_manager"]` - Class name for network manager
+* `nova["network"]["dhcp_domain"]` - Domain to use for building hostnames
+* `nova["network"]["force_dhcp_release"]` - Send DHCP release on instance termination?
+* `nova["network"]["send_arp_for_ha"]` - Send gratuitous ARPs for HA setup?
+* `nova["network"]["auto_assign_floating_ip"]` - Auto-assigning floating ip to VM?
 * `nova["network"]["floating_pool_name"]` - if creating a floating ip pool, what to name it
+* `nova["network"]["multi_host"]` - Use multi-host mode?
+* `nova["network"]["platform"]` - Hash of platform specific package/service names and options
 
 Quantum Networking Attributes
 * `quantum["network_api_class"]` - used in nova.conf.the quantum api driver class. 
@@ -32,6 +47,15 @@ Quantum Networking Attributes
 * `quantum["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
 * `quantum["linuxnet_interface_driver"]` - used in nova.conf. the linux net interface driver, by default nova.network.linux_net.LinuxOVSInterfaceDriver
 * `quantum["firewall_driver"]` - used in nova.conf. the firewall driver to use, by default nova.virt.libvirt.firewall.IptablesFirewallDriver
+* `quantum["services"]["api"]["scheme"]` - scheme for service (http/https)
+* `quantum["services"]["api"]["network"]` - `osops_networks` network name which service operates on
+* `quantum["services"]["api"]["port"]` - port service binds to
+* `quantum["services"]["api"]["path"]` - service URI
+* `quantum["db"]["name"]` - database name
+* `quantum["db"]["username"]` - database username
+* `quantum["db"]["service_tenant_name"]` - defaults to `service`
+* `quantum["db"]["service_user"]` - defaults to `quantum`
+* `quantum["db"]["service_role"]` - defaults to `admin`
 * `quantum["debug"]` - default log level is INFO
 * `quantum["verbose"]` - default log level is INFO
 * `quantum["overlap_ips"]` - Enable or disable overlapping IPs for subnets. MUST be set to False if Quantum is being used in conjunction with nova security groups and/or metadata service.
@@ -89,7 +113,6 @@ nova_network_networks "Delete floating ip network #{cidr}" do
 end
 
 
-
 License and Author
 ==================
 
@@ -100,7 +123,8 @@ Author:: Joseph Breu (<joseph.breu@rackspace.com>)
 Author:: William Kelly (<william.kelly@rackspace.com>)  
 Author:: Darren Birkett (<darren.birkett@rackspace.co.uk>)  
 Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)  
-Author:: Chris Laco (<chris.laco@rackspace.com>)
+Author:: Chris Laco (<chris.laco@rackspace.com>)  
+Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)  
 
 Copyright 2012, Rackspace US, Inc.  
 
