@@ -26,9 +26,10 @@ The following cookbooks are dependencies:
 
 Attributes
 ==========
-* `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
 
 Nova Networking Attributes
+----
+* `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
 * `nova["networks"]` - An array of networks to be assigned to instances on creation
 * `nova["network"]["public_interface"]` - Interface for public IPs
 * `nova["network"]["dmz_cidr"]` - A dmz range that should be accepted
@@ -42,6 +43,7 @@ Nova Networking Attributes
 * `nova["network"]["platform"]` - Hash of platform specific package/service names and options
 
 Quantum Networking Attributes
+----
 * `quantum["network_api_class"]` - used in nova.conf.the quantum api driver class. 
 * `quantum["auth_strategy"]` - used in nova.conf. the authentication strategy to use, by default this is set to keystone
 * `quantum["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
@@ -78,7 +80,9 @@ Networks LWRP
 =============
 The nova-network cookbook has a resource and provider named networks. This LWRP provides the ability to create a fixed network, delete a fixed network, create a floating ip network, and delete a floating ip network.
 
-Usage:
+Usage
+-----
+
 ### To create a fixed network:
     nova_network_networks "Create #{label}" do
         label label
