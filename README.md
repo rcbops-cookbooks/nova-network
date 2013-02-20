@@ -79,38 +79,38 @@ Networks LWRP
 The nova-network cookbook has a resource and provider named networks. This LWRP provides the ability to create a fixed network, delete a fixed network, create a floating ip network, and delete a floating ip network.
 
 Usage:
-To create a fixed network:
-nova_network_networks "Create #{label}" do
-    label label
-    multi_host T|F
-    fixed_range cidr
-    num_networks number of networks
-    net_size usable ip size
-    bridge host bridge name (i.e. br100)
-    bridge_int host bridge interface (i.e. eth0)
-    dns1 primary dns server ip or name
-    dns2 secondary dns server ip or name
-    action :create_fixed
-end
+### To create a fixed network:
+    nova_network_networks "Create #{label}" do
+        label label
+        multi_host T|F
+        fixed_range cidr
+        num_networks number of networks
+        net_size usable ip size
+        bridge host bridge name (i.e. br100)
+        bridge_int host bridge interface (i.e. eth0)
+        dns1 primary dns server ip or name
+        dns2 secondary dns server ip or name
+        action :create_fixed
+    end
 
-To Delete a fixed_network
-nova_network_networks "Delete #{label}" do
-    fixed_range cidr
-    action :delete_fixed
-end
+### To Delete a fixed_network
+    nova_network_networks "Delete #{label}" do
+        fixed_range cidr
+        action :delete_fixed
+    end
 
-To Create a floating ip network
-nova_network_networks "Create floating ip network #{cidr}" do
-    pool floating_pool_name
-    float_range cidr
-    action :create_floating
-end
+### To Create a floating ip network
+    nova_network_networks "Create floating ip network #{cidr}" do
+        pool floating_pool_name
+        float_range cidr
+        action :create_floating
+    end
 
-To Delete a floating ip network
-nova_network_networks "Delete floating ip network #{cidr}" do
-    float_range cidr
-    action :delete_floating
-end
+### To Delete a floating ip network
+    nova_network_networks "Delete floating ip network #{cidr}" do
+        float_range cidr
+        action :delete_floating
+    end
 
 
 License and Author
