@@ -32,6 +32,7 @@ Nova Networking
 * `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
 * `nova["networks"]` - An array of networks to be assigned to instances on creation
 
+### Example
     [
         {
             "label" => "public",
