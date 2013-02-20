@@ -5,33 +5,84 @@ This cookbook configures the networking required for OpenStack, specifically for
 Requirements
 ============
 
+Chef 0.10.0 or higher required (for Chef environment use)
+
+Platform
+--------
+
+* CentOS >= 6.3
+* Ubuntu >= 12.04
+
+Cookbooks
+---------
+
+The following cookbooks are dependencies:
+
+* mysql
+* monitoring
+* nova
+* osops-utils
+* sysctl
+
 Attributes
 ==========
+
+Nova Networking
+----
 * `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
+* `nova["networks"]` - An array of networks to be assigned to instances on creation
 
-Nova Networking Attributes
-* `nova["network"]["public"]["label"]` - Network label to be assigned to the public network on creation
-* `nova["network"]["public"]["ipv4_cidr"]` - Network to be created (in CIDR notation, e.g., 192.168.100.0/24)
-* `nova["network"]["public"]["num_networks"]` - Number of networks to be created
-* `nova["network"]["public"]["network_size"]` - Number of IP addresses to be used in this network
-* `nova["network"]["public"]["bridge"]` - Bridge to be created for accessing the VM network (e.g., br100)
-* `nova["network"]["public"]["bridge_dev"]` - Physical device on which the bridge device should be attached (e.g., eth2)
-* `nova["network"]["public"]["dns1"]` - DNS server 1
-* `nova["network"]["public"]["dns2"]` - DNS server 2
-* `nova["network"]["private"]["label"]` - Network label to be assigned to the private network on creation
-* `nova["network"]["private"]["ipv4_cidr"]` - Network to be created (in CIDR notation e.g., 192.168.200.0/24)
-* `nova["network"]["private"]["num_networks"]` - Number of networks to be created
-* `nova["network"]["private"]["network_size"]` - Number of IP addresses to be used in this network
-* `nova["network"]["private"]["bridge"]` - Bridge to be created for accessing the VM network (e.g., br200)
-* `nova["network"]["private"]["bridge_dev"]` - Physical device on which the bridge device should be attached (e.g., eth3)
+### Example
+    [
+        {
+            "label" => "public",
+            "ipv4_cidr" => "192.168.100.0/24",
+            "num_networks" => 1,
+            "network_size" => 255,
+            "bridge" => "br100",
+            "bridge_dev" => "eth2",
+            "dns1" => "8.8.8.8",
+            "dns2" => "8.8.4.4"
+        },
+        {
+            "label" => "private",
+            "ipv4_cidr" => "192.168.200.0/24",
+            "num_networks" => 1,
+            "network_size" => 255,
+            "bridge" => "br200",
+            "bridge_dev" => "eth3",
+            "dns1" => "8.8.8.8",
+            "dns2" => "8.8.4.4"
+        }
+    ]
+
+* `nova["network"]["public_interface"]` - Interface for public IPs
+* `nova["network"]["dmz_cidr"]` - A dmz range that should be accepted
+* `nova["network"]["network_manager"]` - Class name for network manager
+* `nova["network"]["dhcp_domain"]` - Domain to use for building hostnames
+* `nova["network"]["force_dhcp_release"]` - Send DHCP release on instance termination?
+* `nova["network"]["send_arp_for_ha"]` - Send gratuitous ARPs for HA setup?
+* `nova["network"]["auto_assign_floating_ip"]` - Auto-assigning floating ip to VM?
 * `nova["network"]["floating_pool_name"]` - if creating a floating ip pool, what to name it
+* `nova["network"]["multi_host"]` - Use multi-host mode?
+* `nova["network"]["platform"]` - Hash of platform specific package/service names and options
 
-Quantum Networking Attributes
+Quantum Networking
+----
 * `quantum["network_api_class"]` - used in nova.conf.the quantum api driver class. 
 * `quantum["auth_strategy"]` - used in nova.conf. the authentication strategy to use, by default this is set to keystone
 * `quantum["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
 * `quantum["linuxnet_interface_driver"]` - used in nova.conf. the linux net interface driver, by default nova.network.linux_net.LinuxOVSInterfaceDriver
 * `quantum["firewall_driver"]` - used in nova.conf. the firewall driver to use, by default nova.virt.libvirt.firewall.IptablesFirewallDriver
+* `quantum["services"]["api"]["scheme"]` - scheme for service (http/https)
+* `quantum["services"]["api"]["network"]` - `osops_networks` network name which service operates on
+* `quantum["services"]["api"]["port"]` - port service binds to
+* `quantum["services"]["api"]["path"]` - service URI
+* `quantum["db"]["name"]` - database name
+* `quantum["db"]["username"]` - database username
+* `quantum["db"]["service_tenant_name"]` - defaults to `service`
+* `quantum["db"]["service_user"]` - defaults to `quantum`
+* `quantum["db"]["service_role"]` - defaults to `admin`
 * `quantum["debug"]` - default log level is INFO
 * `quantum["verbose"]` - default log level is INFO
 * `quantum["overlap_ips"]` - Enable or disable overlapping IPs for subnets. MUST be set to False if Quantum is being used in conjunction with nova security groups and/or metadata service.
@@ -54,40 +105,41 @@ Networks LWRP
 =============
 The nova-network cookbook has a resource and provider named networks. This LWRP provides the ability to create a fixed network, delete a fixed network, create a floating ip network, and delete a floating ip network.
 
-Usage:
-To create a fixed network:
-nova_network_networks "Create #{label}" do
-    label label
-    multi_host T|F
-    fixed_range cidr
-    num_networks number of networks
-    net_size usable ip size
-    bridge host bridge name (i.e. br100)
-    bridge_int host bridge interface (i.e. eth0)
-    dns1 primary dns server ip or name
-    dns2 secondary dns server ip or name
-    action :create_fixed
-end
+Usage
+-----
 
-To Delete a fixed_network
-nova_network_networks "Delete #{label}" do
-    fixed_range cidr
-    action :delete_fixed
-end
+### Create a fixed network
+    nova_network_networks "Create #{label}" do
+        label label
+        multi_host T|F
+        fixed_range cidr
+        num_networks number of networks
+        net_size usable ip size
+        bridge host bridge name (i.e. br100)
+        bridge_int host bridge interface (i.e. eth0)
+        dns1 primary dns server ip or name
+        dns2 secondary dns server ip or name
+        action :create_fixed
+    end
 
-To Create a floating ip network
-nova_network_networks "Create floating ip network #{cidr}" do
-    pool floating_pool_name
-    float_range cidr
-    action :create_floating
-end
+### Delete a fixed_network
+    nova_network_networks "Delete #{label}" do
+        fixed_range cidr
+        action :delete_fixed
+    end
 
-To Delete a floating ip network
-nova_network_networks "Delete floating ip network #{cidr}" do
-    float_range cidr
-    action :delete_floating
-end
+### Create a floating ip network
+    nova_network_networks "Create floating ip network #{cidr}" do
+        pool floating_pool_name
+        float_range cidr
+        action :create_floating
+    end
 
+### Delete a floating ip network
+    nova_network_networks "Delete floating ip network #{cidr}" do
+        float_range cidr
+        action :delete_floating
+    end
 
 
 License and Author
@@ -100,7 +152,8 @@ Author:: Joseph Breu (<joseph.breu@rackspace.com>)
 Author:: William Kelly (<william.kelly@rackspace.com>)  
 Author:: Darren Birkett (<darren.birkett@rackspace.co.uk>)  
 Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)  
-Author:: Chris Laco (<chris.laco@rackspace.com>)
+Author:: Chris Laco (<chris.laco@rackspace.com>)  
+Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)  
 
 Copyright 2012, Rackspace US, Inc.  
 
