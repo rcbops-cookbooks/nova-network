@@ -31,6 +31,30 @@ Nova Networking
 ----
 * `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
 * `nova["networks"]` - An array of networks to be assigned to instances on creation
+
+    [
+        {
+            "label" => "public",
+            "ipv4_cidr" => "192.168.100.0/24",
+            "num_networks" => 1,
+            "network_size" => 255,
+            "bridge" => "br100",
+            "bridge_dev" => "eth2",
+            "dns1" => "8.8.8.8",
+            "dns2" => "8.8.4.4"
+        },
+        {
+            "label" => "private",
+            "ipv4_cidr" => "192.168.200.0/24",
+            "num_networks" => 1,
+            "network_size" => 255,
+            "bridge" => "br200",
+            "bridge_dev" => "eth3",
+            "dns1" => "8.8.8.8",
+            "dns2" => "8.8.4.4"
+        }
+    ]
+
 * `nova["network"]["public_interface"]` - Interface for public IPs
 * `nova["network"]["dmz_cidr"]` - A dmz range that should be accepted
 * `nova["network"]["network_manager"]` - Class name for network manager
