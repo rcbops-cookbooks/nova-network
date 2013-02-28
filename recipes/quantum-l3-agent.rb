@@ -54,7 +54,7 @@ execute "create external bridge" do
 	not_if "ovs-vsctl show | grep 'Bridge br-ex'" ## FIXME
 end
 
-ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
+ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
 quantum_info = get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 #metadata_ip = get_ip_for_net("nova", search(:node, "recipes:nova-network\\:\\:nova-controller AND chef_environment:#{node.chef_environment}"))
 nova_info = get_access_endpoint("nova-api-os-compute", "nova", "api")

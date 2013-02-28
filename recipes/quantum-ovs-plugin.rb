@@ -46,7 +46,7 @@ service "openvswitch-switch" do
 end
 
 mysql_info = get_access_endpoint("mysql-master", "mysql", "db")
-ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
+ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 api_endpoint = get_access_endpoint("nova-network-controller", "quantum", "api")
 local_ip = get_ip_for_net('nova', node)		### FIXME
