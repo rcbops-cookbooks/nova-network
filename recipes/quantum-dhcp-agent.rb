@@ -18,13 +18,7 @@
 
 include_recipe "osops-utils"
 
-if not node["package_component"].nil?
-    release = node["package_component"]
-else
-    release = "folsom"
-end
-
-platform_options = node["quantum"]["platform"][release]
+platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
 
 platform_options["quantum_dhcp_packages"].each do |pkg|
@@ -44,7 +38,7 @@ ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
 quantum_info = get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 
 template "/etc/quantum/dhcp_agent.ini" do
-    source "#{release}/dhcp_agent.ini.erb"
+    source "dhcp_agent.ini.erb"
     owner "root"
     group "root"
     mode "0644"
