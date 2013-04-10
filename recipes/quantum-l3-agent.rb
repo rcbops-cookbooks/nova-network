@@ -22,17 +22,11 @@ if Chef::Config[:solo]
     Chef::Log.warn("This recipe uses search. Chef Solo does not support search.")
 end
 
-if not node["package_component"].nil?
-    release = node["package_component"]
-else
-    release = "folsom"
-end
-
 sysctl 'net.ipv4.ip_forward' do
     value '1'
 end
 
-platform_options = node["quantum"]["platform"][release]
+platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
 
 platform_options["quantum_l3_packages"].each do |pkg|
@@ -61,7 +55,7 @@ nova_info = get_access_endpoint("nova-api-os-compute", "nova", "api")
 metadata_ip = nova_info["host"]
 
 template "/etc/quantum/l3_agent.ini" do
-    source "#{release}/l3_agent.ini.erb"
+    source "l3_agent.ini.erb"
     owner "root"
     group "root"
     mode "0644"
