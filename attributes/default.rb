@@ -105,34 +105,34 @@ default["quantum"]["ovs"]["external_interface"] = "eth1"
 
 case platform
 when "fedora", "redhat", "centos"
-	default["nova-network"]["platform"] = {
-	  "nova_network_packages" => ["iptables", "openstack-nova-network"],
-	  "nova_network_service" => "openstack-nova-network",
-	  "common_packages" => ["openstack-nova-common", "python-cinderclient"]
-	}
-	default["quantum"]["platform"] = {
-	    "mysql_python_packages" => [ "MySQL-python" ],
-	    "quantum_packages" => [ "openstack-quantum", "python-quantumclient" ],
-	    "quantum_api_service" => "openstack-quantum",
-	    "quantum_api_process_name" => "",
-	    "package_overrides" => ""
-	}
+    default["nova-network"]["platform"] = {
+        "nova_network_packages" => ["iptables", "openstack-nova-network"],
+        "nova_network_service" => "openstack-nova-network",
+        "common_packages" => ["openstack-nova-common", "python-cinderclient"]
+    }
+    default["quantum"]["platform"] = {
+        "mysql_python_packages" => [ "MySQL-python" ],
+        "quantum_packages" => [ "openstack-quantum", "python-quantumclient" ],
+        "quantum_api_service" => "openstack-quantum",
+        "quantum_api_process_name" => "",
+        "package_overrides" => ""
+    }
 when "ubuntu"
-	default["nova-network"]["platform"] = {                                                   # node_attribute
-          "nova_network_packages" => ["iptables", "nova-network"],
-          "nova_network_service" => "nova-network",
-	  "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
-	}
-	default["quantum"]["platform"] = {
-	  "mysql_python_packages" => [ "python-mysqldb" ],
-	  "quantum_packages" => [ "quantum-server", "python-quantum", "quantum-common" ],
-	  "quantum_dhcp_packages" => [ "dnsmasq-base", "dnsmasq-utils", "libnetfilter-conntrack3", "quantum-dhcp-agent" ],
-	  "quantum_l3_packages" => ["quantum-l3-agent"],
-	  "quantum_api_service" => "quantum-server",
-	  "quantum-dhcp-agent" => "quantum-dhcp-agent",
-	  "quantum-l3-agent" => "quantum-l3-agent",
-	  "quantum_api_process_name" => "quantum-server",
-	  "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
-	}
+    default["nova-network"]["platform"] = {                                                   # node_attribute
+        "nova_network_packages" => ["iptables", "nova-network"],
+        "nova_network_service" => "nova-network",
+        "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
+    }
+    default["quantum"]["platform"] = {
+        "mysql_python_packages" => [ "python-mysqldb" ],
+        "quantum_packages" => [ "quantum-server", "python-quantum", "quantum-common" ],
+        "quantum_dhcp_packages" => [ "dnsmasq-base", "dnsmasq-utils", "libnetfilter-conntrack3", "quantum-dhcp-agent" ],
+        "quantum_l3_packages" => ["quantum-l3-agent"],
+        "quantum_api_service" => "quantum-server",
+        "quantum-dhcp-agent" => "quantum-dhcp-agent",
+        "quantum-l3-agent" => "quantum-l3-agent",
+        "quantum_api_process_name" => "quantum-server",
+        "package_overrides" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
+    }
 end
 
