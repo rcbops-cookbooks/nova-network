@@ -21,13 +21,7 @@ include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 include_recipe "osops-utils"
 
-if not node["package_component"].nil?
-    release = node["package_component"]
-else
-    release = "folsom"
-end
-
-platform_options = node["quantum"]["platform"][release]
+platform_options = node["quantum"]["platform"]
 
 if node["developer_mode"]
     node.set_unless["quantum"]["db"]["password"] = "quantum"
@@ -48,7 +42,7 @@ keystone = get_settings_by_role("keystone", "keystone")
 # Create db and user
 # return connection info
 # defined in osops-utils/libraries
-mysql_info = create_db_and_user("mysql", 
+mysql_info = create_db_and_user("mysql",
 node["quantum"]["db"]["name"],
 node["quantum"]["db"]["username"],
 node["quantum"]["db"]["password"])
@@ -102,7 +96,7 @@ keystone_register "Grant 'admin' role to service user for service tenant" do
     auth_port ks_admin_endpoint["port"]
     auth_protocol ks_admin_endpoint["scheme"]
     api_ver ks_admin_endpoint["path"]
-    auth_token keystone["admin_token"] 
+    auth_token keystone["admin_token"]
     tenant_name node["quantum"]["service_tenant_name"]
     user_name node["quantum"]["service_user"]
     role_name node["quantum"]["service_role"]
@@ -137,7 +131,7 @@ keystone_register "Register Quantum Endpoint" do
 end
 
 template "/etc/quantum/api-paste.ini" do
-    source "#{release}/api-paste.ini.erb"
+    source "api-paste.ini.erb"
     owner "root"
     group "root"
     mode "0644"
@@ -153,7 +147,7 @@ end
 
 local_ip = get_ip_for_net('nova', node)         ### FIXME
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
-    source "#{release}/ovs_quantum_plugin.ini.erb"
+    source "ovs_quantum_plugin.ini.erb"
     owner "root"
     group "root"
     mode "0644"
@@ -176,7 +170,7 @@ end
 # Get rabbit info
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 template "/etc/quantum/quantum.conf" do
-    source "#{release}/quantum.conf.erb"
+    source "quantum.conf.erb"
     owner "root"
     group "root"
     mode "0644"

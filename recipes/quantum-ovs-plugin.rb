@@ -17,16 +17,10 @@
 
 include_recipe "osops-utils"
 
-if not node["package_component"].nil?
-    release = node["package_component"]
-else
-    release = "folsom"
-end
-
-platform_options = node["quantum"]["platform"][release]
+platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
 
-node["quantum"][plugin]["packages"].each do |pkg| 
+node["quantum"][plugin]["packages"].each do |pkg|
     package pkg do
         action :install
         options platform_options["package_overrides"]
@@ -53,7 +47,7 @@ local_ip = get_ip_for_net('nova', node)		### FIXME
 quantum_info = get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 
 template "/etc/quantum/api-paste.ini" do
-    source "#{release}/api-paste.ini.erb"
+    source "api-paste.ini.erb"
     owner "root"
     group "root"
     mode "0644"
@@ -68,7 +62,7 @@ template "/etc/quantum/api-paste.ini" do
 end
 
 template "/etc/quantum/quantum.conf" do
-    source "#{release}/quantum.conf.erb"
+    source "quantum.conf.erb"
     owner "root"
     group "root"
     mode "0644"
@@ -85,7 +79,7 @@ template "/etc/quantum/quantum.conf" do
 end
 
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
-    source "#{release}/ovs_quantum_plugin.ini.erb"
+    source "ovs_quantum_plugin.ini.erb"
     owner "root"
     group "root"
     mode "0644"
