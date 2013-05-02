@@ -74,7 +74,7 @@ keystone_register "Register Service Tenant" do
     auth_token keystone["admin_token"]
     tenant_name node["quantum"]["service_tenant_name"]
     tenant_description "Service Tenant"
-    tenant_enabled "1"
+    tenant_enabled true
     action :create_tenant
 end
 
@@ -87,7 +87,7 @@ keystone_register "Register Service User" do
     tenant_name node["quantum"]["service_tenant_name"]
     user_name node["quantum"]["service_user"]
     user_pass node["quantum"]["service_pass"]
-    user_enabled "1"
+    user_enabled true
     action :create_user
 end
 
