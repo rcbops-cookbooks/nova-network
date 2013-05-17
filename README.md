@@ -35,7 +35,6 @@ Cookbooks
 The following cookbooks are dependencies:
 
 * mysql
-* monitoring
 * nova
 * osops-utils
 * sysctl
