@@ -66,7 +66,7 @@ service "quantum-server" do
     action :nothing
 end
 
-keystone_register "Register Service Tenant" do
+keystone_tenant "Register Service Tenant" do
     auth_host ks_admin_endpoint["host"]
     auth_port ks_admin_endpoint["port"]
     auth_protocol ks_admin_endpoint["scheme"]
@@ -75,10 +75,10 @@ keystone_register "Register Service Tenant" do
     tenant_name node["quantum"]["service_tenant_name"]
     tenant_description "Service Tenant"
     tenant_enabled true
-    action :create_tenant
+    action :create
 end
 
-keystone_register "Register Service User" do
+keystone_user "Register Service User" do
     auth_host ks_admin_endpoint["host"]
     auth_port ks_admin_endpoint["port"]
     auth_protocol ks_admin_endpoint["scheme"]
@@ -88,10 +88,10 @@ keystone_register "Register Service User" do
     user_name node["quantum"]["service_user"]
     user_pass node["quantum"]["service_pass"]
     user_enabled true
-    action :create_user
+    action :create
 end
 
-keystone_register "Grant 'admin' role to service user for service tenant" do
+keystone_role "Grant 'admin' role to service user for service tenant" do
     auth_host ks_admin_endpoint["host"]
     auth_port ks_admin_endpoint["port"]
     auth_protocol ks_admin_endpoint["scheme"]
@@ -100,7 +100,7 @@ keystone_register "Grant 'admin' role to service user for service tenant" do
     tenant_name node["quantum"]["service_tenant_name"]
     user_name node["quantum"]["service_user"]
     role_name node["quantum"]["service_role"]
-    action :grant_role
+    action :grant
 end
 
 keystone_register "Reqister Quantum Service" do
