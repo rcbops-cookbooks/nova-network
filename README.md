@@ -52,8 +52,6 @@ Nova Networking
         {
             "label" => "public",
             "ipv4_cidr" => "192.168.100.0/24",
-            "num_networks" => 1,
-            "network_size" => 255,
             "bridge" => "br100",
             "bridge_dev" => "eth2",
             "dns1" => "8.8.8.8",
@@ -62,8 +60,6 @@ Nova Networking
         {
             "label" => "private",
             "ipv4_cidr" => "192.168.200.0/24",
-            "num_networks" => 1,
-            "network_size" => 255,
             "bridge" => "br200",
             "bridge_dev" => "eth3",
             "dns1" => "8.8.8.8",
@@ -128,8 +124,6 @@ Usage
         label label
         multi_host T|F
         fixed_range cidr
-        num_networks number of networks
-        net_size usable ip size
         bridge host bridge name (i.e. br100)
         bridge_int host bridge interface (i.e. eth0)
         dns1 primary dns server ip or name
@@ -160,15 +154,16 @@ Usage
 License and Author
 ==================
 
-Author:: Justin Shepherd (<justin.shepherd@rackspace.com>)  
-Author:: Jason Cannavale (<jason.cannavale@rackspace.com>)  
-Author:: Ron Pedde (<ron.pedde@rackspace.com>)  
-Author:: Joseph Breu (<joseph.breu@rackspace.com>)  
-Author:: William Kelly (<william.kelly@rackspace.com>)  
-Author:: Darren Birkett (<darren.birkett@rackspace.co.uk>)  
-Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)  
+Author:: Justin Shepherd (<justin.shepherd@rackspace.com>)
+Author:: Jason Cannavale (<jason.cannavale@rackspace.com>)
+Author:: Ron Pedde (<ron.pedde@rackspace.com>)
+Author:: Joseph Breu (<joseph.breu@rackspace.com>)
+Author:: William Kelly (<william.kelly@rackspace.com>)
+Author:: Darren Birkett (<darren.birkett@rackspace.co.uk>)
+Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)
 Author:: Chris Laco (<chris.laco@rackspace.com>)  
-Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)  
+Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)
+Author:: Andy McCrae (<andrew.mccrae@rackspace.co.uk>)
 
 Copyright 2012, Rackspace US, Inc.  
 

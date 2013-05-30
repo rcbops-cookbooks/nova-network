@@ -26,8 +26,6 @@ default["nova"]["networks"] = [                                             # cl
 {
     "label" => "public",
     "ipv4_cidr" => "192.168.100.0/24",
-    "num_networks" => 1,
-    "network_size" => 255,
     "bridge" => "br100",
     "bridge_dev" => "eth2",
     "dns1" => "8.8.8.8",
@@ -36,8 +34,6 @@ default["nova"]["networks"] = [                                             # cl
 {
     "label" => "private",
     "ipv4_cidr" => "192.168.200.0/24",
-    "num_networks" => 1,
-    "network_size" => 255,
     "bridge" => "br200",
     "bridge_dev" => "eth3",
     "dns1" => "8.8.8.8",
