@@ -57,9 +57,13 @@ default["nova"]["network"]["multi_host"] = true
 # nova.conf options for quantum
 default["quantum"]["network_api_class"] = "nova.network.quantumv2.api.API"
 default["quantum"]["auth_strategy"] = "keystone"
+default["quantum"]["libvirt_vif_type"] = "ethernet"
 default["quantum"]["libvirt_vif_driver"] = "nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver"
 default["quantum"]["linuxnet_interface_driver"] = "nova.network.linux_net.LinuxOVSInterfaceDriver"
-default["quantum"]["firewall_driver"] = "nova.virt.libvirt.firewall.IptablesFirewallDriver"
+default["quantum"]["firewall_driver"] = "nova.virt.firewall.NoopFirewallDriver"
+default["quantum"]["security_group_api"] = "quantum"
+default["quantum"]["isolated_metadata"] = "True"
+default["quantum"]["service_quantum_metadata_proxy"] = "True"
 
 default["quantum"]["services"]["api"]["scheme"] = "http"
 default["quantum"]["services"]["api"]["network"] = "public"
@@ -75,10 +79,8 @@ default["quantum"]["service_role"] = "admin"
 default["quantum"]["debug"] = "False"
 default["quantum"]["verbose"] = "False"
 
-# Attention: the following parameter MUST be set to False if Quantum is
-# being used in conjunction with nova security groups and/or metadata service.
-default["quantum"]["overlap_ips"] = "False"
-default["quantum"]["use_namespaces"] = "False" # should correspond to overlap_ips used for dhcp agent and l3 agent.
+default["quantum"]["overlap_ips"] = "True"
+default["quantum"]["use_namespaces"] = "True" # should correspond to overlap_ips used for dhcp agent and l3 agent.
 
 # Manage plugins here, currently only supports openvswitch (ovs)
 default["quantum"]["plugin"] = "ovs"
@@ -89,15 +91,17 @@ default["quantum"]["l3"]["gateway_external_net_id"] = ""
 
 # Plugin defaults
 # OVS
-default["quantum"]["ovs"]["packages"] = [ "quantum-plugin-openvswitch", "quantum-plugin-openvswitch-agent" ]
+default["quantum"]["ovs"]["packages"] = [ "openvswitch-datapath-dkms", "quantum-plugin-openvswitch", "quantum-plugin-openvswitch-agent" ]
 default["quantum"]["ovs"]["service_name"] = "quantum-plugin-openvswitch-agent"
-default["quantum"]["ovs"]["network_type"] = "gre"
-default["quantum"]["ovs"]["tunneling"] = "True"                 # Must be true if network type is GRE
+default["quantum"]["ovs"]["network_type"] = "vlan"
 default["quantum"]["ovs"]["tunnel_ranges"] = "1:1000"           # Enumerating ranges of GRE tunnel IDs that are available for tenant network allocation (if GRE)
 default["quantum"]["ovs"]["integration_bridge"] = "br-int"      # Don't change without a good reason..
 default["quantum"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if tunnel_ranges is set
 default["quantum"]["ovs"]["external_bridge"] = "br-ex"
 default["quantum"]["ovs"]["external_interface"] = "eth1"
+default["quantum"]["ovs"]["vlan_ranges"] = "ph-eth1:1:1000"
+default["quantum"]["ovs"]["bridge_mappings"] = "ph-eth1:br-eth1"
+default["quantum"]["ovs"]["firewall_driver"] = "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
 case platform
 when "fedora", "redhat", "centos"
@@ -125,6 +129,8 @@ when "ubuntu"
         "quantum_dhcp_packages" => [ "dnsmasq-base", "dnsmasq-utils", "libnetfilter-conntrack3", "quantum-dhcp-agent" ],
         "quantum_l3_packages" => ["quantum-l3-agent"],
         "quantum_api_service" => "quantum-server",
+        "quantum_metadata_packages" => [ "quantum-metadata-agent" ],
+        "quantum-metadata-agent" => "quantum-metadata-agent",
         "quantum-dhcp-agent" => "quantum-dhcp-agent",
         "quantum-l3-agent" => "quantum-l3-agent",
         "quantum_api_process_name" => "quantum-server",

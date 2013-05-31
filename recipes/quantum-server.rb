@@ -31,6 +31,8 @@ end
 
 node.set_unless['quantum']['service_pass'] = secure_password
 
+node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] = secure_password
+
 package "quantum-server" do
      action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
 end
@@ -156,15 +158,19 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
         "db_user" => node["quantum"]["db"]["username"],
         "db_password" => node["quantum"]["db"]["password"],
         "db_name" => node["quantum"]["db"]["name"],
+        "ovs_firewall_driver" => node["quantum"]["ovs"]["firewall_driver"],
         "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
         "ovs_enable_tunneling" => node["quantum"]["ovs"]["tunneling"],
         "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
         "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
         "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
+        "ovs_vlan_ranges" => node["quantum"]["ovs"]["vlan_ranges"],
+        "ovs_bridge_mappings" => node["quantum"]["ovs"]["bridge_mappings"],
         "ovs_debug" => node["quantum"]["debug"],
         "ovs_verbose" => node["quantum"]["verbose"],
         "ovs_local_ip" => local_ip
     )
+    notifies :restart, resources(:service => "quantum-server"), :immediately
 end
 
 # Get rabbit info
