@@ -88,16 +88,17 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
         "db_user" => quantum_info["db"]["username"],
         "db_password" => quantum_info["db"]["password"],
         "db_name" => quantum_info["db"]["name"],
+        "ovs_firewall_driver" => node["quantum"]["ovs"]["firewall_driver"],
         "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
-        "ovs_enable_tunneling" => node["quantum"]["ovs"]["tunneling"],
         "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
         "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
         "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
+        "ovs_vlan_ranges" => node["quantum"]["ovs"]["vlan_ranges"],
+        "ovs_bridge_mappings" => node["quantum"]["ovs"]["bridge_mappings"],
         "ovs_debug" => node["quantum"]["debug"],
         "ovs_verbose" => node["quantum"]["verbose"],
         "ovs_local_ip" => local_ip
     )
-    # notifies :restart, resources(:service => "quantum-server"), :immediately
     notifies :restart, resources(:service => "quantum-plugin-openvswitch-agent"), :immediately
     notifies :enable, resources(:service => "quantum-plugin-openvswitch-agent"), :immediately
     notifies :restart, resources(:service => "openvswitch-switch"), :immediately
