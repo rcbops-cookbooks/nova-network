@@ -25,8 +25,6 @@ end
 attribute :label, :kind_of => String
 attribute :multi_host, :kind_of => [ TrueClass, FalseClass], :default => true
 attribute :fixed_range, :kind_of => String
-attribute :num_networks, :kind_of => [ String, Integer ]
-attribute :net_size, :kind_of => [ String, Integer ]
 attribute :bridge, :kind_of => String
 attribute :bridge_int, :kind_of => String
 attribute :dns1, :kind_of => String

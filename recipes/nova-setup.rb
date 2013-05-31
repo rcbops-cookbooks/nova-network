@@ -24,8 +24,6 @@ node["nova"]["networks"].each do |net|
        label net['label']
        multi_host true
        fixed_range net['ipv4_cidr']
-       num_networks net['num_networks']
-       net_size net['network_size']
        bridge net['bridge']
        bridge_int net['bridge_dev']
        dns1 net['dns1']
