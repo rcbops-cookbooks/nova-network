@@ -5,6 +5,14 @@ dhcp_driver = quantum.agent.linux.dhcp.Dnsmasq
 use_namespaces = <%= @quantum_namespace %>
 root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
 
+enable_isolated_metadata = <%= @quantum_isolated %>
+
+auth_url = <%= @keystone_protocol %>://<%= @keystone_api_ipaddress %>:<%= @keystone_admin_port %><%= @keystone_path %>
+auth_region = RegionOne
+admin_tenant_name = <%= @service_tenant_name %>
+admin_user = <%= @service_user %>
+admin_password = <%= @service_pass %>
+
 <% if @quantum_plugin == "ovs" %>
 # OVS
 interface_driver = quantum.agent.linux.interface.OVSInterfaceDriver
