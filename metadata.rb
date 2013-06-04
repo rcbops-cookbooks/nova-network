@@ -1,4 +1,5 @@
 maintainer        "Rackspace US, Inc."
+name              "nova-network"
 license           "Apache 2.0"
 description       "Installs and configures the networking required for Openstack"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
