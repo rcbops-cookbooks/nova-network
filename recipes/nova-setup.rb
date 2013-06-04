@@ -15,26 +15,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # Public interface needs to be the bridge if the public interface is in the bridge
-if node["nova"]["networks"][0]["bridge_dev"] == node["nova"]["network"]["public_interface"]
-    node.set["nova"]["network"]["public_interface"] = node["nova"]["networks"][0]["bridge"]
+if node["nova"]["networks"][0]["bridge_dev"] ==
+  node["nova"]["network"]["public_interface"]
+  node.set["nova"]["network"]["public_interface"] =
+    node["nova"]["networks"][0]["bridge"]
 end
 
 node["nova"]["networks"].each do |net|
-    nova_network_networks "Creating #{net['label']}" do
-       label net['label']
-       multi_host true
-       fixed_range net['ipv4_cidr']
-       bridge net['bridge']
-       bridge_int net['bridge_dev']
-       dns1 net['dns1']
-       dns2 net['dns2']
-       action :create_fixed
-    end
+  nova_network_networks "Creating #{net['label']}" do
+    label net['label']
+    multi_host true
+    fixed_range net['ipv4_cidr']
+    bridge net['bridge']
+    bridge_int net['bridge_dev']
+    dns1 net['dns1']
+    dns2 net['dns2']
+    action :create_fixed
+  end
 end
-
-# nova_network_networks "create floating ip network" do
-    # pool node["nova"]["network"]["floating_pool_name"]
-    # float_range node["nova"]["network"]["floating"]["ipv4_cidr"]
-    # action :create_floating
-    # only_if { node["nova"]["network"].has_key?(:floating) and node["nova"]["network"]["floating"].has_key?(:ipv4_cidr) }
-# end
