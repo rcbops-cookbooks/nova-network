@@ -21,14 +21,18 @@ action :create_fixed do
   if new_resource.multi_host
     multi_host_bool_mangle="T"
   end
+  fixed_range=new_resource.fixed_range
+  net_prefix=fixed_range.split("/").last
+  net_size=2**(32 - net_prefix.to_i)
   execute "Creating network: #{new_resource.label}" do
     command "nova-manage network create "\
       "--multi_host=#{multi_host_bool_mangle} "\
       "--label=#{new_resource.label} "\
-      "--fixed_range_v4=#{new_resource.fixed_range} "\
+      "--fixed_range_v4=#{fixed_range} "\
       "--bridge=#{new_resource.bridge} "\
       "--bridge_interface=#{new_resource.bridge_int} "\
-      "--dns1=#{new_resource.dns1} --dns2=#{new_resource.dns2}"
+      "--dns1=#{new_resource.dns1} --dns2=#{new_resource.dns2} "\
+      "--network_size=#{net_size}"
     action :run
     not_if "nova-manage network list | grep #{new_resource.fixed_range}"
   end
