@@ -36,8 +36,13 @@ node.set_unless['quantum']['service_pass'] =
 node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
   secure_password
 
-package "quantum-server" do
-  action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+packages = platform_options["quantum_packages"] +
+  platform_options["mysql_python_packages"]
+
+packages.each do |pkg|
+  package pkg do
+    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+  end
 end
 
 ks_admin_endpoint =
@@ -56,19 +61,6 @@ mysql_info = create_db_and_user(
   node["quantum"]["db"]["username"],
   node["quantum"]["db"]["password"]
 )
-
-platform_options["mysql_python_packages"].each do |pkg|
-  package pkg do
-    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-  end
-end
-
-platform_options["quantum_packages"].each do |pkg|
-  package pkg do
-    action :install
-    options platform_options["package_overrides"]
-  end
-end
 
 service "quantum-server" do
   service_name platform_options["quantum_api_service"]
