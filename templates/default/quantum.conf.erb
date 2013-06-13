@@ -16,19 +16,19 @@ list_notifier_drivers = quantum.openstack.common.notifier.rabbit_notifier
 
 [QUOTAS]
 # resource name(s) that are supported in quota features
-# quota_items = network,subnet,port
+quota_items = <%= @quota_items %>
 
 # default number of resource allowed per tenant, minus for unlimited
-# default_quota = -1
+default_quota = <%= @default_quota %>
 
 # number of networks allowed per tenant, and minus means unlimited
-# quota_network = 10
+quota_network = <%= @quota_network %>
 
 # number of subnets allowed per tenant, and minus means unlimited
-# quota_subnet = 10
+quota_subnet = <%= @quota_subnet %>
 
 # number of ports allowed per tenant, and minus means unlimited
-# quota_port = 50
+quota_port = <%= @quota_port %>
 
 # default driver to use for quota checks
-# quota_driver = quantum.quota.ConfDriver
+quota_driver = <%= @quota_driver %>
