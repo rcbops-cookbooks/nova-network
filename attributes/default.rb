@@ -92,6 +92,9 @@ default["quantum"]["plugin"] = "ovs"
 default["quantum"]["l3"]["router_id"] = ""
 default["quantum"]["l3"]["gateway_external_net_id"] = ""
 
+# dhcp agent options
+default["quantum"]["dhcp_lease_time"] = "1440"
+
 # Plugin defaults
 # OVS
 default["quantum"]["ovs"]["packages"] = [
