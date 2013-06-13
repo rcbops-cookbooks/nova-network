@@ -4,6 +4,7 @@ state_path = /var/lib/quantum
 dhcp_driver = quantum.agent.linux.dhcp.Dnsmasq
 use_namespaces = <%= @quantum_namespace %>
 root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
+dhcp_lease_time = <%= @dhcp_lease_time %>
 
 enable_isolated_metadata = <%= @quantum_isolated %>
 
