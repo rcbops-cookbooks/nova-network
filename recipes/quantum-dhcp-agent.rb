@@ -56,7 +56,8 @@ template "/etc/quantum/dhcp_agent.ini" do
     "quantum_verbose" => node["quantum"]["verbose"],
     "quantum_namespace" => node["quantum"]["use_namespaces"],
     "quantum_isolated" => node["quantum"]["isolated_metadata"],
-    "quantum_plugin" => node["quantum"]["plugin"]
+    "quantum_plugin" => node["quantum"]["plugin"],
+    "dhcp_lease_time" => node["quantum"]["dhcp_lease_time"]
   )
   notifies :restart, "service[quantum-dhcp-agent]", :immediately
   notifies :enable, "service[quantum-dhcp-agent]", :immediately
