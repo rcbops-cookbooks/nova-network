@@ -50,15 +50,7 @@ template "/etc/quantum/metadata_agent.ini" do
   group "root"
   mode "0644"
   variables(
-    "service_pass" => quantum_info["service_pass"],
-    "service_user" => quantum_info["service_user"],
-    "service_tenant_name" => quantum_info["service_tenant_name"],
-    "keystone_protocol" => ks_admin_endpoint["scheme"],
-    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
-    "keystone_admin_port" => ks_admin_endpoint["port"],
-    "keystone_path" => ks_admin_endpoint["path"],
     "nova_metadata_ip" => nova_endpoint["host"],
-    "quantum_debug" => node["quantum"]["debug"],
     "quantum_metadata_proxy_shared_secret" =>
       quantum_info["quantum_metadata_proxy_shared_secret"]
   )
