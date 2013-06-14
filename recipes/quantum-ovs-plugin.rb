@@ -100,8 +100,7 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
     "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
     "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
-    "ovs_vlan_ranges" => node["quantum"]["ovs"]["vlan_ranges"],
-    "ovs_bridge_mappings" => node["quantum"]["ovs"]["bridge_mappings"],
+    "ovs_provider_networks" => node["quantum"]["ovs"]["provider_networks"],
     "ovs_debug" => node["quantum"]["debug"],
     "ovs_verbose" => node["quantum"]["verbose"],
     "ovs_local_ip" => local_ip
@@ -115,4 +114,12 @@ execute "create integration bridge" do
   command "ovs-vsctl add-br #{node["quantum"]["ovs"]["integration_bridge"]}"
   action :run
   not_if "ovs-vsctl show | grep 'Bridge br-int'" ## FIXME
+end
+
+execute "create provider bridges" do
+    node["quantum"]["ovs"]["provider_networks"].each do |k,v|
+        command "ovs-vsctl add-br #{v['bridge']}"
+        action :run
+    end
+    not_if { node["quantum"]["ovs"]["provider_networks"].empty? }
 end

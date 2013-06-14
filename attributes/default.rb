@@ -109,8 +109,14 @@ default["quantum"]["ovs"]["integration_bridge"] = "br-int"      # Don't change w
 default["quantum"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if tunnel_ranges is set
 default["quantum"]["ovs"]["external_bridge"] = "br-ex"
 default["quantum"]["ovs"]["external_interface"] = "eth1"
-default["quantum"]["ovs"]["vlan_ranges"] = "ph-eth1:1:1000"
-default["quantum"]["ovs"]["bridge_mappings"] = "ph-eth1:br-eth1"
+
+# Hash of all the provider based networks to create, to add simply added 
+# another interface definition and keys for bridge and vlans
+default["quantum"]["ovs"]["provider_networks"] => {"ph-eth1":
+                                                   { "bridge": "br-eth1",
+                                                     "vlans": "1:1000"
+                                                   }
+                                                  }
 default["quantum"]["ovs"]["firewall_driver"] =
   "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 

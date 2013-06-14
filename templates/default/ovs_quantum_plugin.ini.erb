@@ -12,8 +12,11 @@ enable_tunneling = True
 tunnel_bridge = <%= @ovs_tunnel_bridge %>
 tunnel_id_ranges = <%= @ovs_tunnel_ranges %>
 <% end %>
-network_vlan_ranges = <%= @ovs_vlan_ranges %>
-bridge_mappings = <%= @ovs_bridge_mappings %>
+
+<% if not @ovs_provider_networks.empty? %>
+network_vlan_ranges = <%= @ovs_provider_networks.collect { |k,v| "#{k}:#{v['vlans']}"}.join(',') %>
+bridge_mappings = <%= @ovs_provider_network.collect { |k,v| "#{k}:#{v['bridge']}"}.join(',') %>
+<% end %>
 
 [SECURITYGROUP]
 firewall_driver = <%= @ovs_firewall_driver %>
