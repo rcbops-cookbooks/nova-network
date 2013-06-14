@@ -69,16 +69,6 @@ template "/etc/quantum/l3_agent.ini" do
   variables(
     "quantum_external_bridge" => node["quantum"][plugin]["external_bridge"],
     "nova_metadata_ip" => metadata_ip,
-    "service_pass" => quantum_info["service_pass"],
-    "service_user" => quantum_info["service_user"],
-    "service_tenant_name" => quantum_info["service_tenant_name"],
-    "keystone_protocol" => ks_admin_endpoint["scheme"],
-    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
-    "keystone_admin_port" => ks_admin_endpoint["port"],
-    "keystone_path" => ks_admin_endpoint["path"],
-    "quantum_debug" => node["quantum"]["debug"],
-    "quantum_verbose" => node["quantum"]["verbose"],
-    "quantum_namespace" => node["quantum"]["use_namespaces"],
     "quantum_plugin" => node["quantum"]["plugin"],
     "l3_router_id" => node["quantum"]["l3"]["router_id"],
     "l3_gateway_net_id" => node["quantum"]["l3"]["gateway_external_net_id"]

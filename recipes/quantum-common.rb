@@ -54,6 +54,7 @@ template "/etc/quantum/quantum.conf" do
     "quantum_verbose" => node["quantum"]["verbose"],
     "quantum_ipaddress" => api_endpoint["host"],
     "quantum_port" => api_endpoint["port"],
+    "quantum_namespace" => node["quantum"]["use_namespaces"],
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_port" => rabbit_info["port"],
     "overlapping_ips" => node["quantum"]["overlap_ips"],
@@ -63,7 +64,15 @@ template "/etc/quantum/quantum.conf" do
     "quota_network" => node["quantum"]["quota_network"],
     "quota_subnet" => node["quantum"]["quota_subnet"],
     "quota_port" => node["quantum"]["quota_port"],
-    "quota_driver" => node["quantum"]["quota_driver"]
+    "quota_driver" => node["quantum"]["quota_driver"],
+    "service_pass" => quantum_info["service_pass"],
+    "service_user" => quantum_info["service_user"],
+    "service_tenant_name" => quantum_info["service_tenant_name"],
+    "keystone_protocol" => ks_admin_endpoint["scheme"],
+    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
+    "dhcp_lease_time" => node["quantum"]["dhcp_lease_time"],
+    "keystone_admin_port" => ks_admin_endpoint["port"],
+    "keystone_path" => ks_admin_endpoint["path"]
   )
 end
 

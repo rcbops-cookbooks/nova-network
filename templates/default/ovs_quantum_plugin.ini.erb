@@ -19,8 +19,6 @@ bridge_mappings = <%= @ovs_bridge_mappings %>
 firewall_driver = <%= @ovs_firewall_driver %>
 
 [AGENT]
-root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
 state_path = /var/run/quantum
-polling_interval = 2
 debug = <%= @ovs_debug %>
 verbose = <%= @ovs_verbose %>
