@@ -41,8 +41,8 @@ api_endpoint =
   get_access_endpoint("nova-network-controller", "quantum", "api")
 mysql_info =
   get_access_endpoint("mysql-master", "mysql", "db")
-quantum_info =
-  get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
+quantum_info = get_settings_by_role("nova-network-controller", "quantum")
+  #get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 
 template "/etc/quantum/quantum.conf" do
   source "quantum.conf.erb"
