@@ -17,6 +17,7 @@
 # limitations under the License.
 
 include_recipe "osops-utils"
+include_recipe "nova-network::quantum-common"
 
 platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
@@ -31,7 +32,9 @@ end
 service "quantum-metadata-agent" do
   service_name platform_options["quantum_metadata_agent"]
   supports :status => true, :restart => true
-  action :nothing
+  action :enable
+  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
+  subscribes :restart, "template[/etc/quantum/metadata_agent.ini]", :delayed
 end
 
 ks_admin_endpoint =
@@ -47,18 +50,8 @@ template "/etc/quantum/metadata_agent.ini" do
   group "root"
   mode "0644"
   variables(
-    "service_pass" => quantum_info["service_pass"],
-    "service_user" => quantum_info["service_user"],
-    "service_tenant_name" => quantum_info["service_tenant_name"],
-    "keystone_protocol" => ks_admin_endpoint["scheme"],
-    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
-    "keystone_admin_port" => ks_admin_endpoint["port"],
-    "keystone_path" => ks_admin_endpoint["path"],
     "nova_metadata_ip" => nova_endpoint["host"],
-    "quantum_debug" => node["quantum"]["debug"],
     "quantum_metadata_proxy_shared_secret" =>
       quantum_info["quantum_metadata_proxy_shared_secret"]
   )
-  notifies :restart, "service[quantum-metadata-agent]", :immediately
-  notifies :enable, "service[quantum-metadata-agent]", :immediately
 end

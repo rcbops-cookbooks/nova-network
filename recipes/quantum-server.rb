@@ -20,6 +20,7 @@
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 include_recipe "osops-utils"
+include_recipe "nova-network::quantum-common"
 
 platform_options = node["quantum"]["platform"]
 
@@ -36,12 +37,12 @@ node.set_unless['quantum']['service_pass'] =
 node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
   secure_password
 
-packages = platform_options["quantum_packages"] +
-  platform_options["mysql_python_packages"]
+packages = platform_options["quantum_api_packages"]
 
-packages.each do |pkg|
+platform_options["quantum_api_packages"].each do |pkg|
   package pkg do
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+    options platform_options["package_overrides"]
   end
 end
 
@@ -65,7 +66,9 @@ mysql_info = create_db_and_user(
 service "quantum-server" do
   service_name platform_options["quantum_api_service"]
   supports :status => true, :restart => true
-  action :nothing
+  action :enable
+  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
+  subscribes :restart, "template[/etc/quantum/api-paste.ini]", :delayed
 end
 
 keystone_tenant "Register Service Tenant" do
@@ -130,66 +133,4 @@ keystone_register "Register Quantum Endpoint" do
   endpoint_internalurl api_endpoint["uri"]
   endpoint_publicurl api_endpoint["uri"]
   action :create_endpoint
-end
-
-template "/etc/quantum/api-paste.ini" do
-  source "api-paste.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  variables(
-    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
-    "keystone_admin_port" => ks_admin_endpoint["port"],
-    "keystone_protocol" => ks_admin_endpoint["scheme"],
-    "service_tenant_name" => node["quantum"]["service_tenant_name"],
-    "service_user" => node["quantum"]["service_user"],
-    "service_pass" => node["quantum"]["service_pass"]
-  )
-end
-
-local_ip = get_ip_for_net('nova', node)         ### FIXME
-template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
-  source "ovs_quantum_plugin.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  variables(
-    "db_ip_address" => mysql_info["host"],
-    "db_user" => node["quantum"]["db"]["username"],
-    "db_password" => node["quantum"]["db"]["password"],
-    "db_name" => node["quantum"]["db"]["name"],
-    "ovs_firewall_driver" => node["quantum"]["ovs"]["firewall_driver"],
-    "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
-    "ovs_enable_tunneling" => node["quantum"]["ovs"]["tunneling"],
-    "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
-    "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
-    "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
-    "ovs_vlan_ranges" => node["quantum"]["ovs"]["vlan_ranges"],
-    "ovs_bridge_mappings" => node["quantum"]["ovs"]["bridge_mappings"],
-    "ovs_debug" => node["quantum"]["debug"],
-    "ovs_verbose" => node["quantum"]["verbose"],
-    "ovs_local_ip" => local_ip
-  )
-  notifies :restart, "service[quantum-server]", :immediately
-end
-
-# Get rabbit info
-rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
-template "/etc/quantum/quantum.conf" do
-  source "quantum.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  variables(
-    "quantum_debug" => node["quantum"]["debug"],
-    "quantum_verbose" => node["quantum"]["verbose"],
-    "quantum_ipaddress" => api_endpoint["host"],
-    "quantum_port" => api_endpoint["port"],
-    "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_port" => rabbit_info["port"],
-    "overlapping_ips" => node["quantum"]["overlap_ips"],
-    "quantum_plugin" => node["quantum"]["plugin"]
-  )
-  notifies :restart, "service[quantum-server]", :immediately
-  notifies :enable, "service[quantum-server]", :immediately
 end

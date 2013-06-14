@@ -1,4 +1,5 @@
 [DEFAULT]
+root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
 debug = <%= @quantum_debug %>
 verbose = <%= @quantum_verbose %>
 bind_host = <%= @quantum_ipaddress %>
@@ -7,28 +8,39 @@ bind_port = <%= @quantum_port %>
 core_plugin = quantum.plugins.openvswitch.ovs_quantum_plugin.OVSQuantumPluginV2
 <% end %>
 allow_overlapping_ips = <%= @overlapping_ips %>
+use_namespaces = <%= @quantum_namespace %>
 api_paste_config = /etc/quantum/api-paste.ini
-auth_strategy = keystone
 control_exchange = quantum
 rabbit_host = <%= @rabbit_ipaddress %>
 notification_driver = quantum.openstack.common.notifier.list_notifier
 list_notifier_drivers = quantum.openstack.common.notifier.rabbit_notifier
 
+# keystone auth - this will cascade to all agents/services
+auth_strategy = keystone
+auth_url = <%= @keystone_protocol %>://<%= @keystone_api_ipaddress %>:<%= @keystone_admin_port %><%= @keystone_path %>
+auth_region = RegionOne
+admin_tenant_name = <%= @service_tenant_name %>
+admin_user = <%= @service_user %>
+admin_password = <%= @service_pass %>
+
+# for now, these both need to be set to the same value
+dhcp_lease_time = <%= @dhcp_lease_time %>
+dhcp_lease_duration = <%= @dhcp_lease_time %>
+
+[AGENT]
+root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
+polling_interval = 2
+
 [QUOTAS]
 # resource name(s) that are supported in quota features
-# quota_items = network,subnet,port
-
+quota_items = <%= @quota_items %>
 # default number of resource allowed per tenant, minus for unlimited
-# default_quota = -1
-
+default_quota = <%= @default_quota %>
 # number of networks allowed per tenant, and minus means unlimited
-# quota_network = 10
-
+quota_network = <%= @quota_network %>
 # number of subnets allowed per tenant, and minus means unlimited
-# quota_subnet = 10
-
+quota_subnet = <%= @quota_subnet %>
 # number of ports allowed per tenant, and minus means unlimited
-# quota_port = 50
-
+quota_port = <%= @quota_port %>
 # default driver to use for quota checks
-# quota_driver = quantum.quota.ConfDriver
+quota_driver = <%= @quota_driver %>

@@ -95,6 +95,14 @@ default["quantum"]["l3"]["gateway_external_net_id"] = ""
 # dhcp agent options
 default["quantum"]["dhcp_lease_time"] = "1440"
 
+# quantum.conf options
+default["quantum"]["quota_items"] = "network,subnet,port"
+default["quantum"]["default_quota"] = "-1"
+default["quantum"]["quota_network"] = "10"
+default["quantum"]["quota_subnet"] = "10"
+default["quantum"]["quota_port"] = "50"
+default["quantum"]["quota_driver"] = "quantum.quota.ConfDriver"
+
 # Plugin defaults
 # OVS
 default["quantum"]["ovs"]["packages"] = [
@@ -121,45 +129,52 @@ default["quantum"]["ovs"]["firewall_driver"] =
   "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
 case platform
+
 when "fedora", "redhat", "centos"
   default["nova-network"]["platform"] = {
     "nova_network_packages" => ["iptables", "openstack-nova-network"],
     "nova_network_service" => "openstack-nova-network",
     "common_packages" => ["openstack-nova-common", "python-cinderclient"]
   }
+
   default["quantum"]["platform"] = {
     "mysql_python_packages" => ["MySQL-python"],
-    "quantum_packages" => ["openstack-quantum", "python-quantumclient"],
+    "quantum_api_packages" => ["openstack-quantum"],
+    "quantum_common_packages" => [
+      "python-quantumclient",
+      "openstack-quantum"
+    ],
     "quantum_api_service" => "openstack-quantum",
     "quantum_api_process_name" => "",
     "package_overrides" => ""
   }
+
 when "ubuntu"
   default["nova-network"]["platform"] = {                                                   # node_attribute
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
     "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
   }
+
   default["quantum"]["platform"] = {
     "mysql_python_packages" => ["python-mysqldb"],
-    "quantum_packages" => [
-      "quantum-server",
-      "python-quantum",
-      "quantum-common"
-    ],
-    "quantum_dhcp_packages" => [
-      "dnsmasq-base",
-      "dnsmasq-utils",
-      "libnetfilter-conntrack3",
-      "quantum-dhcp-agent"
-    ],
-    "quantum_l3_packages" => ["quantum-l3-agent"],
+    "quantum_common_packages" => ["python-quantumclient",
+      "quantum-common", "python-quantum"],
+
+    "quantum_api_packages" => ["quantum-server"],
+    "quantum_api_process_name" => "quantum-server",
     "quantum_api_service" => "quantum-server",
+
+    "quantum_dhcp_packages" => ["dnsmasq-base", "dnsmasq-utils",
+      "libnetfilter-conntrack3", "quantum-dhcp-agent" ],
+    "quantum-dhcp-agent" => "quantum-dhcp-agent",
+
+    "quantum_l3_packages" => ["quantum-l3-agent"],
+    "quantum-l3-agent" => "quantum-l3-agent",
+
     "quantum_metadata_packages" => ["quantum-metadata-agent"],
     "quantum-metadata-agent" => "quantum-metadata-agent",
-    "quantum-dhcp-agent" => "quantum-dhcp-agent",
-    "quantum-l3-agent" => "quantum-l3-agent",
-    "quantum_api_process_name" => "quantum-server",
+
     "package_overrides" => "-o Dpkg::Options::='--force-confold' "\
       "-o Dpkg::Options::='--force-confdef'"
   }

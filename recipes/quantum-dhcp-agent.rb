@@ -17,6 +17,7 @@
 # limitations under the License.
 
 include_recipe "osops-utils"
+include_recipe "nova-network::quantum-common"
 
 platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
@@ -32,6 +33,8 @@ service "quantum-dhcp-agent" do
   service_name platform_options["quantum_dhcp_agent"]
   supports :status => true, :restart => true
   action :nothing
+  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
+  subscribes :restart, "template[/etc/dhcp_agent.ini]", :delayed
 end
 
 ks_admin_endpoint =
@@ -45,20 +48,7 @@ template "/etc/quantum/dhcp_agent.ini" do
   group "root"
   mode "0644"
   variables(
-    "service_pass" => quantum_info["service_pass"],
-    "service_user" => quantum_info["service_user"],
-    "service_tenant_name" => quantum_info["service_tenant_name"],
-    "keystone_protocol" => ks_admin_endpoint["scheme"],
-    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
-    "keystone_admin_port" => ks_admin_endpoint["port"],
-    "keystone_path" => ks_admin_endpoint["path"],
-    "quantum_debug" => node["quantum"]["debug"],
-    "quantum_verbose" => node["quantum"]["verbose"],
-    "quantum_namespace" => node["quantum"]["use_namespaces"],
     "quantum_isolated" => node["quantum"]["isolated_metadata"],
-    "quantum_plugin" => node["quantum"]["plugin"],
-    "dhcp_lease_time" => node["quantum"]["dhcp_lease_time"]
+    "quantum_plugin" => node["quantum"]["plugin"]
   )
-  notifies :restart, "service[quantum-dhcp-agent]", :immediately
-  notifies :enable, "service[quantum-dhcp-agent]", :immediately
 end

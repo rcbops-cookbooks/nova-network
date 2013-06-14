@@ -17,6 +17,7 @@
 
 include_recipe "osops-utils"
 include_recipe "sysctl::default"
+include_recipe "nova-network::quantum-common"
 
 if Chef::Config[:solo]
   Chef::Log.warn("This recipe uses search. Chef Solo does not support search.")
@@ -25,6 +26,7 @@ end
 sysctl 'net.ipv4.ip_forward' do
   value '1'
 end
+
 
 platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
@@ -40,6 +42,8 @@ service "quantum-l3-agent" do
   service_name platform_options["quantum_l3_agent"]
   supports :status => true, :restart => true
   action :nothing
+  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
+  subscribes :restart, "template[/etc/l3-agent.ini]", :delayed
 end
 
 execute "create external bridge" do
@@ -65,20 +69,10 @@ template "/etc/quantum/l3_agent.ini" do
   variables(
     "quantum_external_bridge" => node["quantum"][plugin]["external_bridge"],
     "nova_metadata_ip" => metadata_ip,
-    "service_pass" => quantum_info["service_pass"],
-    "service_user" => quantum_info["service_user"],
-    "service_tenant_name" => quantum_info["service_tenant_name"],
-    "keystone_protocol" => ks_admin_endpoint["scheme"],
-    "keystone_api_ipaddress" => ks_admin_endpoint["host"],
-    "keystone_admin_port" => ks_admin_endpoint["port"],
-    "keystone_path" => ks_admin_endpoint["path"],
-    "quantum_debug" => node["quantum"]["debug"],
-    "quantum_verbose" => node["quantum"]["verbose"],
-    "quantum_namespace" => node["quantum"]["use_namespaces"],
     "quantum_plugin" => node["quantum"]["plugin"],
     "l3_router_id" => node["quantum"]["l3"]["router_id"],
     "l3_gateway_net_id" => node["quantum"]["l3"]["gateway_external_net_id"]
   )
-  notifies :restart, "service[quantum-l3-agent]", :immediately
-  notifies :enable, "service[quantum-l3-agent]", :immediately
+  notifies :restart, "service[quantum-l3-agent]", :delayed
+  notifies :enable, "service[quantum-l3-agent]", :delayed
 end
