@@ -95,6 +95,14 @@ default["quantum"]["l3"]["gateway_external_net_id"] = ""
 # dhcp agent options
 default["quantum"]["dhcp_lease_time"] = "1440"
 
+# quantum.conf options
+default["quantum"]["quota_items"] = "network,subnet,port"
+default["quantum"]["default_quota"] = "-1"
+default["quantum"]["quota_network"] = "10"
+default["quantum"]["quota_subnet"] = "10"
+default["quantum"]["quota_port"] = "50"
+default["quantum"]["quota_driver"] = "quantum.quota.ConfDriver"
+
 # Plugin defaults
 # OVS
 default["quantum"]["ovs"]["packages"] = [

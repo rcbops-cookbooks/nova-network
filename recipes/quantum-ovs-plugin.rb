@@ -81,8 +81,16 @@ template "/etc/quantum/quantum.conf" do
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_port" => rabbit_info["port"],
     "overlapping_ips" => node["quantum"]["overlap_ips"],
-    "quantum_plugin" => node["quantum"]["plugin"]
+    "quantum_plugin" => node["quantum"]["plugin"],
+    "quota_items" => node["quantum"]["quota_items"],
+    "default_quota" => node["quantum"]["default_quota"],
+    "quota_network" => node["quantum"]["quota_network"],
+    "quota_subnet" => node["quantum"]["quota_subnet"],
+    "quota_port" => node["quantum"]["quota_port"],
+    "quota_driver" => node["quantum"]["quota_driver"]
   )
+  notifies :restart, "service[quantum-server]", :immediately
+  notifies :enable, "service[quantum-server]", :immediately
 end
 
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
