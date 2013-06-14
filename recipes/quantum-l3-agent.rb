@@ -17,6 +17,7 @@
 
 include_recipe "osops-utils"
 include_recipe "sysctl::default"
+include_recipe "nova-network::quantum-common"
 
 if Chef::Config[:solo]
   Chef::Log.warn("This recipe uses search. Chef Solo does not support search.")
@@ -25,6 +26,7 @@ end
 sysctl 'net.ipv4.ip_forward' do
   value '1'
 end
+
 
 platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
@@ -40,6 +42,8 @@ service "quantum-l3-agent" do
   service_name platform_options["quantum_l3_agent"]
   supports :status => true, :restart => true
   action :nothing
+  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
+  subscribes :restart, "template[/etc/l3-agent.ini]", :delayed
 end
 
 execute "create external bridge" do
@@ -79,6 +83,6 @@ template "/etc/quantum/l3_agent.ini" do
     "l3_router_id" => node["quantum"]["l3"]["router_id"],
     "l3_gateway_net_id" => node["quantum"]["l3"]["gateway_external_net_id"]
   )
-  notifies :restart, "service[quantum-l3-agent]", :immediately
-  notifies :enable, "service[quantum-l3-agent]", :immediately
+  notifies :restart, "service[quantum-l3-agent]", :delayed
+  notifies :enable, "service[quantum-l3-agent]", :delayed
 end
