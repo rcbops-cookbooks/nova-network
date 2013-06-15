@@ -53,9 +53,7 @@ local_ip =
   get_ip_for_net('nova', node)
 
 vlan_ranges = node["quantum"]["ovs"]["provider_networks"].collect { |k,v| "#{k}:#{v['vlans']}"}.join(',')
-log "vlan_ranges = #{vlan_ranges}"
 bridge_mappings = node["quantum"]["ovs"]["provider_networks"].collect { |k,v| "#{k}:#{v['bridge']}"}.join(',')
-log "bridge_mappings = #{bridge_mappings}"
 
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
   source "ovs_quantum_plugin.ini.erb"
