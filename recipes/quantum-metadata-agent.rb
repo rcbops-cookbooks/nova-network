@@ -42,7 +42,6 @@ ks_admin_endpoint =
 nova_endpoint =
   get_access_endpoint("nova-api-os-compute", "nova", "api")
 quantum_info = get_settings_by_role("nova-network-controller", "quantum")
-  #get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
 
 template "/etc/quantum/metadata_agent.ini" do
   source "metadata_agent.ini.erb"
