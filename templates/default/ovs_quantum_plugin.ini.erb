@@ -13,8 +13,12 @@ tunnel_bridge = <%= @ovs_tunnel_bridge %>
 tunnel_id_ranges = <%= @ovs_tunnel_ranges %>
 <% end %>
 
+<% if not @ovs_vlan_range.empty? %>
 network_vlan_ranges = <%= @ovs_vlan_range %>
+<% end %>
+<% if not @ovs_bridge_mapping.empty? %>
 bridge_mappings = <%= @ovs_bridge_mapping %>
+<% end %>
 
 [SECURITYGROUP]
 firewall_driver = <%= @ovs_firewall_driver %>
