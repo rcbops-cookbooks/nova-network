@@ -88,7 +88,7 @@ execute "create provider bridges" do
     node["quantum"]["ovs"]["provider_networks"].each do |k,v|
         command "ovs-vsctl add-br #{v['bridge']}"
         action :run
-        not_if "ovs-vsctl show | grep 'Bridge #{v['bridge']}'" ## FIXME
+        not_if "ovs-vsctl show | grep 'Bridge \"#{v['bridge']}\"'" ## FIXME
     end
     not_if { node["quantum"]["ovs"]["provider_networks"].empty? }
 end
