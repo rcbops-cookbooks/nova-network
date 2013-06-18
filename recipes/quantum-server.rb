@@ -21,6 +21,7 @@ include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 include_recipe "osops-utils"
 include_recipe "nova-network::quantum-common"
+include_recipe "nova-network::quantum-plugin"
 
 platform_options = node["quantum"]["platform"]
 
