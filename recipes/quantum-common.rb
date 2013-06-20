@@ -42,12 +42,35 @@ api_endpoint =
 mysql_info =
   get_access_endpoint("mysql-master", "mysql", "db")
 quantum_info = get_settings_by_role("nova-network-controller", "quantum")
+local_ip = get_ip_for_net('nova', node)
+vlan_ranges = node["quantum"]["ovs"]["provider_networks"].
+  collect { |k,v| "#{k}:#{v['vlans']}"}.join(',')
+bridge_mappings = node["quantum"]["ovs"]["provider_networks"].
+  collect { |k,v| "#{k}:#{v['bridge']}"}.join(',')
+
+# Make sure our permissions are not too, well, permissive
+directory "/etc/quantum/" do
+  action :create
+  owner "root"
+  group "quantum"
+  mode "750"
+end
+
+# *-controller role by itself won't install the OVS plugin, despite
+# quantum-server requiring the plugin's config file, so... make go
+directory "/etc/quantum/plugins/openvswitch" do
+  action :create
+  owner "root"
+  group "quantum"
+  mode "750"
+  recursive true
+end
 
 template "/etc/quantum/quantum.conf" do
   source "quantum.conf.erb"
   owner "root"
-  group "root"
-  mode "0644"
+  group "quantum"
+  mode "0640"
   variables(
     "quantum_debug" => node["quantum"]["debug"],
     "quantum_verbose" => node["quantum"]["verbose"],
@@ -78,8 +101,8 @@ end
 template "/etc/quantum/api-paste.ini" do
   source "api-paste.ini.erb"
   owner "root"
-  group "root"
-  mode "0644"
+  group "quantum"
+  mode "0640"
   variables(
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
     "keystone_admin_port" => ks_admin_endpoint["port"],
@@ -87,5 +110,28 @@ template "/etc/quantum/api-paste.ini" do
     "service_tenant_name" => quantum_info["service_tenant_name"],
     "service_user" => quantum_info["service_user"],
     "service_pass" => quantum_info["service_pass"]
+  )
+end
+
+template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
+  source "ovs_quantum_plugin.ini.erb"
+  owner "root"
+  group "quantum"
+  mode "0640"
+  variables(
+    "db_ip_address" => mysql_info["host"],
+    "db_user" => quantum_info["db"]["username"],
+    "db_password" => quantum_info["db"]["password"],
+    "db_name" => quantum_info["db"]["name"],
+    "ovs_firewall_driver" => node["quantum"]["ovs"]["firewall_driver"],
+    "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
+    "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
+    "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
+    "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
+    "ovs_vlan_range" => vlan_ranges,
+    "ovs_bridge_mapping" => bridge_mappings,
+    "ovs_debug" => node["quantum"]["debug"],
+    "ovs_verbose" => node["quantum"]["verbose"],
+    "ovs_local_ip" => local_ip
   )
 end

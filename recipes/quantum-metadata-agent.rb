@@ -46,8 +46,8 @@ quantum_info = get_settings_by_role("nova-network-controller", "quantum")
 template "/etc/quantum/metadata_agent.ini" do
   source "metadata_agent.ini.erb"
   owner "root"
-  group "root"
-  mode "0644"
+  group "quantum"
+  mode "0640"
   variables(
     "nova_metadata_ip" => nova_endpoint["host"],
     "quantum_metadata_proxy_shared_secret" =>
