@@ -45,8 +45,8 @@ quantum_info =
 template "/etc/quantum/dhcp_agent.ini" do
   source "dhcp_agent.ini.erb"
   owner "root"
-  group "root"
-  mode "0644"
+  group "quantum"
+  mode "0640"
   variables(
     "quantum_isolated" => node["quantum"]["isolated_metadata"],
     "quantum_plugin" => node["quantum"]["plugin"]

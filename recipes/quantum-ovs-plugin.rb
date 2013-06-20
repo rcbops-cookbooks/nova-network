@@ -34,15 +34,13 @@ service "quantum-plugin-openvswitch-agent" do
   supports :status => true, :restart => true
   action :enable
   subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
-  subscribes :restart, "template[/etc/quantum/ovs_quantum_plugin.ini]", :delayed
+  subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
 end
 
 service "openvswitch-switch" do
   service_name "openvswitch-switch"
   supports :status => true, :restart => true
-  action :enable
-  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
-  subscribes :restart, "template[/etc/quantum/ovs_quantum_plugin.ini]", :delayed
+  action [:enable, :start]
 end
 
 execute "create integration bridge" do

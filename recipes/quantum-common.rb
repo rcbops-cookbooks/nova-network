@@ -48,11 +48,29 @@ vlan_ranges = node["quantum"]["ovs"]["provider_networks"].
 bridge_mappings = node["quantum"]["ovs"]["provider_networks"].
   collect { |k,v| "#{k}:#{v['bridge']}"}.join(',')
 
+# Make sure our permissions are not too, well, permissive
+directory "/etc/quantum/" do
+  action :create
+  owner "root"
+  group "quantum"
+  mode "750"
+end
+
+# *-controller role by itself won't install the OVS plugin, despite
+# quantum-server requiring the plugin's config file, so... make go
+directory "/etc/quantum/plugins/openvswitch" do
+  action :create
+  owner "root"
+  group "quantum"
+  mode "750"
+  recursive true
+end
+
 template "/etc/quantum/quantum.conf" do
   source "quantum.conf.erb"
   owner "root"
-  group "root"
-  mode "0644"
+  group "quantum"
+  mode "0640"
   variables(
     "quantum_debug" => node["quantum"]["debug"],
     "quantum_verbose" => node["quantum"]["verbose"],
@@ -83,8 +101,8 @@ end
 template "/etc/quantum/api-paste.ini" do
   source "api-paste.ini.erb"
   owner "root"
-  group "root"
-  mode "0644"
+  group "quantum"
+  mode "0640"
   variables(
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
     "keystone_admin_port" => ks_admin_endpoint["port"],
@@ -98,8 +116,8 @@ end
 template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
   source "ovs_quantum_plugin.ini.erb"
   owner "root"
-  group "root"
-  mode "0644"
+  group "quantum"
+  mode "0640"
   variables(
     "db_ip_address" => mysql_info["host"],
     "db_user" => quantum_info["db"]["username"],
