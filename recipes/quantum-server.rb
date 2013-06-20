@@ -21,7 +21,6 @@ include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 include_recipe "osops-utils"
 include_recipe "nova-network::quantum-common"
-include_recipe "nova-network::quantum-plugin"
 
 platform_options = node["quantum"]["platform"]
 
@@ -70,6 +69,7 @@ service "quantum-server" do
   action :enable
   subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
   subscribes :restart, "template[/etc/quantum/api-paste.ini]", :delayed
+  subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
 end
 
 keystone_tenant "Register Service Tenant" do

@@ -34,48 +34,13 @@ service "quantum-plugin-openvswitch-agent" do
   supports :status => true, :restart => true
   action :enable
   subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
-  subscribes :restart, "template[/etc/quantum/ovs_quantum_plugin.ini]", :delayed
+  subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
 end
 
 service "openvswitch-switch" do
   service_name "openvswitch-switch"
   supports :status => true, :restart => true
-  action :enable
-  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
-  subscribes :restart, "template[/etc/quantum/ovs_quantum_plugin.ini]", :delayed
-end
-
-mysql_info =
-  get_access_endpoint("mysql-master", "mysql", "db")
-quantum_info =
-  get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
-local_ip =
-  get_ip_for_net('nova', node)
-
-vlan_ranges = node["quantum"]["ovs"]["provider_networks"].collect { |k,v| "#{k}:#{v['vlans']}"}.join(',')
-bridge_mappings = node["quantum"]["ovs"]["provider_networks"].collect { |k,v| "#{k}:#{v['bridge']}"}.join(',')
-
-template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
-  source "ovs_quantum_plugin.ini.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-  variables(
-    "db_ip_address" => mysql_info["host"],
-    "db_user" => quantum_info["db"]["username"],
-    "db_password" => quantum_info["db"]["password"],
-    "db_name" => quantum_info["db"]["name"],
-    "ovs_firewall_driver" => node["quantum"]["ovs"]["firewall_driver"],
-    "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
-    "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
-    "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
-    "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
-    "ovs_vlan_range" => vlan_ranges,
-    "ovs_bridge_mapping" => bridge_mappings,
-    "ovs_debug" => node["quantum"]["debug"],
-    "ovs_verbose" => node["quantum"]["verbose"],
-    "ovs_local_ip" => local_ip
-  )
+  action [:enable, :start]
 end
 
 execute "create integration bridge" do
