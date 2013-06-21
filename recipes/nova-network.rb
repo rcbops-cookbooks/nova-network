@@ -32,5 +32,5 @@ service "nova-network" do
   service_name platform_options["nova_network_service"]
   supports :status => true, :restart => true
   action :enable
-  subscribes :restart, "template[/etc/nova/nova.conf]", :delayed
+  subscribes :restart, "nova_conf[/etc/nova/nova.conf]", :delayed
 end
