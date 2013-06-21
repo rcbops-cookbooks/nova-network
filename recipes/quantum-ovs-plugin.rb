@@ -53,6 +53,7 @@ node["quantum"]["ovs"]["provider_networks"].each do |k,v|
     execute "create provider bridge #{v['bridge']}" do
         command "ovs-vsctl add-br #{v['bridge']}"
         action :run
+        notifies :restart, "service[quantum-plugin-openvswitch-agent]", :delayed
         not_if "ovs-vsctl list-br | grep #{v['bridge']}" ## FIXME
     end
 end
