@@ -49,11 +49,10 @@ execute "create integration bridge" do
   not_if "ovs-vsctl show | grep 'Bridge br-int'" ## FIXME
 end
 
-execute "create provider bridges" do
-    node["quantum"]["ovs"]["provider_networks"].each do |k,v|
+node["quantum"]["ovs"]["provider_networks"].each do |k,v|
+    execute "create provider bridge #{v['bridge']}" do
         command "ovs-vsctl add-br #{v['bridge']}"
         action :run
-        not_if "ovs-vsctl show | grep 'Bridge \"#{v['bridge']}\"'" ## FIXME
+        not_if "ovs-vsctl list-br | grep #{v['bridge']}" ## FIXME
     end
-    not_if { node["quantum"]["ovs"]["provider_networks"].empty? }
 end
