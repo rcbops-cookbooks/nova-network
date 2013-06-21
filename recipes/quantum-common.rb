@@ -44,7 +44,8 @@ mysql_info =
 quantum_info = get_settings_by_role("nova-network-controller", "quantum")
 local_ip = get_ip_for_net('nova', node)
 vlan_ranges = node["quantum"]["ovs"]["provider_networks"].
-  collect { |k,v| "#{k}:#{v['vlans']}"}.join(',')
+  collect { |k,v| v['vlans'].split(',').each do |vlan_range|
+    vlan_range.prepend(k + ":") end }.join(',')
 bridge_mappings = node["quantum"]["ovs"]["provider_networks"].
   collect { |k,v| "#{k}:#{v['bridge']}"}.join(',')
 
