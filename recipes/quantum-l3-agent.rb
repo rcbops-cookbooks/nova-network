@@ -82,6 +82,6 @@ template "/etc/quantum/l3_agent.ini" do
 	"l3_router_id" => node["quantum"]["l3"]["router_id"],
 	"l3_gateway_net_id" => node["quantum"]["l3"]["gateway_external_net_id"]
     )
-    notifies :restart, resources(:service => "quantum-l3-agent"), :immediately
-    notifies :enable, resources(:service => "quantum-l3-agent"), :immediately
+    notifies :restart, "service[quantum-l3-agent]", :immediately
+    notifies :enable, "service[quantum-l3-agent]", :immediately
 end

@@ -104,9 +104,9 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
         "ovs_local_ip" => local_ip
     )
     # notifies :restart, resources(:service => "quantum-server"), :immediately
-    notifies :restart, resources(:service => "quantum-plugin-openvswitch-agent"), :immediately
-    notifies :enable, resources(:service => "quantum-plugin-openvswitch-agent"), :immediately
-    notifies :restart, resources(:service => "openvswitch-switch"), :immediately
+    notifies :restart, "service[quantum-plugin-openvswitch-agent]", :immediately
+    notifies :enable, "service[quantum-plugin-openvswitch-agent]", :immediately
+    notifies :restart, "service[openvswitch-switch]", :immediately
 end
 
 execute "create integration bridge" do

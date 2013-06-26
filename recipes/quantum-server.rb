@@ -29,7 +29,7 @@ end
 
 platform_options = node["quantum"]["platform"][release]
 
-if node["developer_mode"]
+if node["developer_mode"] == true
     node.set_unless["quantum"]["db"]["password"] = "quantum"
 else
     node.set_unless["quantum"]["db"]["password"] = secure_password
@@ -190,6 +190,6 @@ template "/etc/quantum/quantum.conf" do
         "overlapping_ips" => node["quantum"]["overlap_ips"],
         "quantum_plugin" => node["quantum"]["plugin"]
 )
-    notifies :restart, resources(:service => "quantum-server"), :immediately
-    notifies :enable, resources(:service => "quantum-server"), :immediately
+    notifies :restart, "service[quantum-server]", :immediately
+    notifies :enable, "service[quantum-server]", :immediately
 end
