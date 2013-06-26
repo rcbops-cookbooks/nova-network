@@ -29,7 +29,7 @@ end
 
 platform_options = node["quantum"]["platform"][release]
 
-if node["developer_mode"]
+if node["developer_mode"] == true
     node.set_unless["quantum"]["db"]["password"] = "quantum"
 else
     node.set_unless["quantum"]["db"]["password"] = secure_password
