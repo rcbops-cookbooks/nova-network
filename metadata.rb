@@ -1,3 +1,4 @@
+name              "nova-network"
 maintainer        "Rackspace US, Inc."
 license           "Apache 2.0"
 description       "Installs and configures the networking required for Openstack"
