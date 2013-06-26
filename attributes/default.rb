@@ -50,6 +50,8 @@ default["nova"]["network"]["send_arp_for_ha"] = true                            
 default["nova"]["network"]["auto_assign_floating_ip"] = false                                  # cluster_attribute
 default["nova"]["network"]["floating_pool_name"] = "nova"                             # cluster_attribute
 default["nova"]["network"]["multi_host"] = true
+default["nova"]["network"]["dhcp_lease_time"] = 120
+default["nova"]["network"]["fixed_ip_disassociate_timeout"] = 600
 
 # ######################################################################### #
 # Quantum Configuration Attributes
