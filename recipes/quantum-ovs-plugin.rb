@@ -37,6 +37,19 @@ service "quantum-plugin-openvswitch-agent" do
   subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
 end
 
+# Adds db Indexing for the hosts as found in the agents table.
+add_index_stopgap(
+  "mysql",
+  node["quantum"]["db"]["name"],
+  node["quantum"]["db"]["username"],
+  node["quantum"]["db"]["password"],
+  "rax_ix_host_index",
+  "agents",
+  "host") do
+  action :nothing
+  subscribes :run, "execute[quantum-plugin-openvswitch-agent]", :delayed
+end
+
 service "openvswitch-switch" do
   service_name "openvswitch-switch"
   supports :status => true, :restart => true
