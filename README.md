@@ -107,6 +107,22 @@ Quantum Networking
 * `quantum["ovs"]["tunnel_bridge"]` - the tunnel interface name
 * `quantum["ovs"]["external_bridge"]` - the external interface name
 * `quantum["ovs"]["external_interface"]` - an available interface on the node that will access the external network
+* `quantum["ovs"]["provider_networks"]` - an Array of provider networks to create. Example:
+
+```javascript
+[
+  {
+    "interface" => "ph-eth1",
+    "bridge" => "br-eth1",
+    "vlans" => "1:1000"
+  },
+  {
+    "interface" => "ph-eth0",
+    "bridge" => "br-eth0",
+    "vlans" => "1001:1024"
+  }
+]
+```
 
 Usage
 =====
