@@ -72,6 +72,19 @@ service "quantum-server" do
   subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
 end
 
+# Adds db Indexing for the hosts as found in the agents table.
+add_index_stopgap(
+  "mysql",
+  node["quantum"]["db"]["name"],
+  node["quantum"]["db"]["username"],
+  node["quantum"]["db"]["password"],
+  "rax_ix_host_index",
+  "agents",
+  "host") do
+  action :nothing
+  subscribes :run, "execute[quantum-server]", :immediately
+end
+
 keystone_tenant "Register Service Tenant" do
   auth_host ks_admin_endpoint["host"]
   auth_port ks_admin_endpoint["port"]
