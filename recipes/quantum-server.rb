@@ -82,7 +82,7 @@ add_index_stopgap(
   "agents",
   "host") do
   action :nothing
-  subscribes :run, "execute[quantum-server]", :immediately
+  subscribes :run, "execute[quantum-server]", :delayed
 end
 
 keystone_tenant "Register Service Tenant" do
