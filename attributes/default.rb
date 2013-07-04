@@ -120,13 +120,15 @@ default["quantum"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if t
 default["quantum"]["ovs"]["external_bridge"] = "br-ex"
 default["quantum"]["ovs"]["external_interface"] = "eth1"
 
-# Hash of all the provider based networks to create, to add simply added 
-# another interface definition and keys for bridge and vlans
-default["quantum"]["ovs"]["provider_networks"] = {"ph-eth1" =>
-                                                   { "bridge" => "br-eth1",
-                                                     "vlans" => "1:1000"
-                                                   }
-                                                  }
+# Array of all the provider based networks to create
+default["quantum"]["ovs"]["provider_networks"] = [
+  {
+    "label" => "ph-eth1",
+    "bridge" => "br-eth1",
+    "vlans" => "1:1000"
+  }
+]
+
 default["quantum"]["ovs"]["firewall_driver"] =
   "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
