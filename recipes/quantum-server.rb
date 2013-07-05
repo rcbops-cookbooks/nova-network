@@ -82,7 +82,7 @@ add_index_stopgap("mysql",
                   "agents",
                   "host",
                   "service[quantum-server]",
-                  :restart)
+                  :run)
 
 keystone_tenant "Register Service Tenant" do
   auth_host ks_admin_endpoint["host"]
