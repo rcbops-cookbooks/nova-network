@@ -43,6 +43,14 @@ nova_endpoint =
   get_access_endpoint("nova-api-os-compute", "nova", "api")
 quantum_info = get_settings_by_role("nova-network-controller", "quantum")
 
+# install a crontab to run the quantum-netns-cleanup script every night
+# at 00:00
+cron "quantum-netns-cleanup" do
+  minute "00"
+  hour "00"
+  command "/usr/bin/quantum-netns-cleanup"
+end
+
 template "/etc/quantum/metadata_agent.ini" do
   source "metadata_agent.ini.erb"
   owner "root"
