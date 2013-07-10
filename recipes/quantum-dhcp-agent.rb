@@ -49,6 +49,7 @@ template "/etc/quantum/dhcp_agent.ini" do
   mode "0640"
   variables(
     "quantum_isolated" => node["quantum"]["isolated_metadata"],
-    "quantum_plugin" => node["quantum"]["plugin"]
+    "quantum_plugin" => node["quantum"]["plugin"],
+    "quantum_dhcp_domain" => node["quantum"]["dhcp_domain"]
   )
 end
