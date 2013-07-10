@@ -107,6 +107,7 @@ Quantum Networking
 * `quantum["ovs"]["tunnel_bridge"]` - the tunnel interface name
 * `quantum["ovs"]["external_bridge"]` - the external interface name
 * `quantum["ovs"]["external_interface"]` - an available interface on the node that will access the external network
+* `quantum["dhcp_domain"] - Domain to use for instance host names`
 
 Usage
 =====

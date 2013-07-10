@@ -96,6 +96,7 @@ default["quantum"]["l3"]["gateway_external_net_id"] = ""
 
 # dhcp agent options
 default["quantum"]["dhcp_lease_time"] = "1440"
+default["quantum"]["dhcp_domain"] = "openstacklocal"
 
 # quantum.conf options
 default["quantum"]["quota_items"] = "network,subnet,port"
