@@ -47,8 +47,12 @@ local_ip = get_ip_for_net('nova', node)
 # A comma-separated list of provider network vlan ranges
 # => "ph-eth1:1:1000,ph-eth0:1001:1024"
 vlan_ranges = node["quantum"]["ovs"]["provider_networks"].map do |network|
-  network['vlans'].split(',').each do |vlan_range|
-    vlan_range.prepend("#{network['interface']}:")
+  if network.has_key?('vlans') and not network['vlans'].empty?
+    network['vlans'].split(',').each do |vlan_range|
+      vlan_range.prepend("#{network['interface']}:")
+    end
+  else
+    network['interface']
   end
 end.join(',')
 
