@@ -22,7 +22,7 @@ platform_options = node["quantum"]["platform"]
 plugin = node["quantum"]["plugin"]
 
 
-node["quantum"][plugin]["packages"].each do |pkg|
+platform_options["quantum_#{plugin}_packages"].each do |pkg|
   package pkg do
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
     options platform_options["package_overrides"]
@@ -30,7 +30,7 @@ node["quantum"][plugin]["packages"].each do |pkg|
 end
 
 service "quantum-plugin-openvswitch-agent" do
-  service_name node["quantum"]["ovs"]["service_name"]
+  service_name platform_options["quantum_ovs_service_name"]
   supports :status => true, :restart => true
   action :enable
   subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
@@ -38,7 +38,7 @@ service "quantum-plugin-openvswitch-agent" do
 end
 
 service "openvswitch-switch" do
-  service_name "openvswitch-switch"
+  service_name platform_options['quantum_openvswitch_service_name']
   supports :status => true, :restart => true
   action [:enable, :start]
 end
