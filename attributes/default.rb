@@ -108,12 +108,6 @@ default["quantum"]["quota_driver"] = "quantum.quota.ConfDriver"
 
 # Plugin defaults
 # OVS
-default["quantum"]["ovs"]["packages"] = [
-  "openvswitch-datapath-dkms",
-  "quantum-plugin-openvswitch",
-  "quantum-plugin-openvswitch-agent"
-]
-default["quantum"]["ovs"]["service_name"] = "quantum-plugin-openvswitch-agent"
 default["quantum"]["ovs"]["network_type"] = "vlan"
 default["quantum"]["ovs"]["tunnel_ranges"] = "1:1000"           # Enumerating ranges of GRE tunnel IDs that are available for tenant network allocation (if GRE)
 default["quantum"]["ovs"]["integration_bridge"] = "br-int"      # Don't change without a good reason..
@@ -147,9 +141,21 @@ when "fedora", "redhat", "centos"
       "python-quantumclient",
       "openstack-quantum"
     ],
-    "quantum_api_service" => "openstack-quantum",
+    "quantum_dhcp_packages" => ["openstack-quantum"],
+    "quantum-dhcp-agent" => "quantum-dhcp-agent",
+    "quantum_l3_packages" => ["openstack-quantum"],
+    "quantum-l3-agent" => "quantum-l3-agent",
+    "quantum_metadata_packages" => ["openstack-quantum"],
+    "quantum-metadata-agent" => "quantum-metadata-agent",
+    "quantum_api_service" => "quantum-server",
     "quantum_api_process_name" => "",
-    "package_overrides" => ""
+    "package_overrides" => "",
+
+    "quantum_ovs_packages" => [
+      'openstack-quantum-openvswitch'
+    ],
+    "quantum_ovs_service_name" => "quantum-openvswitch-agent",
+    "quantum_openvswitch_service_name" => "openvswitch"
   }
 
 when "ubuntu"
@@ -179,6 +185,14 @@ when "ubuntu"
     "quantum-metadata-agent" => "quantum-metadata-agent",
 
     "package_overrides" => "-o Dpkg::Options::='--force-confold' "\
-      "-o Dpkg::Options::='--force-confdef'"
+      "-o Dpkg::Options::='--force-confdef'",
+
+    "quantum_ovs_packages" => [
+      "openvswitch-datapath-dkms",
+      "quantum-plugin-openvswitch",
+      "quantum-plugin-openvswitch-agent"
+    ],
+    "quantum_ovs_service_name" => "quantum-plugin-openvswitch-agent",
+    "quantum_openvswitch_service_name" => "openvswitch-switch"
   }
 end
