@@ -74,6 +74,9 @@ default["quantum"]["services"]["api"]["scheme"] = "http"
 default["quantum"]["services"]["api"]["network"] = "public"
 default["quantum"]["services"]["api"]["port"] = 9696
 default["quantum"]["services"]["api"]["path"] = ""
+default["quantum"]["services"]["api"]["cert_file"] = "quantum.pem"
+default["quantum"]["services"]["api"]["key_file"] = "quantum.key"
+default["quantum"]["services"]["api"]["wsgi_file"] = "quantum-server"
 
 default["quantum"]["db"]["name"] = "quantum"
 default["quantum"]["db"]["username"] = "quantum"
@@ -157,6 +160,7 @@ when "fedora", "redhat", "centos"
     "quantum_ovs_service_name" => "quantum-openvswitch-agent",
     "quantum_openvswitch_service_name" => "openvswitch"
   }
+  default["quantum"]["ssl"]["dir"] = "/etc/pki/tls"
 
 when "ubuntu"
   default["nova-network"]["platform"] = {                                                   # node_attribute
@@ -195,4 +199,5 @@ when "ubuntu"
     "quantum_ovs_service_name" => "quantum-plugin-openvswitch-agent",
     "quantum_openvswitch_service_name" => "openvswitch-switch"
   }
+  default["quantum"]["ssl"]["dir"] = "/etc/ssl"
 end
