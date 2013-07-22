@@ -108,6 +108,22 @@ Quantum Networking
 * `quantum["ovs"]["external_bridge"]` - the external interface name
 * `quantum["ovs"]["external_interface"]` - an available interface on the node that will access the external network
 * `quantum["dhcp_domain"] - Domain to use for instance host names`
+* `quantum["ovs"]["provider_networks"]` - an Array of provider networks to create. Example:
+
+```javascript
+[
+  {
+    "label" => "ph-eth1",
+    "bridge" => "br-eth1",
+    "vlans" => "1:1000"
+  },
+  {
+    "label" => "ph-eth0",
+    "bridge" => "br-eth0",
+    "vlans" => "1001:1024"
+  }
+]
+```
 
 Usage
 =====

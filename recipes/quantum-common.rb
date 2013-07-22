@@ -43,17 +43,24 @@ mysql_info =
   get_access_endpoint("mysql-master", "mysql", "db")
 quantum_info = get_settings_by_role("nova-network-controller", "quantum")
 local_ip = get_ip_for_net('nova', node)
-vlan_ranges = node["quantum"]["ovs"]["provider_networks"].collect do |k,v|
-  if v.has_key?('vlans') and not v['vlans'].empty?
-    v['vlans'].split(',').each do |vlan_range|
-      vlan_range.prepend(k + ":")
+
+# A comma-separated list of provider network vlan ranges
+# => "ph-eth1:1:1000,ph-eth0:1001:1024"
+vlan_ranges = node["quantum"]["ovs"]["provider_networks"].map do |network|
+  if network.has_key?('vlans') and not network['vlans'].empty?
+    network['vlans'].split(',').each do |vlan_range|
+      vlan_range.prepend("#{network['label']}:")
     end
   else
-    k
+    network['label']
   end
 end.join(',')
-bridge_mappings = node["quantum"]["ovs"]["provider_networks"].
-  collect { |k,v| "#{k}:#{v['bridge']}"}.join(',')
+
+# A comma-separated list of provider network to bridge mappings
+# => "ph-eth1:br-eth1,ph-eth0:br-eth0"
+bridge_mappings = node["quantum"]["ovs"]["provider_networks"].map do |network|
+  "#{network['label']}:#{network['bridge']}"
+end.join(',')
 
 # Make sure our permissions are not too, well, permissive
 directory "/etc/quantum/" do
