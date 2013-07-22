@@ -20,7 +20,6 @@
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 include_recipe "osops-utils"
-include_recipe "nova-network::quantum-common"
 
 platform_options = node["quantum"]["platform"]
 
@@ -36,6 +35,13 @@ node.set_unless['quantum']['service_pass'] =
   secure_password
 node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
   secure_password
+
+unless Chef::Config[:solo]
+  node.save
+end
+
+# Only do this setup once the db/service pass has been set.
+include_recipe "nova-network::quantum-common"
 
 packages = platform_options["quantum_api_packages"]
 
