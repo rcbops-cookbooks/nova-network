@@ -20,7 +20,6 @@
 include_recipe "mysql::client"
 include_recipe "mysql::ruby"
 include_recipe "osops-utils"
-include_recipe "nova-network::quantum-common"
 
 platform_options = node["quantum"]["platform"]
 
@@ -36,6 +35,13 @@ node.set_unless['quantum']['service_pass'] =
   secure_password
 node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
   secure_password
+
+unless Chef::Config[:solo]
+  node.save
+end
+
+# Only do this setup once the db/service pass has been set.
+include_recipe "nova-network::quantum-common"
 
 packages = platform_options["quantum_api_packages"]
 
@@ -63,17 +69,37 @@ mysql_info = create_db_and_user(
   node["quantum"]["db"]["password"]
 )
 
+api_endpoint = get_bind_endpoint("quantum", "api")
+
 service "quantum-server" do
   service_name platform_options["quantum_api_service"]
   supports :status => true, :restart => true
-  action :enable
-  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
-  subscribes :restart, "template[/etc/quantum/api-paste.ini]", :delayed
-  subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
+  unless api_endpoint["scheme"] == "https"
+    action :enable
+    subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
+    subscribes :restart, "template[/etc/quantum/api-paste.ini]", :delayed
+    subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
+  else
+    action [ :disable, :stop ]
+  end
+end
+
+# Setup SSL
+if api_endpoint["scheme"] == "https"
+  include_recipe "nova-network::quantum-server-ssl"
+else
+  if node.recipe?"apache2"
+    apache_site "openstack-quantum-server" do
+      enable false
+      notifies :run, "execute[restore-selinux-context]", :immediately
+      notifies :restart, "service[apache2]", :immediately
+    end
+  end
 end
 
 # Adds db Indexing for the hosts as found in the agents table.
 # Defined in osops-utils/libraries
+
 add_index_stopgap("mysql",
                   node["quantum"]["db"]["name"],
                   node["quantum"]["db"]["username"],
@@ -133,7 +159,6 @@ keystone_register "Reqister Quantum Service" do
   action :create_service
 end
 
-api_endpoint = get_bind_endpoint("quantum", "api")
 keystone_register "Register Quantum Endpoint" do
   auth_host ks_admin_endpoint["host"]
   auth_port ks_admin_endpoint["port"]

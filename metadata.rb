@@ -18,7 +18,7 @@ recipe            "quantum-server", ""
   supports os
 end
 
-%w{ mysql nova osops-utils sysctl }.each do |dep|
+%w{ mysql nova osops-utils sysctl apache2 }.each do |dep|
   depends dep
 end
 
