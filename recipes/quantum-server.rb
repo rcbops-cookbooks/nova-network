@@ -82,6 +82,7 @@ mysql_info = create_db_and_user(
 )
 
 api_endpoint = get_bind_endpoint("quantum", "api")
+access_endpoint = get_access_endpoint("nova-network-controller", "quantum", "api")
 
 service "quantum-server" do
   service_name platform_options["quantum_api_service"]
@@ -179,8 +180,8 @@ keystone_register "Register Quantum Endpoint" do
   auth_token keystone["admin_token"]
   service_type "network"
   endpoint_region "RegionOne"
-  endpoint_adminurl api_endpoint["uri"]
-  endpoint_internalurl api_endpoint["uri"]
-  endpoint_publicurl api_endpoint["uri"]
+  endpoint_adminurl access_endpoint["uri"]
+  endpoint_internalurl access_endpoint["uri"]
+  endpoint_publicurl access_endpoint["uri"]
   action :create_endpoint
 end
