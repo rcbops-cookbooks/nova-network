@@ -23,18 +23,30 @@ include_recipe "osops-utils"
 
 platform_options = node["quantum"]["platform"]
 
-if node["developer_mode"] == true
-  node.set_unless["quantum"]["db"]["password"] =
-    "quantum"
-else
-  node.set_unless["quantum"]["db"]["password"] =
+# If we're HA
+if get_role_count("nova-network-controller") > 1
+  # Grab the first controller
+  quantum = get_settings_by_role("ha-controller1", "quantum")
+  node.set["quantum"]["db"]["password"] =
+    quantum["db"]["password"]
+  node.set["quantum"]["service_pass"] =
+    quantum["service_pass"]
+  node.set["quantum"]["quantum_metadata_proxy_shared_secret"] =
+    quantum["quantum_metadata_proxy_shared_secret"]
+else # Make some stuff up
+  if node["developer_mode"] == true
+    node.set_unless["quantum"]["db"]["password"] =
+      "quantum"
+  else
+    node.set_unless["quantum"]["db"]["password"] =
+      secure_password
+  end
+
+  node.set_unless['quantum']['service_pass'] =
+    secure_password
+  node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
     secure_password
 end
-
-node.set_unless['quantum']['service_pass'] =
-  secure_password
-node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
-  secure_password
 
 unless Chef::Config[:solo]
   node.save
