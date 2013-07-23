@@ -38,7 +38,7 @@ keystone =
 rabbit_info =
   get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 api_endpoint =
-  get_access_endpoint("nova-network-controller", "quantum", "api")
+  get_bind_endpoint("quantum", "api")
 mysql_info =
   get_access_endpoint("mysql-master", "mysql", "db")
 quantum_info = get_settings_by_role("nova-network-controller", "quantum")
