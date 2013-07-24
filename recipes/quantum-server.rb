@@ -23,18 +23,30 @@ include_recipe "osops-utils"
 
 platform_options = node["quantum"]["platform"]
 
-if node["developer_mode"] == true
-  node.set_unless["quantum"]["db"]["password"] =
-    "quantum"
-else
-  node.set_unless["quantum"]["db"]["password"] =
+# If we're HA
+if get_role_count("nova-network-controller") > 1
+  # Grab the first controller
+  quantum = get_settings_by_role("ha-controller1", "quantum")
+  node.set["quantum"]["db"]["password"] =
+    quantum["db"]["password"]
+  node.set["quantum"]["service_pass"] =
+    quantum["service_pass"]
+  node.set["quantum"]["quantum_metadata_proxy_shared_secret"] =
+    quantum["quantum_metadata_proxy_shared_secret"]
+else # Make some stuff up
+  if node["developer_mode"] == true
+    node.set_unless["quantum"]["db"]["password"] =
+      "quantum"
+  else
+    node.set_unless["quantum"]["db"]["password"] =
+      secure_password
+  end
+
+  node.set_unless['quantum']['service_pass'] =
+    secure_password
+  node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
     secure_password
 end
-
-node.set_unless['quantum']['service_pass'] =
-  secure_password
-node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
-  secure_password
 
 unless Chef::Config[:solo]
   node.save
@@ -70,6 +82,7 @@ mysql_info = create_db_and_user(
 )
 
 api_endpoint = get_bind_endpoint("quantum", "api")
+access_endpoint = get_access_endpoint("nova-network-controller", "quantum", "api")
 
 service "quantum-server" do
   service_name platform_options["quantum_api_service"]
@@ -167,8 +180,8 @@ keystone_register "Register Quantum Endpoint" do
   auth_token keystone["admin_token"]
   service_type "network"
   endpoint_region "RegionOne"
-  endpoint_adminurl api_endpoint["uri"]
-  endpoint_internalurl api_endpoint["uri"]
-  endpoint_publicurl api_endpoint["uri"]
+  endpoint_adminurl access_endpoint["uri"]
+  endpoint_internalurl access_endpoint["uri"]
+  endpoint_publicurl access_endpoint["uri"]
   action :create_endpoint
 end
