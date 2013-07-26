@@ -117,6 +117,7 @@ default["quantum"]["ovs"]["integration_bridge"] = "br-int"      # Don't change w
 default["quantum"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if tunnel_ranges is set
 default["quantum"]["ovs"]["external_bridge"] = "br-ex"
 default["quantum"]["ovs"]["external_interface"] = "eth1"
+default["quantum"]["ovs"]["network"]="nova"
 
 # Array of all the provider based networks to create
 default["quantum"]["ovs"]["provider_networks"] = [
