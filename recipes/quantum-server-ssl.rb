@@ -75,6 +75,18 @@ end
 
 api_bind = get_bind_endpoint("quantum", "api")
 
+unless node["quantum"]["services"]["api"].attribute?"cert_override"
+  cert_location = "#{node["quantum"]["ssl"]["dir"]}/certs/#{node["quantum"]["services"]["api"]["cert_file"]}"
+else
+  cert_location = node["quantum"]["services"]["api"]["cert_override"]
+end
+
+unless node["quantum"]["services"]["api"].attribute?"key_override"
+  key_location = "#{node["quantum"]["ssl"]["dir"]}/private/#{node["quantum"]["services"]["api"]["key_file"]}"
+else
+  key_location = node["quantum"]["services"]["api"]["key_override"]
+end
+
 template value_for_platform(
   ["ubuntu", "debian", "fedora"] => {
     "default" => "#{node["apache"]["dir"]}/sites-available/openstack-quantum-server"
@@ -96,8 +108,8 @@ template value_for_platform(
   variables(
     :listen_ip => api_bind["host"],
     :service_port => api_bind["port"],
-    :cert_file => "#{node["quantum"]["ssl"]["dir"]}/certs/#{node["quantum"]["services"]["api"]["cert_file"]}",
-    :key_file => "#{node["quantum"]["ssl"]["dir"]}/private/#{node["quantum"]["services"]["api"]["key_file"]}",
+    :cert_file => cert_location,
+    :key_file => key_location,
     :wsgi_file  => "#{node["apache"]["dir"]}/wsgi/#{node["quantum"]["services"]["api"]["wsgi_file"]}",
     :proc_group => "quantum-server",
     :log_file => "/var/log/quantum/quantum-server.log"
