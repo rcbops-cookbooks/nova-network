@@ -89,6 +89,8 @@ Quantum Networking
 * `quantum["services"]["api"]["network"]` - `osops_networks` network name which service operates on
 * `quantum["services"]["api"]["port"]` - port service binds to
 * `quantum["services"]["api"]["path"]` - service URI
+* `quantum["services"]["api"]["cert_override"]` - for https - specify a custom certificate file location
+* `quantum["services"]["api"]["key_override"]` - for https - specify a custom key file location
 * `quantum["db"]["name"]` - database name
 * `quantum["db"]["username"]` - database username
 * `quantum["db"]["service_tenant_name"]` - defaults to `service`
