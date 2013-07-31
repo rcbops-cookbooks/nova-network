@@ -29,6 +29,7 @@ attribute :bridge, :kind_of => String
 attribute :bridge_int, :kind_of => String
 attribute :dns1, :kind_of => String
 attribute :dns2, :kind_of => String
+attribute :vlan_id, :kind_of => Integer
 
 # nova floating ips
 attribute :pool, :kind_of => String
