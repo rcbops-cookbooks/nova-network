@@ -107,7 +107,7 @@ default["quantum"]["default_quota"] = "-1"
 default["quantum"]["quota_network"] = "10"
 default["quantum"]["quota_subnet"] = "10"
 default["quantum"]["quota_port"] = "50"
-default["quantum"]["quota_driver"] = "quantum.quota.ConfDriver"
+default["quantum"]["quota_driver"] = "quantum.db.quota_db.DbQuotaDriver"
 
 # Plugin defaults
 # OVS
