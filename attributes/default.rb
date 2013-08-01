@@ -21,25 +21,23 @@ default["nova"]["network"]["provider"] = "nova"
 # ######################################################################### #
 # Nova-Network Configuration Attributes
 # ######################################################################### #
-# TODO(shep): This should probably be ['nova']['network']['fixed']
-default["nova"]["networks"] = [                                             # cluster_attribute
-  {
-    "label" => "public",
-    "ipv4_cidr" => "192.168.100.0/24",
-    "bridge" => "br100",
-    "bridge_dev" => "eth2",
-    "dns1" => "8.8.8.8",
-    "dns2" => "8.8.4.4"
-  },
-  {
-    "label" => "private",
-    "ipv4_cidr" => "192.168.200.0/24",
-    "bridge" => "br200",
-    "bridge_dev" => "eth3",
-    "dns1" => "8.8.8.8",
-    "dns2" => "8.8.4.4"
-  }
-]
+default["nova"]["networks"]["public"] = {                                             # cluster_attribute
+  "label" => "public",
+  "ipv4_cidr" => "192.168.100.0/24",
+  "bridge" => "br100",
+  "bridge_dev" => "eth2",
+  "dns1" => "8.8.8.8",
+  "dns2" => "8.8.4.4"
+}
+default["nova"]["networks"]["private"] = {
+  "label" => "private",
+  "ipv4_cidr" => "192.168.200.0/24",
+  "bridge" => "br200",
+  "bridge_dev" => "eth3",
+  "dns1" => "8.8.8.8",
+  "dns2" => "8.8.4.4"
+}
+
 
 default["nova"]["network"]["public_interface"] = "eth0"                                        # node_attribute
 default["nova"]["network"]["dmz_cidr"] = "10.128.0.0/24"                                       # cluster_attribute
