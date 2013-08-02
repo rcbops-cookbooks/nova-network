@@ -30,6 +30,10 @@ node["nova"]["networks"].each do |net, v|
     bridge_int v['bridge_dev']
     dns1 v['dns1']
     dns2 v['dns2']
+    if v.has_key?('vlan_id')
+      Chef::Log.debug "Vlan ID set #{v['vlan_id']}"
+      vlan_id v['vlan_id']
+    end
     action :create_fixed
   end
 end
