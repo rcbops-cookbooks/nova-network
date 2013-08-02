@@ -24,6 +24,9 @@ action :create_fixed do
   fixed_range=new_resource.fixed_range
   net_prefix=fixed_range.split("/").last
   net_size=2**(32 - net_prefix.to_i)
+  if new_resource.vlan_id.is_a?Integer
+    vlan_comm="--vlan=#{new_resource.vlan_id}"
+  end
   execute "Creating network: #{new_resource.label}" do
     command "nova-manage network create "\
       "--multi_host=#{multi_host_bool_mangle} "\
@@ -32,7 +35,7 @@ action :create_fixed do
       "--bridge=#{new_resource.bridge} "\
       "--bridge_interface=#{new_resource.bridge_int} "\
       "--dns1=#{new_resource.dns1} --dns2=#{new_resource.dns2} "\
-      "--network_size=#{net_size}"
+      "--network_size=#{net_size} #{vlan_comm}"
     action :run
     not_if "nova-manage network list | grep #{new_resource.fixed_range}"
   end

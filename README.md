@@ -173,16 +173,16 @@ Usage
 License and Author
 ==================
 
-Author:: Justin Shepherd (<justin.shepherd@rackspace.com>)
-Author:: Jason Cannavale (<jason.cannavale@rackspace.com>)
-Author:: Ron Pedde (<ron.pedde@rackspace.com>)
-Author:: Joseph Breu (<joseph.breu@rackspace.com>)
-Author:: William Kelly (<william.kelly@rackspace.com>)
-Author:: Darren Birkett (<darren.birkett@rackspace.co.uk>)
-Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)
+Author:: Justin Shepherd (<justin.shepherd@rackspace.com>)  
+Author:: Jason Cannavale (<jason.cannavale@rackspace.com>)  
+Author:: Ron Pedde (<ron.pedde@rackspace.com>)  
+Author:: Joseph Breu (<joseph.breu@rackspace.com>)  
+Author:: William Kelly (<william.kelly@rackspace.com>)  
+Author:: Darren Birkett (<darren.birkett@rackspace.co.uk>)  
+Author:: Evan Callicoat (<evan.callicoat@rackspace.com>)  
 Author:: Chris Laco (<chris.laco@rackspace.com>)  
-Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)
-Author:: Andy McCrae (<andrew.mccrae@rackspace.co.uk>)
+Author:: Matt Thompson (<matt.thompson@rackspace.co.uk>)  
+Author:: Andy McCrae (<andrew.mccrae@rackspace.co.uk>)  
 
 Copyright 2012-2013, Rackspace US, Inc.  
 
