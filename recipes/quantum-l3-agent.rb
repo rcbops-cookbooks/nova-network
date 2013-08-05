@@ -52,6 +52,12 @@ execute "create external bridge" do
   not_if "ovs-vsctl show | grep 'Bridge br-ex'" ## FIXME
 end
 
+execute "add external interface to external bridge" do
+  command "ovs-vsctl add-port #{node['quantum']['ovs']['external_bridge']} #{node['quantum']['ovs']['external_interface']}"
+  action :run
+  not_if "ovs-vsctl list-ifaces #{node['quantum']['ovs']['external_bridge']} | grep #{node['quantum']['ovs']['external_interface']}"
+end
+
 ks_admin_endpoint =
   get_access_endpoint("keystone-api", "keystone", "admin-api")
 quantum_info =
