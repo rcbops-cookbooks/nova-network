@@ -47,9 +47,9 @@ service "quantum-l3-agent" do
 end
 
 execute "create external bridge" do
-  command "ovs-vsctl add-br #{node["quantum"]["ovs"]["external_bridge"]}"
+  command "ovs-vsctl add-br #{node['quantum']['ovs']['external_bridge']}"
   action :run
-  not_if "ovs-vsctl show | grep 'Bridge br-ex'" ## FIXME
+  not_if "ovs-vsctl list-br | grep #{node['quantum']['ovs']['external_bridge']}"
 end
 
 ks_admin_endpoint =
