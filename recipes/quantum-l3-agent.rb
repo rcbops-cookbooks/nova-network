@@ -52,10 +52,15 @@ execute "create external bridge" do
   not_if "ovs-vsctl show | grep 'Bridge br-ex'" ## FIXME
 end
 
-execute "add external interface to external bridge" do
-  command "ovs-vsctl add-port #{node['quantum']['ovs']['external_bridge']} #{node['quantum']['ovs']['external_interface']}"
-  action :run
-  not_if "ovs-vsctl list-ifaces #{node['quantum']['ovs']['external_bridge']} | grep #{node['quantum']['ovs']['external_interface']}"
+if node['quantum']['ovs'].has_key?('external_interface') and not node['quantum']['ovs']['external_interface'].empty?
+  Chef::Log.info("External interface set to #{node['quantum']['ovs']['external_interface']}.")
+  execute "add external interface to external bridge" do
+    command "ovs-vsctl add-port #{node['quantum']['ovs']['external_bridge']} #{node['quantum']['ovs']['external_interface']}"
+    action :run
+    not_if "ovs-vsctl iface-to-br #{node['quantum']['ovs']['external_interface']}"
+  end
+else
+  Chef::Log.warn("No external interface is set.")
 end
 
 ks_admin_endpoint =
