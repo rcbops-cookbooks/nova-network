@@ -46,7 +46,7 @@ end
 execute "create integration bridge" do
   command "ovs-vsctl add-br #{node["quantum"]["ovs"]["integration_bridge"]}"
   action :run
-  not_if "ovs-vsctl show | grep 'Bridge br-int'" ## FIXME
+  not_if "ovs-vsctl list-br | grep #{node["quantum"]["ovs"]["integration_bridge"]}"
 end
 
 node["quantum"]["ovs"]["provider_networks"].each do |network|
