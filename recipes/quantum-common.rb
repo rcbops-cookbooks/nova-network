@@ -108,7 +108,8 @@ template "/etc/quantum/quantum.conf" do
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
     "dhcp_lease_time" => node["quantum"]["dhcp_lease_time"],
     "keystone_admin_port" => ks_admin_endpoint["port"],
-    "keystone_path" => ks_admin_endpoint["path"]
+    "keystone_path" => ks_admin_endpoint["path"],
+    "agent_down_time" => node["quantum"]["agent_down_time"]
   )
 end
 
