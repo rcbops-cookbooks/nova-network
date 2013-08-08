@@ -26,6 +26,9 @@ admin_password = <%= @service_pass %>
 dhcp_lease_time = <%= @dhcp_lease_time %>
 dhcp_lease_duration = <%= @dhcp_lease_time %>
 
+# Seconds elapsed until an agent is considered down
+agent_down_time = <%= @agent_down_time %>
+
 [AGENT]
 root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
 polling_interval = 2

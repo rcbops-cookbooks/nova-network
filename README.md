@@ -85,6 +85,7 @@ Quantum Networking
 * `quantum["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
 * `quantum["linuxnet_interface_driver"]` - used in nova.conf. the linux net interface driver, by default nova.network.linux_net.LinuxOVSInterfaceDriver
 * `quantum["firewall_driver"]` - used in nova.conf. the firewall driver to use, by default nova.virt.libvirt.firewall.IptablesFirewallDriver
+* `quantum["agent_down_time"]` - Seconds elapsed until an agent is considered down
 * `quantum["services"]["api"]["scheme"]` - scheme for service (http/https)
 * `quantum["services"]["api"]["network"]` - `osops_networks` network name which service operates on
 * `quantum["services"]["api"]["port"]` - port service binds to
