@@ -43,7 +43,7 @@ api_endpoint =
   get_bind_endpoint("quantum", "api")
 mysql_info =
   get_access_endpoint("mysql-master", "mysql", "db")
-quantum_info = get_settings_by_role("nova-network-controller", "quantum")
+quantum_info = get_settings_by_role("quantum-setup", "quantum")
 local_ip = get_ip_for_net(node["quantum"]["ovs"]["network"], node)
 
 # A comma-separated list of provider network vlan ranges
