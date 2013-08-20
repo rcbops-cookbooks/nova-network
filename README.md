@@ -113,6 +113,7 @@ Quantum Networking
 * `quantum["ovs"]["external_bridge"]` - the external interface name
 * `quantum["ovs"]["external_interface"]` - an available interface on the node that will access the external network
 * `quantum["dhcp_domain"] - Domain to use for instance host names`
+* `quantum["rabbitmq"]["use_ha_queues"]` - Force Quantum to set x-ha-policy=true on quantum created queues.  Changing this from false to true and vice versa requires you to destroy the queue first
 * `quantum["ovs"]["provider_networks"]` - an Array of provider networks to create. Example:
 
 ```javascript

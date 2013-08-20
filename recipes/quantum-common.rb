@@ -92,6 +92,7 @@ template "/etc/quantum/quantum.conf" do
     "quantum_port" => api_endpoint["port"],
     "quantum_namespace" => node["quantum"]["use_namespaces"],
     "rabbit_ipaddress" => rabbit_info["host"],
+    "rabbit_ha_queues" => node["quantum"]["rabbitmq"]["use_ha_queues"],
     "rabbit_port" => rabbit_info["port"],
     "overlapping_ips" => node["quantum"]["overlap_ips"],
     "quantum_plugin" => node["quantum"]["plugin"],
