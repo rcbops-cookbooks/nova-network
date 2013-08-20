@@ -3,7 +3,7 @@ external_network_bridge = <%= @quantum_external_bridge %>
 
 # Once networks are created please update the environment variables quantum[l3][router_id], quantum[l3][gateway_external_net_id]
 router_id = <%= @l3_router_id %>
-gateway_external_net_id = <%= @l3_gateway_net_id %>
+gateway_external_network_id = <%= @l3_gateway_net_id %>
 
 metadata_ip = <%= @nova_metadata_ip %>
 metadata_port = 8775
