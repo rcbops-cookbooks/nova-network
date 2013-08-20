@@ -18,6 +18,7 @@
 #
 default["nova"]["network"]["provider"] = "nova"
 
+
 # ######################################################################### #
 # Nova-Network Configuration Attributes
 # ######################################################################### #
@@ -69,6 +70,8 @@ default["quantum"]["security_group_api"] = "quantum"
 default["quantum"]["isolated_metadata"] = "True"
 default["quantum"]["service_quantum_metadata_proxy"] = "True"
 default["quantum"]["agent_down_time"] = 30
+
+default["quantum"]["rabbitmq"]["use_ha_queues"] = false
 
 default["quantum"]["services"]["api"]["scheme"] = "http"
 default["quantum"]["services"]["api"]["network"] = "public"
