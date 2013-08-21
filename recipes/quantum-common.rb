@@ -49,16 +49,6 @@ local_ip = get_ip_for_net(node["quantum"]["ovs"]["network"], node)
 # A comma-separated list of provider network vlan ranges
 # => "ph-eth1:1:1000,ph-eth0:1001:1024"
 vlan_ranges = node["quantum"]["ovs"]["provider_networks"].map do |network|
-api_endpoint =
-  get_bind_endpoint("quantum", "api")
-mysql_info =
-  get_access_endpoint("mysql-master", "mysql", "db")
-quantum_info = get_settings_by_role("nova-network-controller", "quantum")
-local_ip = get_ip_for_net(node["quantum"]["ovs"]["network"], node)
-
-# A comma-separated list of provider network vlan ranges
-# => "ph-eth1:1:1000,ph-eth0:1001:1024"
-vlan_ranges = node["quantum"]["ovs"]["provider_networks"].map do |network|
   if network.has_key?('vlans') and not network['vlans'].empty?
     network['vlans'].split(',').each do |vlan_range|
       vlan_range.prepend("#{network['label']}:")
