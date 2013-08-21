@@ -37,6 +37,8 @@ keystone =
   get_settings_by_role("keystone-setup", "keystone")
 rabbit_info =
   get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
+rabbit_settings =
+  get_settings_by_role("rabbitmq-server", "rabbitmq")
 api_endpoint =
   get_bind_endpoint("quantum", "api")
 mysql_info =
@@ -92,7 +94,7 @@ template "/etc/quantum/quantum.conf" do
     "quantum_port" => api_endpoint["port"],
     "quantum_namespace" => node["quantum"]["use_namespaces"],
     "rabbit_ipaddress" => rabbit_info["host"],
-    "rabbit_ha_queues" => node["quantum"]["rabbitmq"]["use_ha_queues"],
+    "rabbit_ha_queues" => rabbit_settings["cluster"],
     "rabbit_port" => rabbit_info["port"],
     "overlapping_ips" => node["quantum"]["overlap_ips"],
     "quantum_plugin" => node["quantum"]["plugin"],
