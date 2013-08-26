@@ -57,3 +57,28 @@ node["quantum"]["ovs"]["provider_networks"].each do |network|
     not_if "ovs-vsctl list-br | grep #{network['bridge']}" ## FIXME
   end
 end
+
+case node['platform']
+when 'redhat', 'centos'
+  platform_options['epel_openstack_packages'].each do |pkg|
+    package pkg do
+      # Since these packages are already installed from [base] and we want
+      # to replace them, we need action :upgrade to make chef install the
+      # alternate versions.
+      # XXX Assumes versions from [epel-openstack-grizzly] > [base]
+      action :upgrade
+
+      # Force yum to search the openstack-grizzly repo.
+      # FIXME(brett) Don't hardcode repo name (hardcoded in osops::packages).
+      #   Maybe dynamically get name from `yum repolist'.
+      options '--disablerepo="*" --enablerepo=epel-openstack-grizzly'
+
+      # To protect ourselves from future chef runs, don't always upgrade
+      # packages when updates are available (maybe consider checking
+      # 'do_package_upgrades' though?).  Unfortunately the release versioning
+      # convention isn't consistent across packages in this repo, so we can't
+      # simply grep 'openstack' or similar.
+      not_if "rpm -q --qf '%{RELEASE}\\n' #{pkg} |grep -E '\\.el6(ost|\\.gre)\\.'"
+    end
+  end
+end
