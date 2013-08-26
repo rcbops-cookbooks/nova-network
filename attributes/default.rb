@@ -141,11 +141,13 @@ when "fedora", "redhat", "centos"
   }
 
   default["quantum"]["platform"] = {
+    "epel_openstack_packages" => ["kernel", "iproute"],
     "mysql_python_packages" => ["MySQL-python"],
     "quantum_api_packages" => ["openstack-quantum"],
     "quantum_common_packages" => [
       "python-quantumclient",
-      "openstack-quantum"
+      "openstack-quantum",
+      "bridge-utils"
     ],
     "quantum_dhcp_packages" => ["openstack-quantum"],
     "quantum-dhcp-agent" => "quantum-dhcp-agent",
@@ -154,9 +156,8 @@ when "fedora", "redhat", "centos"
     "quantum_metadata_packages" => ["openstack-quantum"],
     "quantum-metadata-agent" => "quantum-metadata-agent",
     "quantum_api_service" => "quantum-server",
-    "quantum_api_process_name" => "",
+    "quantum_api_process_name" => "quantum-server",
     "package_overrides" => "",
-
     "quantum_ovs_packages" => [
       'openstack-quantum-openvswitch'
     ],
@@ -164,6 +165,7 @@ when "fedora", "redhat", "centos"
     "quantum_openvswitch_service_name" => "openvswitch"
   }
   default["quantum"]["ssl"]["dir"] = "/etc/pki/tls"
+  default["quantum"]["ovs_use_veth"] = "True"
 
 when "ubuntu"
   default["nova-network"]["platform"] = {                                                   # node_attribute
@@ -203,4 +205,5 @@ when "ubuntu"
     "quantum_openvswitch_service_name" => "openvswitch-switch"
   }
   default["quantum"]["ssl"]["dir"] = "/etc/ssl"
+  default["quantum"]["ovs_use_veth"] = "False"
 end
