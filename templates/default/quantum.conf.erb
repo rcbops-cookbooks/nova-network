@@ -6,12 +6,14 @@ bind_host = <%= @quantum_ipaddress %>
 bind_port = <%= @quantum_port %>
 <% if @quantum_plugin == "ovs" %>
 core_plugin = quantum.plugins.openvswitch.ovs_quantum_plugin.OVSQuantumPluginV2
+ovs_use_veth = <%= @quantum_ovs_use_veth %>
 <% end %>
 allow_overlapping_ips = <%= @overlapping_ips %>
 use_namespaces = <%= @quantum_namespace %>
 api_paste_config = /etc/quantum/api-paste.ini
 control_exchange = quantum
 rabbit_host = <%= @rabbit_ipaddress %>
+rabbit_ha_queues=<%= @rabbit_ha_queues %>
 notification_driver = quantum.openstack.common.notifier.rpc_notifier
 
 # keystone auth - this will cascade to all agents/services

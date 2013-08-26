@@ -14,6 +14,8 @@ In the issue description, please include a longer description of the issue, alon
 If logfiles are extremely long, please place the relevant portion into the issue description, and link to a gist containing the entire logfile
 
 
+Please see the [contribution guidelines](CONTRIBUTING.md) for more information about contributing to this cookbook.
+
 Description
 ===========
 This cookbook configures the networking required for OpenStack, specifically for the compute service nova.
