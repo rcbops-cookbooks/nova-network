@@ -93,6 +93,7 @@ template "/etc/quantum/quantum.conf" do
     "quantum_ipaddress" => api_endpoint["host"],
     "quantum_port" => api_endpoint["port"],
     "quantum_namespace" => node["quantum"]["use_namespaces"],
+    "quantum_ovs_use_veth" => node["quantum"]["ovs_use_veth"],
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_ha_queues" => rabbit_settings["cluster"],
     "rabbit_port" => rabbit_info["port"],
@@ -152,4 +153,11 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     "ovs_verbose" => node["quantum"]["verbose"],
     "ovs_local_ip" => local_ip
   )
+end
+
+case node['platform']
+when 'redhat', 'centos'
+  link "/etc/quantum/plugin.ini" do
+    to "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini"
+  end
 end
