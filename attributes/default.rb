@@ -118,22 +118,21 @@ default["quantum"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if t
 default["quantum"]["ovs"]["external_bridge"] = "br-ex"
 default["quantum"]["ovs"]["external_interface"] = "eth1"
 default["quantum"]["ovs"]["network"]="nova"
-
-# Array of all the provider based networks to create
-default["quantum"]["ovs"]["provider_networks"] = [
-  {
-    "label" => "ph-eth1",
-    "bridge" => "br-eth1",
-    "vlans" => "1:1000"
-  }
-]
-
 default["quantum"]["ovs"]["firewall_driver"] =
   "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
 case platform
 
 when "fedora", "redhat", "centos"
+
+  # Array of all the provider based networks to create
+  default["quantum"]["ovs"]["provider_networks"] = [
+    {
+      "label" => "ph-em2",
+      "bridge" => "br-em2",
+      "vlans" => "1:1000"
+    }
+  ]
   default["nova-network"]["platform"] = {
     "nova_network_packages" => ["iptables", "openstack-nova-network"],
     "nova_network_service" => "openstack-nova-network",
@@ -168,6 +167,16 @@ when "fedora", "redhat", "centos"
   default["quantum"]["ovs_use_veth"] = "True"
 
 when "ubuntu"
+
+  # Array of all the provider based networks to create
+  default["quantum"]["ovs"]["provider_networks"] = [
+    {
+      "label" => "ph-eth1",
+      "bridge" => "br-eth1",
+      "vlans" => "1:1000"
+    }
+  ]
+
   default["nova-network"]["platform"] = {                                                   # node_attribute
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
