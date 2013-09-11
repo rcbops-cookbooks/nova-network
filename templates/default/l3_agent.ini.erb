@@ -1,14 +1,14 @@
 [DEFAULT]
-external_network_bridge = <%= @quantum_external_bridge %>
+external_network_bridge = <%= @neutron_external_bridge %>
 
-# Once networks are created please update the environment variables quantum[l3][router_id], quantum[l3][gateway_external_net_id]
+# Once networks are created please update the environment variables neutron[l3][router_id], neutron[l3][gateway_external_net_id]
 router_id = <%= @l3_router_id %>
 gateway_external_network_id = <%= @l3_gateway_net_id %>
 
 metadata_ip = <%= @nova_metadata_ip %>
 metadata_port = 8775
 
-<% if @quantum_plugin == "ovs" %>
+<% if @neutron_plugin == "ovs" %>
 # OVS
-interface_driver = quantum.agent.linux.interface.OVSInterfaceDriver
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 <% end %>

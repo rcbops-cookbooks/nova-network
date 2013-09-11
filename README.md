@@ -46,7 +46,7 @@ Attributes
 
 Nova Networking
 ----
-* `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to quantum.
+* `nova["network"]["provider"]` - The networking provider to use with nova. By default this is set to nova, but can be changed to neutron.
 * `nova["networks"]` - An array of networks to be assigned to instances on creation
 
 ### Example
@@ -80,40 +80,40 @@ Nova Networking
 * `nova["network"]["multi_host"]` - Use multi-host mode?
 * `nova["network"]["platform"]` - Hash of platform specific package/service names and options
 
-Quantum Networking
+Neutron Networking
 ----
-* `quantum["network_api_class"]` - used in nova.conf.the quantum api driver class. 
-* `quantum["auth_strategy"]` - used in nova.conf. the authentication strategy to use, by default this is set to keystone
-* `quantum["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
-* `quantum["linuxnet_interface_driver"]` - used in nova.conf. the linux net interface driver, by default nova.network.linux_net.LinuxOVSInterfaceDriver
-* `quantum["firewall_driver"]` - used in nova.conf. the firewall driver to use, by default nova.virt.libvirt.firewall.IptablesFirewallDriver
-* `quantum["agent_down_time"]` - Seconds elapsed until an agent is considered down
-* `quantum["services"]["api"]["scheme"]` - scheme for service (http/https)
-* `quantum["services"]["api"]["network"]` - `osops_networks` network name which service operates on
-* `quantum["services"]["api"]["port"]` - port service binds to
-* `quantum["services"]["api"]["path"]` - service URI
-* `quantum["services"]["api"]["cert_override"]` - for https - specify a custom certificate file location
-* `quantum["services"]["api"]["key_override"]` - for https - specify a custom key file location
-* `quantum["db"]["name"]` - database name
-* `quantum["db"]["username"]` - database username
-* `quantum["db"]["service_tenant_name"]` - defaults to `service`
-* `quantum["db"]["service_user"]` - defaults to `quantum`
-* `quantum["db"]["service_role"]` - defaults to `admin`
-* `quantum["debug"]` - default log level is INFO
-* `quantum["verbose"]` - default log level is INFO
-* `quantum["overlap_ips"]` - Enable or disable overlapping IPs for subnets. MUST be set to False if Quantum is being used in conjunction with nova security groups and/or metadata service.
-* `quantum["use_namespaces"]` - should correspond to overlap_ips used for dhcp agent and l3 agent.
-* `quantum["plugin"]` - select the quantum backend driver plugin to use, currently only supports openvswitch
-* `quantum["l3"]["router_id"]` - once a default network and router are created update the environment with the router uuid
-* `quantum["l3"]["gateway_external_net_id"]` - once a default network and router are created update the environment with the external network uuid
-* `quantum["ovs"]["network_type"]` - used to select the network type, currently only supports gre tunnels.
-* `quantum["ovs"]["tunneling"]` - must be true if using GRE
-* `quantum["ovs"]["tunnel_ranges"]` - Enumerating ranges of GRE tunnel ID
-* `quantum["ovs"]["tunnel_bridge"]` - the tunnel interface name
-* `quantum["ovs"]["external_bridge"]` - the external interface name
-* `quantum["ovs"]["external_interface"]` - an available interface on the node that will access the external network
-* `quantum["dhcp_domain"] - Domain to use for instance host names`
-* `quantum["ovs"]["provider_networks"]` - an Array of provider networks to create. Example:
+* `neutron["network_api_class"]` - used in nova.conf.the neutron api driver class. 
+* `neutron["auth_strategy"]` - used in nova.conf. the authentication strategy to use, by default this is set to keystone
+* `neutron["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
+* `neutron["linuxnet_interface_driver"]` - used in nova.conf. the linux net interface driver, by default nova.network.linux_net.LinuxOVSInterfaceDriver
+* `neutron["firewall_driver"]` - used in nova.conf. the firewall driver to use, by default nova.virt.libvirt.firewall.IptablesFirewallDriver
+* `neutron["agent_down_time"]` - Seconds elapsed until an agent is considered down
+* `neutron["services"]["api"]["scheme"]` - scheme for service (http/https)
+* `neutron["services"]["api"]["network"]` - `osops_networks` network name which service operates on
+* `neutron["services"]["api"]["port"]` - port service binds to
+* `neutron["services"]["api"]["path"]` - service URI
+* `neutron["services"]["api"]["cert_override"]` - for https - specify a custom certificate file location
+* `neutron["services"]["api"]["key_override"]` - for https - specify a custom key file location
+* `neutron["db"]["name"]` - database name
+* `neutron["db"]["username"]` - database username
+* `neutron["db"]["service_tenant_name"]` - defaults to `service`
+* `neutron["db"]["service_user"]` - defaults to `neutron`
+* `neutron["db"]["service_role"]` - defaults to `admin`
+* `neutron["debug"]` - default log level is INFO
+* `neutron["verbose"]` - default log level is INFO
+* `neutron["overlap_ips"]` - Enable or disable overlapping IPs for subnets. MUST be set to False if Neutron is being used in conjunction with nova security groups and/or metadata service.
+* `neutron["use_namespaces"]` - should correspond to overlap_ips used for dhcp agent and l3 agent.
+* `neutron["plugin"]` - select the neutron backend driver plugin to use, currently only supports openvswitch
+* `neutron["l3"]["router_id"]` - once a default network and router are created update the environment with the router uuid
+* `neutron["l3"]["gateway_external_net_id"]` - once a default network and router are created update the environment with the external network uuid
+* `neutron["ovs"]["network_type"]` - used to select the network type, currently only supports gre tunnels.
+* `neutron["ovs"]["tunneling"]` - must be true if using GRE
+* `neutron["ovs"]["tunnel_ranges"]` - Enumerating ranges of GRE tunnel ID
+* `neutron["ovs"]["tunnel_bridge"]` - the tunnel interface name
+* `neutron["ovs"]["external_bridge"]` - the external interface name
+* `neutron["ovs"]["external_interface"]` - an available interface on the node that will access the external network
+* `neutron["dhcp_domain"] - Domain to use for instance host names`
+* `neutron["ovs"]["provider_networks"]` - an Array of provider networks to create. Example:
 
 ```javascript
 [
@@ -132,7 +132,7 @@ Quantum Networking
 
 Usage
 =====
-The recipes nova-controller and nova-compute are used in their corresponding roles single-controller and single-compute. The role quantum-network-manager has been added to indicate a node that is running l3_agent, dhcp_agent, and ovs_plugin.
+The recipes nova-controller and nova-compute are used in their corresponding roles single-controller and single-compute. The role neutron-network-manager has been added to indicate a node that is running l3_agent, dhcp_agent, and ovs_plugin.
 
 Networks LWRP
 =============

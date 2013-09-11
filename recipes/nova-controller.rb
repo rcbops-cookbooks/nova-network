@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-if node["nova"]["network"]["provider"] == "quantum"
+if node["nova"]["network"]["provider"] == "neutron"
   include_recipe "nova::api-metadata"
-  include_recipe "nova-network::quantum-server"
+  include_recipe "nova-network::neutron-server"
 else
   include_recipe "nova-network::nova-setup"
 end

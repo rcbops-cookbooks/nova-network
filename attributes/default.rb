@@ -22,7 +22,7 @@ default["nova"]["network"]["provider"] = "nova"
 # Nova-Network Configuration Attributes
 # ######################################################################### #
 # TODO(shep): This should probably be ['nova']['network']['fixed']
-default["nova"]["networks"]["public"] = {                                            # cluster_attribute
+default["nova"]["networks"]["public"] = {
   "label" => "public",
   "ipv4_cidr" => "192.168.100.0/24",
   "bridge" => "br100",
@@ -40,93 +40,93 @@ default["nova"]["networks"]["public"] = {                                       
 #  "dns2" => "8.8.4.4"
 #}
 
-default["nova"]["network"]["public_interface"] = "eth0"                                        # node_attribute
-default["nova"]["network"]["dmz_cidr"] = "10.128.0.0/24"                                       # cluster_attribute
-default["nova"]["network"]["network_manager"] = "nova.network.manager.FlatDHCPManager"         # cluster_attribute
-default["nova"]["network"]["dhcp_domain"] = "novalocal"                                        # cluster_attribute
-default["nova"]["network"]["force_dhcp_release"] = true                                        # cluster_attribute
-default["nova"]["network"]["send_arp_for_ha"] = true                                           # cluster_attribute
-default["nova"]["network"]["auto_assign_floating_ip"] = false                                  # cluster_attribute
-default["nova"]["network"]["floating_pool_name"] = "nova"                             # cluster_attribute
+default["nova"]["network"]["public_interface"] = "eth0"
+default["nova"]["network"]["dmz_cidr"] = "10.128.0.0/24"
+default["nova"]["network"]["network_manager"] = "nova.network.manager.FlatDHCPManager"
+default["nova"]["network"]["dhcp_domain"] = "novalocal"
+default["nova"]["network"]["force_dhcp_release"] = true
+default["nova"]["network"]["send_arp_for_ha"] = true
+default["nova"]["network"]["auto_assign_floating_ip"] = false
+default["nova"]["network"]["floating_pool_name"] = "nova"
 default["nova"]["network"]["multi_host"] = true
 default["nova"]["network"]["dhcp_lease_time"] = 120
 default["nova"]["network"]["fixed_ip_disassociate_timeout"] = 600
 
 # ######################################################################### #
-# Quantum Configuration Attributes
+# Neutron Configuration Attributes
 # ######################################################################### #
-# nova.conf options for quantum
-default["quantum"]["network_api_class"] = "nova.network.quantumv2.api.API"
-default["quantum"]["auth_strategy"] = "keystone"
-default["quantum"]["libvirt_vif_type"] = "ethernet"
-default["quantum"]["libvirt_vif_driver"] =
+# nova.conf options for neutron
+default["neutron"]["network_api_class"] = "nova.network.neutronv2.api.API"
+default["neutron"]["auth_strategy"] = "keystone"
+default["neutron"]["libvirt_vif_type"] = "ethernet"
+default["neutron"]["libvirt_vif_driver"] =
   "nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver"
-default["quantum"]["linuxnet_interface_driver"] =
+default["neutron"]["linuxnet_interface_driver"] =
   "nova.network.linux_net.LinuxOVSInterfaceDriver"
-default["quantum"]["firewall_driver"] =
+default["neutron"]["firewall_driver"] =
   "nova.virt.firewall.NoopFirewallDriver"
-default["quantum"]["security_group_api"] = "quantum"
-default["quantum"]["isolated_metadata"] = "True"
-default["quantum"]["service_quantum_metadata_proxy"] = "True"
-default["quantum"]["agent_down_time"] = 30
+default["neutron"]["security_group_api"] = "neutron"
+default["neutron"]["isolated_metadata"] = "True"
+default["neutron"]["service_neutron_metadata_proxy"] = "True"
+default["neutron"]["agent_down_time"] = 30
 
-default["quantum"]["services"]["api"]["scheme"] = "http"
-default["quantum"]["services"]["api"]["network"] = "public"
-default["quantum"]["services"]["api"]["port"] = 9696
-default["quantum"]["services"]["api"]["path"] = ""
-default["quantum"]["services"]["api"]["cert_file"] = "quantum.pem"
-default["quantum"]["services"]["api"]["key_file"] = "quantum.key"
-default["quantum"]["services"]["api"]["wsgi_file"] = "quantum-server"
+default["neutron"]["services"]["api"]["scheme"] = "http"
+default["neutron"]["services"]["api"]["network"] = "public"
+default["neutron"]["services"]["api"]["port"] = 9696
+default["neutron"]["services"]["api"]["path"] = ""
+default["neutron"]["services"]["api"]["cert_file"] = "neutron.pem"
+default["neutron"]["services"]["api"]["key_file"] = "neutron.key"
+default["neutron"]["services"]["api"]["wsgi_file"] = "neutron-server"
 
-default["quantum"]["db"]["name"] = "quantum"
-default["quantum"]["db"]["username"] = "quantum"
+default["neutron"]["db"]["name"] = "neutron"
+default["neutron"]["db"]["username"] = "neutron"
 
-default["quantum"]["service_tenant_name"] = "service"
-default["quantum"]["service_user"] = "quantum"
-default["quantum"]["service_role"] = "admin"
-default["quantum"]["debug"] = "False"
-default["quantum"]["verbose"] = "False"
+default["neutron"]["service_tenant_name"] = "service"
+default["neutron"]["service_user"] = "neutron"
+default["neutron"]["service_role"] = "admin"
+default["neutron"]["debug"] = "False"
+default["neutron"]["verbose"] = "False"
 
-default["quantum"]["overlap_ips"] = "True"
-default["quantum"]["use_namespaces"] = "True" # should correspond to overlap_ips used for dhcp agent and l3 agent.
+default["neutron"]["overlap_ips"] = "True"
+default["neutron"]["use_namespaces"] = "True" # should correspond to overlap_ips used for dhcp agent and l3 agent.
 
 # Manage plugins here, currently only supports openvswitch (ovs)
-default["quantum"]["plugin"] = "ovs"
+default["neutron"]["plugin"] = "ovs"
 
 # l3 agent placeholders
-default["quantum"]["l3"]["router_id"] = ""
-default["quantum"]["l3"]["gateway_external_net_id"] = ""
+default["neutron"]["l3"]["router_id"] = ""
+default["neutron"]["l3"]["gateway_external_net_id"] = ""
 
 # dhcp agent options
-default["quantum"]["dhcp_lease_time"] = "1440"
-default["quantum"]["dhcp_domain"] = "openstacklocal"
+default["neutron"]["dhcp_lease_time"] = "1440"
+default["neutron"]["dhcp_domain"] = "openstacklocal"
 
-# quantum.conf options
-default["quantum"]["quota_items"] = "network,subnet,port"
-default["quantum"]["default_quota"] = "-1"
-default["quantum"]["quota_network"] = "10"
-default["quantum"]["quota_subnet"] = "10"
-default["quantum"]["quota_port"] = "50"
-default["quantum"]["quota_driver"] = "quantum.db.quota_db.DbQuotaDriver"
+# neutron.conf options
+default["neutron"]["quota_items"] = "network,subnet,port"
+default["neutron"]["default_quota"] = "-1"
+default["neutron"]["quota_network"] = "10"
+default["neutron"]["quota_subnet"] = "10"
+default["neutron"]["quota_port"] = "50"
+default["neutron"]["quota_driver"] = "neutron.db.quota_db.DbQuotaDriver"
 
 # Plugin defaults
 # OVS
-default["quantum"]["ovs"]["network_type"] = "vlan"
-default["quantum"]["ovs"]["tunnel_ranges"] = "1:1000"           # Enumerating ranges of GRE tunnel IDs that are available for tenant network allocation (if GRE)
-default["quantum"]["ovs"]["integration_bridge"] = "br-int"      # Don't change without a good reason..
-default["quantum"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if tunnel_ranges is set
-default["quantum"]["ovs"]["external_bridge"] = "br-ex"
-default["quantum"]["ovs"]["external_interface"] = "eth1"
-default["quantum"]["ovs"]["network"]="nova"
-default["quantum"]["ovs"]["firewall_driver"] =
-  "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
+default["neutron"]["ovs"]["network_type"] = "vlan"
+default["neutron"]["ovs"]["tunnel_ranges"] = "1:1000"           # Enumerating ranges of GRE tunnel IDs that are available for tenant network allocation (if GRE)
+default["neutron"]["ovs"]["integration_bridge"] = "br-int"      # Don't change without a good reason..
+default["neutron"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if tunnel_ranges is set
+default["neutron"]["ovs"]["external_bridge"] = "br-ex"
+default["neutron"]["ovs"]["external_interface"] = "eth1"
+default["neutron"]["ovs"]["network"]="nova"
+default["neutron"]["ovs"]["firewall_driver"] =
+  "neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
 case platform
 
 when "fedora", "redhat", "centos"
 
   # Array of all the provider based networks to create
-  default["quantum"]["ovs"]["provider_networks"] = [
+  default["neutron"]["ovs"]["provider_networks"] = [
     {
       "label" => "ph-em2",
       "bridge" => "br-em2",
@@ -139,37 +139,37 @@ when "fedora", "redhat", "centos"
     "common_packages" => ["openstack-nova-common", "python-cinderclient"]
   }
 
-  default["quantum"]["platform"] = {
+  default["neutron"]["platform"] = {
     "epel_openstack_packages" => ["kernel", "iproute"],
     "mysql_python_packages" => ["MySQL-python"],
-    "quantum_api_packages" => ["openstack-quantum"],
-    "quantum_common_packages" => [
-      "python-quantumclient",
-      "openstack-quantum",
+    "neutron_api_packages" => ["openstack-neutron"],
+    "neutron_common_packages" => [
+      "python-neutronclient",
+      "openstack-neutron",
       "bridge-utils"
     ],
-    "quantum_dhcp_packages" => ["openstack-quantum"],
-    "quantum-dhcp-agent" => "quantum-dhcp-agent",
-    "quantum_l3_packages" => ["openstack-quantum"],
-    "quantum-l3-agent" => "quantum-l3-agent",
-    "quantum_metadata_packages" => ["openstack-quantum"],
-    "quantum-metadata-agent" => "quantum-metadata-agent",
-    "quantum_api_service" => "quantum-server",
-    "quantum_api_process_name" => "quantum-server",
+    "neutron_dhcp_packages" => ["openstack-neutron"],
+    "neutron-dhcp-agent" => "neutron-dhcp-agent",
+    "neutron_l3_packages" => ["openstack-neutron"],
+    "neutron-l3-agent" => "neutron-l3-agent",
+    "neutron_metadata_packages" => ["openstack-neutron"],
+    "neutron-metadata-agent" => "neutron-metadata-agent",
+    "neutron_api_service" => "neutron-server",
+    "neutron_api_process_name" => "neutron-server",
     "package_overrides" => "",
-    "quantum_ovs_packages" => [
-      'openstack-quantum-openvswitch'
+    "neutron_ovs_packages" => [
+      'openstack-neutron-openvswitch'
     ],
-    "quantum_ovs_service_name" => "quantum-openvswitch-agent",
-    "quantum_openvswitch_service_name" => "openvswitch"
+    "neutron_ovs_service_name" => "neutron-openvswitch-agent",
+    "neutron_openvswitch_service_name" => "openvswitch"
   }
-  default["quantum"]["ssl"]["dir"] = "/etc/pki/tls"
-  default["quantum"]["ovs_use_veth"] = "True"
+  default["neutron"]["ssl"]["dir"] = "/etc/pki/tls"
+  default["neutron"]["ovs_use_veth"] = "True"
 
 when "ubuntu"
 
   # Array of all the provider based networks to create
-  default["quantum"]["ovs"]["provider_networks"] = [
+  default["neutron"]["ovs"]["provider_networks"] = [
     {
       "label" => "ph-eth1",
       "bridge" => "br-eth1",
@@ -177,42 +177,42 @@ when "ubuntu"
     }
   ]
 
-  default["nova-network"]["platform"] = {                                                   # node_attribute
+  default["nova-network"]["platform"] = {
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
     "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
   }
 
-  default["quantum"]["platform"] = {
+  default["neutron"]["platform"] = {
     "mysql_python_packages" => ["python-mysqldb"],
-    "quantum_common_packages" => ["python-quantumclient",
-      "quantum-common", "python-quantum"],
+    "neutron_common_packages" => ["python-neutronclient",
+      "neutron-common", "python-neutron"],
 
-    "quantum_api_packages" => ["quantum-server"],
-    "quantum_api_process_name" => "quantum-server",
-    "quantum_api_service" => "quantum-server",
+    "neutron_api_packages" => ["neutron-server"],
+    "neutron_api_process_name" => "neutron-server",
+    "neutron_api_service" => "neutron-server",
 
-    "quantum_dhcp_packages" => ["dnsmasq-base", "dnsmasq-utils",
-      "libnetfilter-conntrack3", "quantum-dhcp-agent" ],
-    "quantum-dhcp-agent" => "quantum-dhcp-agent",
+    "neutron_dhcp_packages" => ["dnsmasq-base", "dnsmasq-utils",
+      "libnetfilter-conntrack3", "neutron-dhcp-agent" ],
+    "neutron-dhcp-agent" => "neutron-dhcp-agent",
 
-    "quantum_l3_packages" => ["quantum-l3-agent"],
-    "quantum-l3-agent" => "quantum-l3-agent",
+    "neutron_l3_packages" => ["neutron-l3-agent"],
+    "neutron-l3-agent" => "neutron-l3-agent",
 
-    "quantum_metadata_packages" => ["quantum-metadata-agent"],
-    "quantum-metadata-agent" => "quantum-metadata-agent",
+    "neutron_metadata_packages" => ["neutron-metadata-agent"],
+    "neutron-metadata-agent" => "neutron-metadata-agent",
 
     "package_overrides" => "-o Dpkg::Options::='--force-confold' "\
       "-o Dpkg::Options::='--force-confdef'",
 
-    "quantum_ovs_packages" => [
+    "neutron_ovs_packages" => [
       "openvswitch-datapath-dkms",
-      "quantum-plugin-openvswitch",
-      "quantum-plugin-openvswitch-agent"
+      "neutron-plugin-openvswitch",
+      "neutron-plugin-openvswitch-agent"
     ],
-    "quantum_ovs_service_name" => "quantum-plugin-openvswitch-agent",
-    "quantum_openvswitch_service_name" => "openvswitch-switch"
+    "neutron_ovs_service_name" => "neutron-plugin-openvswitch-agent",
+    "neutron_openvswitch_service_name" => "openvswitch-switch"
   }
-  default["quantum"]["ssl"]["dir"] = "/etc/ssl"
-  default["quantum"]["ovs_use_veth"] = "False"
+  default["neutron"]["ssl"]["dir"] = "/etc/ssl"
+  default["neutron"]["ovs_use_veth"] = "False"
 end
