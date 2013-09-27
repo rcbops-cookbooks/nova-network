@@ -46,7 +46,6 @@ cookbook_file "#{node["quantum"]["ssl"]["dir"]}/certs/#{node["quantum"]["service
   mode 0644
   owner "root"
   group "root"
-  notifies :run, "execute[restore-selinux-context]", :immediately
 end
 
 cookbook_file "#{node["quantum"]["ssl"]["dir"]}/private/#{node["quantum"]["services"]["api"]["key_file"]}" do
@@ -54,7 +53,6 @@ cookbook_file "#{node["quantum"]["ssl"]["dir"]}/private/#{node["quantum"]["servi
   mode 0644
   owner "root"
   group grp
-  notifies :run, "execute[restore-selinux-context]", :immediately
 end
 
 # setup wsgi file
@@ -114,12 +112,10 @@ template value_for_platform(
     :proc_group => "quantum-server",
     :log_file => "/var/log/quantum/quantum-server.log"
   )
-  notifies :run, "execute[restore-selinux-context]", :immediately
   notifies :reload, "service[apache2]", :delayed
 end
 
 apache_site "openstack-quantum-server" do
   enable true
-  notifies :run, "execute[restore-selinux-context]", :immediately
   notifies :restart, "service[apache2]", :immediately
 end
