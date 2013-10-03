@@ -1,7 +1,7 @@
 Listen <%= @listen_ip %>:<%= @service_port %>
 <VirtualHost <%= @listen_ip %>:<%= @service_port %>>
     WSGIScriptAlias / <%= @wsgi_file %>
-    WSGIDaemonProcess <%= @proc_group %> user=quantum group=quantum processes=3 threads=10
+    WSGIDaemonProcess <%= @proc_group %> user=neutron group=neutron processes=3 threads=10
     WSGIProcessGroup <%= @proc_group %>
 
     # SSL Config

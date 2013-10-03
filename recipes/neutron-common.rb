@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nova-network
-# Recipe:: quantum-server (API service)
+# Recipe:: neutron-server (API service)
 #
 # Copyright 2012-2013, Rackspace US, Inc.
 #
@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-platform_options = node["quantum"]["platform"]
+platform_options = node["neutron"]["platform"]
 
-packages = platform_options["quantum_common_packages"] +
+packages = platform_options["neutron_common_packages"] +
   platform_options["mysql_python_packages"]
 
 packages.each do |pkg|
@@ -40,15 +40,15 @@ rabbit_info =
 rabbit_settings =
   get_settings_by_role("rabbitmq-server", "rabbitmq")
 api_endpoint =
-  get_bind_endpoint("quantum", "api")
+  get_bind_endpoint("neutron", "api")
 mysql_info =
   get_access_endpoint("mysql-master", "mysql", "db")
-quantum_info = get_settings_by_role("nova-network-controller", "quantum")
-local_ip = get_ip_for_net(node["quantum"]["ovs"]["network"], node)
+neutron_info = get_settings_by_role("nova-network-controller", "neutron")
+local_ip = get_ip_for_net(node["neutron"]["ovs"]["network"], node)
 
 # A comma-separated list of provider network vlan ranges
 # => "ph-eth1:1:1000,ph-eth0:1001:1024"
-vlan_ranges = node["quantum"]["ovs"]["provider_networks"].map do |network|
+vlan_ranges = node["neutron"]["ovs"]["provider_networks"].map do |network|
   if network.has_key?('vlans') and not network['vlans'].empty?
     network['vlans'].split(',').each do |vlan_range|
       vlan_range.prepend("#{network['label']}:")
@@ -60,104 +60,104 @@ end.join(',')
 
 # A comma-separated list of provider network to bridge mappings
 # => "ph-eth1:br-eth1,ph-eth0:br-eth0"
-bridge_mappings = node["quantum"]["ovs"]["provider_networks"].map do |network|
+bridge_mappings = node["neutron"]["ovs"]["provider_networks"].map do |network|
   "#{network['label']}:#{network['bridge']}"
 end.join(',')
 
 # Make sure our permissions are not too, well, permissive
-directory "/etc/quantum/" do
+directory "/etc/neutron/" do
   action :create
   owner "root"
-  group "quantum"
+  group "neutron"
   mode "750"
 end
 
 # *-controller role by itself won't install the OVS plugin, despite
-# quantum-server requiring the plugin's config file, so... make go
-directory "/etc/quantum/plugins/openvswitch" do
+# neutron-server requiring the plugin's config file, so... make go
+directory "/etc/neutron/plugins/openvswitch" do
   action :create
   owner "root"
-  group "quantum"
+  group "neutron"
   mode "750"
   recursive true
 end
 
-template "/etc/quantum/quantum.conf" do
-  source "quantum.conf.erb"
+template "/etc/neutron/neutron.conf" do
+  source "neutron.conf.erb"
   owner "root"
-  group "quantum"
+  group "neutron"
   mode "0640"
   variables(
-    "quantum_debug" => node["quantum"]["debug"],
-    "quantum_verbose" => node["quantum"]["verbose"],
-    "quantum_ipaddress" => api_endpoint["host"],
-    "quantum_port" => api_endpoint["port"],
-    "quantum_namespace" => node["quantum"]["use_namespaces"],
-    "quantum_ovs_use_veth" => node["quantum"]["ovs_use_veth"],
+    "neutron_debug" => node["neutron"]["debug"],
+    "neutron_verbose" => node["neutron"]["verbose"],
+    "neutron_ipaddress" => api_endpoint["host"],
+    "neutron_port" => api_endpoint["port"],
+    "neutron_namespace" => node["neutron"]["use_namespaces"],
+    "neutron_ovs_use_veth" => node["neutron"]["ovs_use_veth"],
     "rabbit_ipaddress" => rabbit_info["host"],
     "rabbit_ha_queues" => rabbit_settings["cluster"],
     "rabbit_port" => rabbit_info["port"],
-    "overlapping_ips" => node["quantum"]["overlap_ips"],
-    "quantum_plugin" => node["quantum"]["plugin"],
-    "quota_items" => node["quantum"]["quota_items"],
-    "default_quota" => node["quantum"]["default_quota"],
-    "quota_network" => node["quantum"]["quota_network"],
-    "quota_subnet" => node["quantum"]["quota_subnet"],
-    "quota_port" => node["quantum"]["quota_port"],
-    "quota_driver" => node["quantum"]["quota_driver"],
-    "service_pass" => quantum_info["service_pass"],
-    "service_user" => quantum_info["service_user"],
-    "service_tenant_name" => quantum_info["service_tenant_name"],
+    "overlapping_ips" => node["neutron"]["overlap_ips"],
+    "neutron_plugin" => node["neutron"]["plugin"],
+    "quota_items" => node["neutron"]["quota_items"],
+    "default_quota" => node["neutron"]["default_quota"],
+    "quota_network" => node["neutron"]["quota_network"],
+    "quota_subnet" => node["neutron"]["quota_subnet"],
+    "quota_port" => node["neutron"]["quota_port"],
+    "quota_driver" => node["neutron"]["quota_driver"],
+    "service_pass" => neutron_info["service_pass"],
+    "service_user" => neutron_info["service_user"],
+    "service_tenant_name" => neutron_info["service_tenant_name"],
     "keystone_protocol" => ks_admin_endpoint["scheme"],
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
-    "dhcp_lease_time" => node["quantum"]["dhcp_lease_time"],
+    "dhcp_lease_time" => node["neutron"]["dhcp_lease_time"],
     "keystone_admin_port" => ks_admin_endpoint["port"],
     "keystone_path" => ks_admin_endpoint["path"],
-    "agent_down_time" => node["quantum"]["agent_down_time"]
+    "agent_down_time" => node["neutron"]["agent_down_time"]
   )
 end
 
-template "/etc/quantum/api-paste.ini" do
+template "/etc/neutron/api-paste.ini" do
   source "api-paste.ini.erb"
   owner "root"
-  group "quantum"
+  group "neutron"
   mode "0640"
   variables(
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
     "keystone_admin_port" => ks_admin_endpoint["port"],
     "keystone_protocol" => ks_admin_endpoint["scheme"],
-    "service_tenant_name" => quantum_info["service_tenant_name"],
-    "service_user" => quantum_info["service_user"],
-    "service_pass" => quantum_info["service_pass"]
+    "service_tenant_name" => neutron_info["service_tenant_name"],
+    "service_user" => neutron_info["service_user"],
+    "service_pass" => neutron_info["service_pass"]
   )
 end
 
-template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
-  source "ovs_quantum_plugin.ini.erb"
+template "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini" do
+  source "ovs_neutron_plugin.ini.erb"
   owner "root"
-  group "quantum"
+  group "neutron"
   mode "0640"
   variables(
     "db_ip_address" => mysql_info["host"],
-    "db_user" => quantum_info["db"]["username"],
-    "db_password" => quantum_info["db"]["password"],
-    "db_name" => quantum_info["db"]["name"],
-    "ovs_firewall_driver" => node["quantum"]["ovs"]["firewall_driver"],
-    "ovs_network_type" => node["quantum"]["ovs"]["network_type"],
-    "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
-    "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
-    "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
+    "db_user" => neutron_info["db"]["username"],
+    "db_password" => neutron_info["db"]["password"],
+    "db_name" => neutron_info["db"]["name"],
+    "ovs_firewall_driver" => node["neutron"]["ovs"]["firewall_driver"],
+    "ovs_network_type" => node["neutron"]["ovs"]["network_type"],
+    "ovs_tunnel_ranges" => node["neutron"]["ovs"]["tunnel_ranges"],
+    "ovs_integration_bridge" => node["neutron"]["ovs"]["integration_bridge"],
+    "ovs_tunnel_bridge" => node["neutron"]["ovs"]["tunnel_bridge"],
     "ovs_vlan_range" => vlan_ranges,
     "ovs_bridge_mapping" => bridge_mappings,
-    "ovs_debug" => node["quantum"]["debug"],
-    "ovs_verbose" => node["quantum"]["verbose"],
+    "ovs_debug" => node["neutron"]["debug"],
+    "ovs_verbose" => node["neutron"]["verbose"],
     "ovs_local_ip" => local_ip
   )
 end
 
 case node['platform']
 when 'redhat', 'centos'
-  link "/etc/quantum/plugin.ini" do
-    to "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini"
+  link "/etc/neutron/plugin.ini" do
+    to "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
   end
 end
