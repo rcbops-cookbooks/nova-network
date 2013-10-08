@@ -104,7 +104,6 @@ else
   if node.recipe?"apache2"
     apache_site "openstack-quantum-server" do
       enable false
-      notifies :run, "execute[restore-selinux-context]", :immediately
       notifies :restart, "service[apache2]", :immediately
     end
   end
