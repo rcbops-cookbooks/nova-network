@@ -1,5 +1,5 @@
 # Cookbook Name:: nova-network
-# Recipe:: quantum-plugin
+# Recipe:: neutron-plugin
 #
 # Copyright 2012-2013, Rackspace US, Inc.
 #
@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-case node["quantum"]["plugin"]
+case node["neutron"]["plugin"]
 when "ovs"
-  include_recipe "nova-network::quantum-ovs-plugin"
+  include_recipe "nova-network::neutron-ovs-plugin"
 end
