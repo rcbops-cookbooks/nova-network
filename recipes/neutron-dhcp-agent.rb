@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nova-network
-# Recipe:: quantum-dhcp-agent
+# Recipe:: neutron-dhcp-agent
 #
 # Copyright 2012-2013, Rackspace US, Inc.
 #
@@ -17,39 +17,39 @@
 # limitations under the License.
 
 include_recipe "osops-utils"
-include_recipe "nova-network::quantum-common"
+include_recipe "nova-network::neutron-common"
 
-platform_options = node["quantum"]["platform"]
-plugin = node["quantum"]["plugin"]
+platform_options = node["neutron"]["platform"]
+plugin = node["neutron"]["plugin"]
 
-platform_options["quantum_dhcp_packages"].each do |pkg|
+platform_options["neutron_dhcp_packages"].each do |pkg|
   package pkg do
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
     options platform_options["package_overrides"]
   end
 end
 
-service "quantum-dhcp-agent" do
-  service_name platform_options["quantum_dhcp_agent"]
+service "neutron-dhcp-agent" do
+  service_name platform_options["neutron_dhcp_agent"]
   supports :status => true, :restart => true
   action :nothing
-  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
+  subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
   subscribes :restart, "template[/etc/dhcp_agent.ini]", :delayed
 end
 
 ks_admin_endpoint =
   get_access_endpoint("keystone-api", "keystone", "admin-api")
-quantum_info =
-  get_settings_by_recipe("nova-network\\:\\:nova-controller", "quantum")
+neutron_info =
+  get_settings_by_recipe("nova-network\\:\\:nova-controller", "neutron")
 
-template "/etc/quantum/dhcp_agent.ini" do
+template "/etc/neutron/dhcp_agent.ini" do
   source "dhcp_agent.ini.erb"
   owner "root"
-  group "quantum"
+  group "neutron"
   mode "0640"
   variables(
-    "quantum_isolated" => node["quantum"]["isolated_metadata"],
-    "quantum_plugin" => node["quantum"]["plugin"],
-    "quantum_dhcp_domain" => node["quantum"]["dhcp_domain"]
+    "neutron_isolated" => node["neutron"]["isolated_metadata"],
+    "neutron_plugin" => node["neutron"]["plugin"],
+    "neutron_dhcp_domain" => node["neutron"]["dhcp_domain"]
   )
 end

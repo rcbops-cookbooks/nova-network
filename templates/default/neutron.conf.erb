@@ -1,20 +1,20 @@
 [DEFAULT]
-root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
-debug = <%= @quantum_debug %>
-verbose = <%= @quantum_verbose %>
-bind_host = <%= @quantum_ipaddress %>
-bind_port = <%= @quantum_port %>
-<% if @quantum_plugin == "ovs" %>
-core_plugin = quantum.plugins.openvswitch.ovs_quantum_plugin.OVSQuantumPluginV2
-ovs_use_veth = <%= @quantum_ovs_use_veth %>
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
+debug = <%= @neutron_debug %>
+verbose = <%= @neutron_verbose %>
+bind_host = <%= @neutron_ipaddress %>
+bind_port = <%= @neutron_port %>
+<% if @neutron_plugin == "ovs" %>
+core_plugin = neutron.plugins.openvswitch.ovs_neutron_plugin.OVSNeutronPluginV2
+ovs_use_veth = <%= @neutron_ovs_use_veth %>
 <% end %>
 allow_overlapping_ips = <%= @overlapping_ips %>
-use_namespaces = <%= @quantum_namespace %>
-api_paste_config = /etc/quantum/api-paste.ini
-control_exchange = quantum
+use_namespaces = <%= @neutron_namespace %>
+api_paste_config = /etc/neutron/api-paste.ini
+control_exchange = neutron
 rabbit_host = <%= @rabbit_ipaddress %>
 rabbit_ha_queues=<%= @rabbit_ha_queues %>
-notification_driver = quantum.openstack.common.notifier.rpc_notifier
+notification_driver = neutron.openstack.common.notifier.rpc_notifier
 
 # keystone auth - this will cascade to all agents/services
 auth_strategy = keystone
@@ -32,7 +32,7 @@ dhcp_lease_duration = <%= @dhcp_lease_time %>
 agent_down_time = <%= @agent_down_time %>
 
 [AGENT]
-root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
+root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
 polling_interval = 2
 
 [QUOTAS]

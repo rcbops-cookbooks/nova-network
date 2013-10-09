@@ -1,5 +1,5 @@
 # Cookbook Name:: nova-network
-# Recipe:: quantum-ovs-plugin
+# Recipe:: neutron-ovs-plugin
 #
 # Copyright 2012-2013, Rackspace US, Inc.
 #
@@ -16,44 +16,44 @@
 # limitations under the License.
 
 include_recipe "osops-utils"
-include_recipe "nova-network::quantum-common"
+include_recipe "nova-network::neutron-common"
 
-platform_options = node["quantum"]["platform"]
-plugin = node["quantum"]["plugin"]
+platform_options = node["neutron"]["platform"]
+plugin = node["neutron"]["plugin"]
 
 
-platform_options["quantum_#{plugin}_packages"].each do |pkg|
+platform_options["neutron_#{plugin}_packages"].each do |pkg|
   package pkg do
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
     options platform_options["package_overrides"]
   end
 end
 
-service "quantum-plugin-openvswitch-agent" do
-  service_name platform_options["quantum_ovs_service_name"]
+service "neutron-plugin-openvswitch-agent" do
+  service_name platform_options["neutron_ovs_service_name"]
   supports :status => true, :restart => true
   action :enable
-  subscribes :restart, "template[/etc/quantum/quantum.conf]", :delayed
-  subscribes :restart, "template[/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini]", :delayed
+  subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
+  subscribes :restart, "template[/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini]", :delayed
 end
 
 service "openvswitch-switch" do
-  service_name platform_options['quantum_openvswitch_service_name']
+  service_name platform_options['neutron_openvswitch_service_name']
   supports :status => true, :restart => true
   action [:enable, :start]
 end
 
 execute "create integration bridge" do
-  command "ovs-vsctl add-br #{node["quantum"]["ovs"]["integration_bridge"]}"
+  command "ovs-vsctl add-br #{node["neutron"]["ovs"]["integration_bridge"]}"
   action :run
-  not_if "ovs-vsctl list-br | grep #{node["quantum"]["ovs"]["integration_bridge"]}"
+  not_if "ovs-vsctl list-br | grep #{node["neutron"]["ovs"]["integration_bridge"]}"
 end
 
-node["quantum"]["ovs"]["provider_networks"].each do |network|
+node["neutron"]["ovs"]["provider_networks"].each do |network|
   execute "create provider bridge #{network['bridge']}" do
     command "ovs-vsctl add-br #{network['bridge']}"
     action :run
-    notifies :restart, "service[quantum-plugin-openvswitch-agent]", :delayed
+    notifies :restart, "service[neutron-plugin-openvswitch-agent]", :delayed
     not_if "ovs-vsctl list-br | grep #{network['bridge']}" ## FIXME
   end
 end
