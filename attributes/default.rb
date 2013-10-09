@@ -206,7 +206,7 @@ when "ubuntu"
       "-o Dpkg::Options::='--force-confdef'",
 
     "neutron_ovs_packages" => [
-      "openvswitch-datapath-dkms",
+      "openvswitch-datapath-lts-raring-dkms",
       "neutron-plugin-openvswitch",
       "neutron-plugin-openvswitch-agent"
     ],
