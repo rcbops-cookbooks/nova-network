@@ -206,7 +206,8 @@ when "ubuntu"
       "-o Dpkg::Options::='--force-confdef'",
 
     "quantum_ovs_packages" => [
-      "openvswitch-datapath-dkms",
+      "linux-headers-#{kernel['release']}",
+      "openvswitch-datapath-lts-raring-dkms",
       "quantum-plugin-openvswitch",
       "quantum-plugin-openvswitch-agent"
     ],
