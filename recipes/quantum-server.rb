@@ -17,40 +17,11 @@
 # limitations under the License.
 #
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-include_recipe "mysql::client"
-include_recipe "mysql::ruby"
 include_recipe "osops-utils"
 
 platform_options = node["quantum"]["platform"]
 
-# If we're HA
-if get_role_count("nova-network-controller") > 1
-  # Grab the first controller
-  quantum = get_settings_by_role("ha-controller1", "quantum")
-  node.set["quantum"]["db"]["password"] =
-    quantum["db"]["password"]
-  node.set["quantum"]["service_pass"] =
-    quantum["service_pass"]
-  node.set["quantum"]["quantum_metadata_proxy_shared_secret"] =
-    quantum["quantum_metadata_proxy_shared_secret"]
-else # Make some stuff up
-  if node["developer_mode"] == true
-    node.set_unless["quantum"]["db"]["password"] =
-      "quantum"
-  else
-    node.set_unless["quantum"]["db"]["password"] =
-      secure_password
-  end
-
-  node.set_unless['quantum']['service_pass'] =
-    secure_password
-  node.set_unless["quantum"]["quantum_metadata_proxy_shared_secret"] =
-    secure_password
-end
-
-unless Chef::Config[:solo]
-  node.save
-end
+quantum = get_settings_by_role("quantum-setup", "quantum")
 
 # Only do this setup once the db/service pass has been set.
 include_recipe "nova-network::quantum-common"
@@ -64,6 +35,7 @@ platform_options["quantum_api_packages"].each do |pkg|
   end
 end
 
+# Get the keystone endpoints
 ks_admin_endpoint =
   get_access_endpoint("keystone-api", "keystone", "admin-api")
 ks_service_endpoint =
@@ -71,19 +43,11 @@ ks_service_endpoint =
 keystone =
   get_settings_by_role("keystone-setup", "keystone")
 
-# Create db and user
-# return connection info
-# defined in osops-utils/libraries
-mysql_info = create_db_and_user(
-  "mysql",
-  node["quantum"]["db"]["name"],
-  node["quantum"]["db"]["username"],
-  node["quantum"]["db"]["password"]
-)
-
+# Get the api endpoints
 api_endpoint = get_bind_endpoint("quantum", "api")
 access_endpoint = get_access_endpoint("nova-network-controller", "quantum", "api")
 
+# Setup and configure the service
 service "quantum-server" do
   service_name platform_options["quantum_api_service"]
   supports :status => true, :restart => true
@@ -97,7 +61,7 @@ service "quantum-server" do
   end
 end
 
-# Setup SSL
+# Setup SSL if required
 if api_endpoint["scheme"] == "https"
   include_recipe "nova-network::quantum-server-ssl"
 else
@@ -108,19 +72,6 @@ else
     end
   end
 end
-
-# Adds db Indexing for the hosts as found in the agents table.
-# Defined in osops-utils/libraries
-
-add_index_stopgap("mysql",
-                  node["quantum"]["db"]["name"],
-                  node["quantum"]["db"]["username"],
-                  node["quantum"]["db"]["password"],
-                  "rax_ix_host_index",
-                  "agents",
-                  "host",
-                  "service[quantum-server]",
-                  :run)
 
 keystone_tenant "Register Service Tenant" do
   auth_host ks_admin_endpoint["host"]
