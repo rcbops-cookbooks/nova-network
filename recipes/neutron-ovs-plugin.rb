@@ -65,13 +65,13 @@ when 'redhat', 'centos'
       # Since these packages are already installed from [base] and we want
       # to replace them, we need action :upgrade to make chef install the
       # alternate versions.
-      # XXX Assumes versions from [epel-openstack-grizzly] > [base]
+      # XXX Assumes versions from [epel-openstack] > [base]
       action :upgrade
 
-      # Force yum to search the openstack-grizzly repo.
+      # Force yum to search the epel-openstack repo.
       # FIXME(brett) Don't hardcode repo name (hardcoded in osops::packages).
       #   Maybe dynamically get name from `yum repolist'.
-      options '--disablerepo="*" --enablerepo=epel-openstack-havana'
+      options '--disablerepo="*" --enablerepo=epel-openstack'
 
       # To protect ourselves from future chef runs, don't always upgrade
       # packages when updates are available (maybe consider checking
