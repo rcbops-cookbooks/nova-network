@@ -71,7 +71,7 @@ when 'redhat', 'centos'
       # Force yum to search the openstack-grizzly repo.
       # FIXME(brett) Don't hardcode repo name (hardcoded in osops::packages).
       #   Maybe dynamically get name from `yum repolist'.
-      options '--disablerepo="*" --enablerepo=epel-openstack-grizzly'
+      options '--disablerepo="*" --enablerepo=epel-openstack-havana'
 
       # To protect ourselves from future chef runs, don't always upgrade
       # packages when updates are available (maybe consider checking
