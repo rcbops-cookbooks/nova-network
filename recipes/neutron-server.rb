@@ -60,7 +60,7 @@ packages = platform_options["neutron_api_packages"]
 platform_options["neutron_api_packages"].each do |pkg|
   package pkg do
     action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-    options platform_options["package_overrides"]
+    options platform_options["package_options"]
   end
 end
 

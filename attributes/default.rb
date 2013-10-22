@@ -156,7 +156,7 @@ when "fedora", "redhat", "centos"
     "neutron-metadata-agent" => "neutron-metadata-agent",
     "neutron_api_service" => "neutron-server",
     "neutron_api_process_name" => "neutron-server",
-    "package_overrides" => "",
+    "package_options" => "",
     "neutron_ovs_packages" => [
       'openstack-neutron-openvswitch'
     ],
@@ -202,7 +202,7 @@ when "ubuntu"
     "neutron_metadata_packages" => ["neutron-metadata-agent"],
     "neutron-metadata-agent" => "neutron-metadata-agent",
 
-    "package_overrides" => "-o Dpkg::Options::='--force-confold' "\
+    "package_options" => "-o Dpkg::Options::='--force-confold' "\
       "-o Dpkg::Options::='--force-confdef'",
 
     "neutron_ovs_packages" => [
