@@ -8,11 +8,11 @@ recipe            "nova-compute", ""
 recipe            "nova-controller", ""
 recipe            "nova-network", ""
 recipe            "nova-setup", ""
-recipe            "quantum-dhcp-agent", ""
-recipe            "quantum-l3-agent", ""
-recipe            "quantum-ovs-plugin", ""
-recipe            "quantum-plugin", ""
-recipe            "quantum-server", ""
+recipe            "neutron-dhcp-agent", ""
+recipe            "neutron-l3-agent", ""
+recipe            "neutron-ovs-plugin", ""
+recipe            "neutron-plugin", ""
+recipe            "neutron-server", ""
 
 %w{ centos ubuntu }.each do |os|
   supports os

@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-if node["nova"]["network"]["provider"] == "quantum"
-  include_recipe "nova-network::quantum-plugin"
+if node["nova"]["network"]["provider"] == "neutron"
+  include_recipe "nova-network::neutron-plugin"
   include_recipe "sysctl::default"
 
   sysctl 'net.ipv4.ip_forward' do

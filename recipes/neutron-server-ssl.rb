@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nova-network
-# Recipe:: quantum-server-ssl
+# Recipe:: neutron-server-ssl
 #
 # Copyright 2012, Rackspace US, Inc.
 #
@@ -41,15 +41,15 @@ else
   grp = "root"
 end
 
-cookbook_file "#{node["quantum"]["ssl"]["dir"]}/certs/#{node["quantum"]["services"]["api"]["cert_file"]}" do
-  source "quantum.pem"
+cookbook_file "#{node["neutron"]["ssl"]["dir"]}/certs/#{node["neutron"]["services"]["api"]["cert_file"]}" do
+  source "neutron.pem"
   mode 0644
   owner "root"
   group "root"
 end
 
-cookbook_file "#{node["quantum"]["ssl"]["dir"]}/private/#{node["quantum"]["services"]["api"]["key_file"]}" do
-  source "quantum.key"
+cookbook_file "#{node["neutron"]["ssl"]["dir"]}/private/#{node["neutron"]["services"]["api"]["key_file"]}" do
+  source "neutron.key"
   mode 0644
   owner "root"
   group grp
@@ -64,39 +64,39 @@ directory "#{node["apache"]["dir"]}/wsgi" do
   mode "0755"
 end
 
-cookbook_file "#{node["apache"]["dir"]}/wsgi/#{node["quantum"]["services"]["api"]["wsgi_file"]}" do
-  source "quantum_modwsgi.py"
+cookbook_file "#{node["apache"]["dir"]}/wsgi/#{node["neutron"]["services"]["api"]["wsgi_file"]}" do
+  source "neutron_modwsgi.py"
   mode 0644
   owner "root"
   group "root"
 end
 
-api_bind = get_bind_endpoint("quantum", "api")
+api_bind = get_bind_endpoint("neutron", "api")
 
-unless node["quantum"]["services"]["api"].attribute?"cert_override"
-  cert_location = "#{node["quantum"]["ssl"]["dir"]}/certs/#{node["quantum"]["services"]["api"]["cert_file"]}"
+unless node["neutron"]["services"]["api"].attribute?"cert_override"
+  cert_location = "#{node["neutron"]["ssl"]["dir"]}/certs/#{node["neutron"]["services"]["api"]["cert_file"]}"
 else
-  cert_location = node["quantum"]["services"]["api"]["cert_override"]
+  cert_location = node["neutron"]["services"]["api"]["cert_override"]
 end
 
-unless node["quantum"]["services"]["api"].attribute?"key_override"
-  key_location = "#{node["quantum"]["ssl"]["dir"]}/private/#{node["quantum"]["services"]["api"]["key_file"]}"
+unless node["neutron"]["services"]["api"].attribute?"key_override"
+  key_location = "#{node["neutron"]["ssl"]["dir"]}/private/#{node["neutron"]["services"]["api"]["key_file"]}"
 else
-  key_location = node["quantum"]["services"]["api"]["key_override"]
+  key_location = node["neutron"]["services"]["api"]["key_override"]
 end
 
 template value_for_platform(
   ["ubuntu", "debian", "fedora"] => {
-    "default" => "#{node["apache"]["dir"]}/sites-available/openstack-quantum-server"
+    "default" => "#{node["apache"]["dir"]}/sites-available/openstack-neutron-server"
   },
   "fedora" => {
-    "default" => "#{node["apache"]["dir"]}/vhost.d/openstack-quantum-server"
+    "default" => "#{node["apache"]["dir"]}/vhost.d/openstack-neutron-server"
   },
   ["redhat", "centos"] => {
-    "default" => "#{node["apache"]["dir"]}/conf.d/openstack-quantum-server"
+    "default" => "#{node["apache"]["dir"]}/conf.d/openstack-neutron-server"
   },
   "default" => {
-    "default" => "#{node["apache"]["dir"]}/openstack-quantum-server"
+    "default" => "#{node["apache"]["dir"]}/openstack-neutron-server"
   }
 ) do
   source "modwsgi_vhost.erb"
@@ -108,14 +108,14 @@ template value_for_platform(
     :service_port => api_bind["port"],
     :cert_file => cert_location,
     :key_file => key_location,
-    :wsgi_file  => "#{node["apache"]["dir"]}/wsgi/#{node["quantum"]["services"]["api"]["wsgi_file"]}",
-    :proc_group => "quantum-server",
-    :log_file => "/var/log/quantum/quantum-server.log"
+    :wsgi_file  => "#{node["apache"]["dir"]}/wsgi/#{node["neutron"]["services"]["api"]["wsgi_file"]}",
+    :proc_group => "neutron-server",
+    :log_file => "/var/log/neutron/neutron-server.log"
   )
   notifies :reload, "service[apache2]", :delayed
 end
 
-apache_site "openstack-quantum-server" do
+apache_site "openstack-neutron-server" do
   enable true
   notifies :restart, "service[apache2]", :immediately
 end
