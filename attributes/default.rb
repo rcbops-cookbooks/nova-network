@@ -121,8 +121,11 @@ default["neutron"]["ovs"]["network"]="nova"
 default["neutron"]["ovs"]["firewall_driver"] =
   "neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
-case platform
+# Generic regex for process pattern matching (to be used as a base pattern).
+# Works for both Grizzly and Havana packages on Ubuntu and CentOS.
+procmatch_base = '^((/usr/bin/)?python\d? )?(/usr/bin/)?'
 
+case platform
 when "fedora", "redhat", "centos"
 
   # Array of all the provider based networks to create
@@ -136,6 +139,7 @@ when "fedora", "redhat", "centos"
   default["nova-network"]["platform"] = {
     "nova_network_packages" => ["iptables", "openstack-nova-network"],
     "nova_network_service" => "openstack-nova-network",
+    "nova_network_procmatch" => procmatch_base + 'nova-network\b',
     "common_packages" => ["openstack-nova-common", "python-cinderclient"]
   }
 
@@ -155,7 +159,6 @@ when "fedora", "redhat", "centos"
     "neutron_metadata_packages" => ["openstack-neutron"],
     "neutron-metadata-agent" => "neutron-metadata-agent",
     "neutron_api_service" => "neutron-server",
-    "neutron_api_process_name" => "neutron-server",
     "package_options" => "",
     "neutron_ovs_packages" => [
       'openstack-neutron-openvswitch'
@@ -180,6 +183,7 @@ when "ubuntu"
   default["nova-network"]["platform"] = {
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
+    "nova_network_procmatch" => procmatch_base + 'nova-network\b',
     "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
   }
 
@@ -189,7 +193,6 @@ when "ubuntu"
       "neutron-common", "python-neutron"],
 
     "neutron_api_packages" => ["neutron-server"],
-    "neutron_api_process_name" => "neutron-server",
     "neutron_api_service" => "neutron-server",
 
     "neutron_dhcp_packages" => ["dnsmasq-base", "dnsmasq-utils",
