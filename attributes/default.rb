@@ -121,8 +121,11 @@ default["quantum"]["ovs"]["network"]="nova"
 default["quantum"]["ovs"]["firewall_driver"] =
   "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
-case platform
+# Generic regex for process pattern matching (to be used as a base pattern).
+# Works for both Grizzly and Havana packages on Ubuntu and CentOS.
+procmatch_base = '^((/usr/bin/)?python\d? )?(/usr/bin/)?'
 
+case platform
 when "fedora", "redhat", "centos"
 
   # Array of all the provider based networks to create
@@ -136,6 +139,7 @@ when "fedora", "redhat", "centos"
   default["nova-network"]["platform"] = {
     "nova_network_packages" => ["iptables", "openstack-nova-network"],
     "nova_network_service" => "openstack-nova-network",
+    "nova_network_procmatch" => procmatch_base + 'nova-network\b',
     "common_packages" => ["openstack-nova-common", "python-cinderclient"]
   }
 
@@ -155,7 +159,6 @@ when "fedora", "redhat", "centos"
     "quantum_metadata_packages" => ["openstack-quantum"],
     "quantum-metadata-agent" => "quantum-metadata-agent",
     "quantum_api_service" => "quantum-server",
-    "quantum_api_process_name" => "quantum-server",
     "package_overrides" => "",
     "quantum_ovs_packages" => [
       'openstack-quantum-openvswitch'
@@ -180,6 +183,7 @@ when "ubuntu"
   default["nova-network"]["platform"] = {                                                   # node_attribute
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
+    "nova_network_procmatch" => procmatch_base + 'nova-network\b',
     "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
   }
 
@@ -189,7 +193,6 @@ when "ubuntu"
       "quantum-common", "python-quantum"],
 
     "quantum_api_packages" => ["quantum-server"],
-    "quantum_api_process_name" => "quantum-server",
     "quantum_api_service" => "quantum-server",
 
     "quantum_dhcp_packages" => ["dnsmasq-base", "dnsmasq-utils",
