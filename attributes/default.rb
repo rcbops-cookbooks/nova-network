@@ -65,6 +65,7 @@ default["neutron"]["linuxnet_interface_driver"] =
   "nova.network.linux_net.LinuxOVSInterfaceDriver"
 default["neutron"]["firewall_driver"] =
   "nova.virt.firewall.NoopFirewallDriver"
+default["neutron"]["notification_driver"] = "neutron.openstack.common.notifier.no_op_notifier"
 default["neutron"]["security_group_api"] = "neutron"
 default["neutron"]["isolated_metadata"] = "True"
 default["neutron"]["service_neutron_metadata_proxy"] = "True"
