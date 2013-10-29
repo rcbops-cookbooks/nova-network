@@ -113,7 +113,8 @@ template "/etc/quantum/quantum.conf" do
     "dhcp_lease_time" => node["quantum"]["dhcp_lease_time"],
     "keystone_admin_port" => ks_admin_endpoint["port"],
     "keystone_path" => ks_admin_endpoint["path"],
-    "agent_down_time" => node["quantum"]["agent_down_time"]
+    "agent_down_time" => node["quantum"]["agent_down_time"],
+    "notification_driver" => node["quantum"]["notification_driver"]
   )
 end
 
