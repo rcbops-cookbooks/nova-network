@@ -16,6 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 default["nova"]["network"]["provider"] = "nova"
 
 # ######################################################################### #
@@ -68,6 +69,8 @@ default["neutron"]["firewall_driver"] =
 default["neutron"]["notification_driver"] = "neutron.openstack.common.notifier.no_op_notifier"
 default["neutron"]["security_group_api"] = "neutron"
 default["neutron"]["isolated_metadata"] = "True"
+default["neutron"]["metadata_network"] = "False"
+default["neutron"]["dnsmasq_lease_max"] = 16777216
 default["neutron"]["service_neutron_metadata_proxy"] = "True"
 default["neutron"]["agent_down_time"] = 30
 

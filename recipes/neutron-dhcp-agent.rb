@@ -48,6 +48,9 @@ template "/etc/neutron/dhcp_agent.ini" do
   group "neutron"
   mode "0640"
   variables(
+    "use_debug" => node["neutron"]["debug"],
+    "dnsmasq_lease" => node["neutron"]["dnsmasq_lease_max"],
+    "neutron_metadata_network" => node["neutron"]["metadata_network"],
     "neutron_isolated" => node["neutron"]["isolated_metadata"],
     "neutron_plugin" => node["neutron"]["plugin"],
     "neutron_dhcp_domain" => node["neutron"]["dhcp_domain"]
