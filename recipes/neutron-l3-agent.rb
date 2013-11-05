@@ -43,7 +43,7 @@ service "neutron-l3-agent" do
   supports :status => true, :restart => true
   action :nothing
   subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
-  subscribes :restart, "template[/etc/l3-agent.ini]", :delayed
+  subscribes :restart, "template[/etc/neutron/l3-agent.ini]", :delayed
 end
 
 execute "create external bridge" do
