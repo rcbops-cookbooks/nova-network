@@ -13,12 +13,13 @@ recipe            "neutron-l3-agent", ""
 recipe            "neutron-ovs-plugin", ""
 recipe            "neutron-plugin", ""
 recipe            "neutron-server", ""
+recipe            "rpcdaemon", ""
 
 %w{ centos ubuntu }.each do |os|
   supports os
 end
 
-%w{ mysql nova osops-utils sysctl apache2 }.each do |dep|
+%w{ mysql nova osops-utils sysctl apache2 apt yum}.each do |dep|
   depends dep
 end
 
