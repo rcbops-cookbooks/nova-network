@@ -13,8 +13,8 @@ use_namespaces = <%= @quantum_namespace %>
 api_paste_config = /etc/quantum/api-paste.ini
 control_exchange = quantum
 rabbit_host = <%= @rabbit_ipaddress %>
-rabbit_ha_queues=<%= @rabbit_ha_queues %>
-notification_driver = quantum.openstack.common.notifier.rpc_notifier
+rabbit_ha_queues = <%= @rabbit_ha_queues %>
+notification_driver = <%= @notification_driver %>
 
 # keystone auth - this will cascade to all agents/services
 auth_strategy = keystone
