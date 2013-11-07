@@ -19,34 +19,6 @@
 
 platform_options = node["neutron"]["platform"]
 
-# Ensure package repository.  This should go elsewhere, but
-# I'm not sure this is the right place for these packages.
-case node["platform_family"]
-when "rhel"
-  include_recipe "yum::epel"
-
-  yum_key "RPM-GPG-KEY-nova-extras" do
-    url "http://download.opensuse.org/repositories/home:/rpedde:/openstack/CentOS_CentOS-6/repodata/repomd.xml.key"
-    action :add
-  end
-
-  yum_repository "nova-extras" do
-    repo_name "nova-extras"
-    key "RPM-GPG-KEY-nova-extras"
-    url "http://download.opensuse.org/repositories/home:/rpedde:/openstack/CentOS_CentOS-6/"
-    type "rpm-md"
-  end
-when "debian"
-  include_recipe "apt::default"
-
-  apt_repository "nova-extras" do
-    uri "http://download.opensuse.org/repositories/home:/rpedde:/openstack/xUbuntu_12.04"
-    distribution "/"
-    key "http://download.opensuse.org/repositories/home:/rpedde:/openstack/xUbuntu_12.04/Release.key"
-  end
-end
-
-
 # install the rpc daemon package
 package "rpcdaemon" do
   action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
