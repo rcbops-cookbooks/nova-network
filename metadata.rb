@@ -19,7 +19,7 @@ recipe            "rpcdaemon", ""
   supports os
 end
 
-%w{ mysql nova osops-utils sysctl apache2 apt yum}.each do |dep|
+%w{ mysql nova osops-utils sysctl apache2 }.each do |dep|
   depends dep
 end
 
