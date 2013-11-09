@@ -82,6 +82,19 @@ directory "/etc/neutron/plugins/openvswitch" do
   recursive true
 end
 
+notification_provider = node["neutron"]["notification"]["driver"]
+case notification_provider
+when "no_op"
+  notification_driver = "neutron.openstack.common.notifier.rpc_notifier"
+when "rpc"
+  notification_driver = "neutron.openstack.common.notifier.rpc_notifier"
+when "log"
+  notification_driver = "neutron.openstack.common.notifier.log_notifier"
+else
+  msg = "#{notification_provider}, is not currently supported by these cookbooks."
+  Chef::Application.fatal! msg
+end
+
 template "/etc/neutron/neutron.conf" do
   source "neutron.conf.erb"
   owner "root"
@@ -114,7 +127,8 @@ template "/etc/neutron/neutron.conf" do
     "keystone_admin_port" => ks_admin_endpoint["port"],
     "keystone_path" => ks_admin_endpoint["path"],
     "agent_down_time" => node["neutron"]["agent_down_time"],
-    "notification_driver" => node["neutron"]["notification_driver"]
+    "notification_driver" => notification_driver,
+    "notification_topics" => node["nova"]["notification"]["topics"]
   )
 end
 
