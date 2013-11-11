@@ -165,7 +165,8 @@ when "fedora", "redhat", "centos"
       'openstack-neutron-openvswitch'
     ],
     "neutron_ovs_service_name" => "neutron-openvswitch-agent",
-    "neutron_openvswitch_service_name" => "openvswitch"
+    "neutron_openvswitch_service_name" => "openvswitch",
+    "rpcdaemon" => "rpcdaemon"
   }
   default["neutron"]["ssl"]["dir"] = "/etc/pki/tls"
   default["neutron"]["ovs_use_veth"] = "True"
@@ -216,7 +217,8 @@ when "ubuntu"
       "neutron-plugin-openvswitch-agent"
     ],
     "neutron_ovs_service_name" => "neutron-plugin-openvswitch-agent",
-    "neutron_openvswitch_service_name" => "openvswitch-switch"
+    "neutron_openvswitch_service_name" => "openvswitch-switch",
+    "rpcdaemon" => "rpcdaemon"
   }
   default["neutron"]["ssl"]["dir"] = "/etc/ssl"
   default["neutron"]["ovs_use_veth"] = "False"
