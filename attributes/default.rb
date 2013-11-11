@@ -166,6 +166,7 @@ when "fedora", "redhat", "centos"
     ],
     "quantum_ovs_service_name" => "quantum-openvswitch-agent",
     "quantum_openvswitch_service_name" => "openvswitch"
+    "rpcdaemon" => "rpcdaemon"
   }
   default["quantum"]["ssl"]["dir"] = "/etc/pki/tls"
   default["quantum"]["ovs_use_veth"] = "True"
@@ -217,6 +218,7 @@ when "ubuntu"
     ],
     "quantum_ovs_service_name" => "quantum-plugin-openvswitch-agent",
     "quantum_openvswitch_service_name" => "openvswitch-switch"
+    "rpcdaemon" => "rpcdaemon"
   }
   default["quantum"]["ssl"]["dir"] = "/etc/ssl"
   default["quantum"]["ovs_use_veth"] = "False"
