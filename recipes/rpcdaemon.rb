@@ -38,8 +38,6 @@ template "/etc/rpcdaemon.conf" do
   )
 end
 
-# TODO: Monitization.  Not Monetization.  Monitization.
-
 # Ensure service is started and running.
 service "rpcdaemon" do
   supports :status => true, :restart => true
