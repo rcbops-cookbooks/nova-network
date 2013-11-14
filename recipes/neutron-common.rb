@@ -128,7 +128,7 @@ template "/etc/neutron/neutron.conf" do
     "keystone_path" => ks_admin_endpoint["path"],
     "agent_down_time" => node["neutron"]["agent_down_time"],
     "notification_driver" => notification_driver,
-    "notification_topics" => node["nova"]["notification"]["topics"]
+    "notification_topics" => node["neutron"]["notification"]["topics"]
   )
 end
 
