@@ -1,10 +1,31 @@
 [DEFAULT]
+debug =  <%= @use_debug %>
+
+##### DHCP DRIVER #####
 dhcp_driver = neutron.agent.linux.dhcp.Dnsmasq
+
+
+##### DHCP DOMAIN #####
 dhcp_domain = <%= @neutron_dhcp_domain %>
 
+
+##### METADATA OPTIONS #####
+# DHCP server can assist with providing metadata support on isolated networks
 enable_isolated_metadata = <%= @neutron_isolated %>
 
+<% if @neutron_isolated == "True" %>
+# Allows serving metadata from a network when the cidr is 169.254.169.254/16.
+# To set this "True" it requires "enable_isolated_metadata = True"
+enable_metadata_network = <%= @neutron_metadata_network %>
+<% end %>
+
+
+##### DNS MASQ #####
+# Limit number of leases to prevent a denial-of-service.
+dnsmasq_lease_max = <%= @dnsmasq_lease %>
+
+
 <% if @neutron_plugin == "ovs" %>
-# OVS
+##### OVS PLUGIN #####
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 <% end %>

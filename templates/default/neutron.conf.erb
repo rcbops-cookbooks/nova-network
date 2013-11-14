@@ -14,8 +14,9 @@ api_paste_config = /etc/neutron/api-paste.ini
 control_exchange = neutron
 rabbit_host = <%= @rabbit_ipaddress %>
 rabbit_ha_queues = <%= @rabbit_ha_queues %>
-notification_driver = <%= @notification_driver %>
 rpc_backend = neutron.openstack.common.rpc.impl_kombu
+notification_driver = <%= @notification_driver %>
+notification_topics = <%= @notification_topics %>
 
 # keystone auth - this will cascade to all agents/services
 auth_strategy = keystone
