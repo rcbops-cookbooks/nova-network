@@ -141,7 +141,8 @@ when "fedora", "redhat", "centos"
     "nova_network_packages" => ["iptables", "openstack-nova-network"],
     "nova_network_service" => "openstack-nova-network",
     "nova_network_procmatch" => procmatch_base + 'nova-network\b',
-    "common_packages" => ["openstack-nova-common", "python-cinderclient"]
+    "common_packages" => ["openstack-nova-common", "python-cinderclient"],
+    "package_options" => ""
   }
 
   default["quantum"]["platform"] = {
@@ -185,7 +186,8 @@ when "ubuntu"
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
     "nova_network_procmatch" => procmatch_base + 'nova-network\b',
-    "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
+    "common_packages" => ["nova-common", "python-nova", "python-novaclient"],
+    "package_options" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
 
   default["quantum"]["platform"] = {
