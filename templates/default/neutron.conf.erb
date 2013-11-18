@@ -18,6 +18,10 @@ rpc_backend = neutron.openstack.common.rpc.impl_kombu
 notification_driver = <%= @notification_driver %>
 notification_topics = <%= @notification_topics %>
 
+<% if ! @service_plugins.empty? %>
+service_plugins= <%= @service_plugins.join(",") %>
+<% end %>
+
 # keystone auth - this will cascade to all agents/services
 auth_strategy = keystone
 auth_url = <%= @keystone_protocol %>://<%= @keystone_api_ipaddress %>:<%= @keystone_admin_port %><%= @keystone_path %>
@@ -50,3 +54,8 @@ quota_subnet = <%= @quota_subnet %>
 quota_port = <%= @quota_port %>
 # default driver to use for quota checks
 quota_driver = <%= @quota_driver %>
+
+[SERVICE_PROVIDERS]
+<% if @lbaas_provider %>
+service_provider = <%= @lbaas_provider %>
+<%end%>
