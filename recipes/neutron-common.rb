@@ -95,6 +95,20 @@ else
   Chef::Application.fatal! msg
 end
 
+# Use service_plugins arry to pass all service plugins to the conf at once
+service_plugins = []
+if node["neutron"]["lbaas"]
+  #Add Load balancer to service_plugins array
+  service_plugins << "neutron.services.loadbalancer.plugin.LoadBalancerPlugin"
+  lbaas_provider = "LOADBALANCER:Haproxy:neutron.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default"
+  case node['platform']
+    when 'redhat', 'centos'
+    #Don't set the provider on rhel/cent as it's set in neutron-dist.conf
+    # https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1022725
+    lbaas_provider = false
+  end
+end
+
 template "/etc/neutron/neutron.conf" do
   source "neutron.conf.erb"
   owner "root"
@@ -128,7 +142,9 @@ template "/etc/neutron/neutron.conf" do
     "keystone_path" => ks_admin_endpoint["path"],
     "agent_down_time" => node["neutron"]["agent_down_time"],
     "notification_driver" => notification_driver,
-    "notification_topics" => node["neutron"]["notification"]["topics"]
+    "notification_topics" => node["neutron"]["notification"]["topics"],
+    "lbaas_provider" => lbaas_provider,
+    "service_plugins" => service_plugins
   )
 end
 

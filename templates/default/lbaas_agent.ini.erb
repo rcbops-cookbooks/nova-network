@@ -1,0 +1,5 @@
+[DEFAULT]
+<% if @neutron_plugin == "ovs" %>
+# OVS
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+<% end %>
