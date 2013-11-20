@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-platform_options = node["neutron"]["platform"]
+platform_options = node["quantum"]["platform"]
 
 # install the rpc daemon package
 package "rpcdaemon" do
@@ -31,7 +31,7 @@ rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 template "/etc/rpcdaemon.conf" do
   source "rpcdaemon.conf.erb"
   owner "root"
-  group "neutron"
+  group "quantum"
   mode "0640"
   variables(
     "rabbit_ipaddress" => rabbit_info["host"]
