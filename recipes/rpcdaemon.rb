@@ -19,15 +19,10 @@
 
 platform_options = node["quantum"]["platform"]
 
-# install the rpc daemon package
-package "rpcdaemon" do
-  action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-  options platform_options["package_options"]
-end
-
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
-# drop the config file
+# drop the config file before the package to ensure we are
+# pointing at a valid rabbitmq
 template "/etc/rpcdaemon.conf" do
   source "rpcdaemon.conf.erb"
   owner "root"
@@ -38,8 +33,15 @@ template "/etc/rpcdaemon.conf" do
   )
 end
 
+# install the rpc daemon package
+package "rpcdaemon" do
+  action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+  options platform_options["package_options"]
+end
+
 # Ensure service is started and running.
 service "rpcdaemon" do
   supports :status => true, :restart => true
   action [ :enable, :start ]
+  subscribes :restart, "template[/etc/rpcdaemon.conf]", :delayed
 end
