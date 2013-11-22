@@ -41,8 +41,7 @@ rabbit_settings =
   get_settings_by_role("rabbitmq-server", "rabbitmq")
 api_endpoint =
   get_bind_endpoint("neutron", "api")
-mysql_info =
-  get_access_endpoint("mysql-master", "mysql", "db")
+mysql_info = get_mysql_endpoint
 neutron_info = get_settings_by_role("nova-network-controller", "neutron")
 local_ip = get_ip_for_net(node["neutron"]["ovs"]["network"], node)
 
