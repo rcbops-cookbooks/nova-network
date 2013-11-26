@@ -134,6 +134,7 @@ template "/etc/neutron/neutron.conf" do
     "service_pass" => neutron_info["service_pass"],
     "service_user" => neutron_info["service_user"],
     "service_tenant_name" => neutron_info["service_tenant_name"],
+    "auth_region" => node["osops"]["region"],
     "keystone_protocol" => ks_admin_endpoint["scheme"],
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
     "dhcp_lease_time" => node["neutron"]["dhcp_lease_time"],

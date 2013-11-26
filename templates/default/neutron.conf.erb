@@ -25,7 +25,7 @@ service_plugins= <%= @service_plugins.join(",") %>
 # keystone auth - this will cascade to all agents/services
 auth_strategy = keystone
 auth_url = <%= @keystone_protocol %>://<%= @keystone_api_ipaddress %>:<%= @keystone_admin_port %><%= @keystone_path %>
-auth_region = RegionOne
+auth_region = <%= @auth_region %>
 admin_tenant_name = <%= @service_tenant_name %>
 admin_user = <%= @service_user %>
 admin_password = <%= @service_pass %>
