@@ -102,10 +102,6 @@ default["neutron"]["use_namespaces"] = "True" # should correspond to overlap_ips
 # Manage plugins here, currently only supports openvswitch (ovs)
 default["neutron"]["plugin"] = "ovs"
 
-# l3 agent placeholders
-default["neutron"]["l3"]["router_id"] = ""
-default["neutron"]["l3"]["gateway_external_net_id"] = ""
-
 # dhcp agent options
 default["neutron"]["dhcp_lease_time"] = "1440"
 default["neutron"]["dhcp_domain"] = "openstacklocal"
