@@ -123,9 +123,13 @@ default["neutron"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if t
 default["neutron"]["ovs"]["external_bridge"] = "br-ex"
 default["neutron"]["ovs"]["external_interface"] = "eth1"
 default["neutron"]["ovs"]["network"]="nova"
-default["neutron"]["lbaas"] = false
 default["neutron"]["ovs"]["firewall_driver"] =
   "neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
+
+# LBaaS defaults
+default["neutron"]["lbaas"] = false
+default["neutron"]["lbaas"]["device_driver"] =
+  "neutron.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver"
 
 # Generic regex for process pattern matching (to be used as a base pattern).
 # Works for both Grizzly and Havana packages on Ubuntu and CentOS.
