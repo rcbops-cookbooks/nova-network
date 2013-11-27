@@ -3,3 +3,8 @@
 # OVS
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 <% end %>
+
+<% if @device_driver %>
+# Device driver
+device_driver = <%= @device_driver %>
+<% end %>

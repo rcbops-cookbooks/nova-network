@@ -44,7 +44,7 @@ if node["neutron"]["lbaas"]
     group "neutron"
     mode "0640"
     variables(
-      "neutron_plugin" => node["neutron"]["plugin"]
-    )
+      "neutron_plugin" => node["neutron"]["plugin"],
+      "device_driver" => node["neutron"]["lbaas"]["device_driver"])
   end
 end
