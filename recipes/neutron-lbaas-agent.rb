@@ -35,7 +35,7 @@ if node["neutron"]["lbaas"]
     supports :status => true, :restart => true
     action :nothing
     subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
-    subscribes :restart, "template[/etc/lbaas_agent.ini]", :delayed
+    subscribes :restart, "template[/etc/neutron/lbaas_agent.ini]", :delayed
   end
 
     template "/etc/neutron/lbaas_agent.ini" do
