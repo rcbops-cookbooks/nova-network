@@ -20,7 +20,6 @@ include_recipe "osops-utils"
 include_recipe "nova-network::neutron-common"
 
 platform_options = node["neutron"]["platform"]
-plugin = node["neutron"]["plugin"]
 
 #Must set neutron lbaas attr to true to install lbaas
 if node["neutron"]["lbaas"]
@@ -38,12 +37,7 @@ if node["neutron"]["lbaas"]
     subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
     subscribes :restart, "template[/etc/lbaas_agent.ini]", :delayed
   end
-  
-  ks_admin_endpoint =
-    get_access_endpoint("keystone-api", "keystone", "admin-api")
-  neutron_info =
-    get_settings_by_recipe("nova-network\\:\\:nova-controller", "neutron")
-    
+
     template "/etc/neutron/lbaas_agent.ini" do
     source "lbaas_agent.ini.erb"
     owner "root"
