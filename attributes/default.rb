@@ -127,7 +127,7 @@ default["neutron"]["ovs"]["firewall_driver"] =
   "neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
 # LBaaS defaults
-default["neutron"]["lbaas"] = false
+default["neutron"]["lbaas"]["enabled"] = false
 default["neutron"]["lbaas"]["device_driver"] =
   "neutron.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver"
 

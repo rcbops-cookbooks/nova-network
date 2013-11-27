@@ -21,8 +21,8 @@ include_recipe "nova-network::neutron-common"
 
 platform_options = node["neutron"]["platform"]
 
-#Must set neutron lbaas attr to true to install lbaas
-if node["neutron"]["lbaas"]
+#Must set neutron lbaas enabled attr to true to install lbaas
+if node["neutron"]["lbaas"]["enabled"]
   platform_options["neutron_lbaas_packages"].each do |pkg|
     package pkg do
       action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
