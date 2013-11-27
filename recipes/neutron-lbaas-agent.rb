@@ -30,7 +30,7 @@ if node["neutron"]["lbaas"]
       options platform_options["package_options"]
     end
   end
-  
+
   service "neutron-lbaas-agent" do
     service_name platform_options["neutron-lbaas-agent"]
     supports :status => true, :restart => true

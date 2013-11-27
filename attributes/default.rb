@@ -165,7 +165,7 @@ when "fedora", "redhat", "centos"
     "neutron_dhcp_packages" => ["openstack-neutron"],
     "neutron-dhcp-agent" => "neutron-dhcp-agent",
     "neutron_lbaas_packages" => [],
-    "neutron-lbaas-agent" => "neutron-lbaas-agent",    
+    "neutron-lbaas-agent" => "neutron-lbaas-agent",
     "neutron_l3_packages" => ["openstack-neutron"],
     "neutron-l3-agent" => "neutron-l3-agent",
     "neutron_metadata_packages" => ["openstack-neutron"],
@@ -214,7 +214,7 @@ when "ubuntu"
 
     "neutron_l3_packages" => ["neutron-l3-agent"],
     "neutron-l3-agent" => "neutron-l3-agent",
-    
+
     "neutron_lbaas_packages" => ["neutron-lbaas-agent"],
     "neutron-lbaas-agent" => "neutron-lbaas-agent",
 
