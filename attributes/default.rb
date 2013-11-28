@@ -102,10 +102,6 @@ default["neutron"]["use_namespaces"] = "True" # should correspond to overlap_ips
 # Manage plugins here, currently only supports openvswitch (ovs)
 default["neutron"]["plugin"] = "ovs"
 
-# l3 agent placeholders
-default["neutron"]["l3"]["router_id"] = ""
-default["neutron"]["l3"]["gateway_external_net_id"] = ""
-
 # dhcp agent options
 default["neutron"]["dhcp_lease_time"] = "1440"
 default["neutron"]["dhcp_domain"] = "openstacklocal"
@@ -127,9 +123,13 @@ default["neutron"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if t
 default["neutron"]["ovs"]["external_bridge"] = "br-ex"
 default["neutron"]["ovs"]["external_interface"] = "eth1"
 default["neutron"]["ovs"]["network"]="nova"
-default["neutron"]["lbaas"] = false
 default["neutron"]["ovs"]["firewall_driver"] =
   "neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
+
+# LBaaS defaults
+default["neutron"]["lbaas"]["enabled"] = false
+default["neutron"]["lbaas"]["device_driver"] =
+  "neutron.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver"
 
 # Generic regex for process pattern matching (to be used as a base pattern).
 # Works for both Grizzly and Havana packages on Ubuntu and CentOS.
@@ -165,7 +165,7 @@ when "fedora", "redhat", "centos"
     "neutron_dhcp_packages" => ["openstack-neutron"],
     "neutron-dhcp-agent" => "neutron-dhcp-agent",
     "neutron_lbaas_packages" => [],
-    "neutron-lbaas-agent" => "neutron-lbaas-agent",    
+    "neutron-lbaas-agent" => "neutron-lbaas-agent",
     "neutron_l3_packages" => ["openstack-neutron"],
     "neutron-l3-agent" => "neutron-l3-agent",
     "neutron_metadata_packages" => ["openstack-neutron"],
@@ -214,7 +214,7 @@ when "ubuntu"
 
     "neutron_l3_packages" => ["neutron-l3-agent"],
     "neutron-l3-agent" => "neutron-l3-agent",
-    
+
     "neutron_lbaas_packages" => ["neutron-lbaas-agent"],
     "neutron-lbaas-agent" => "neutron-lbaas-agent",
 

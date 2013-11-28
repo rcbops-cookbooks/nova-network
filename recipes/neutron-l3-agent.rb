@@ -52,10 +52,6 @@ execute "create external bridge" do
   not_if "ovs-vsctl show | grep \"Bridge #{node["neutron"]["ovs"]["external_bridge"]}\""
 end
 
-ks_admin_endpoint =
-  get_access_endpoint("keystone-api", "keystone", "admin-api")
-neutron_info =
-  get_settings_by_recipe("nova-network\\:\\:nova-controller", "neutron")
 nova_info =
   get_access_endpoint("nova-api-os-compute", "nova", "api")
 metadata_ip =
@@ -69,9 +65,7 @@ template "/etc/neutron/l3_agent.ini" do
   variables(
     "neutron_external_bridge" => node["neutron"][plugin]["external_bridge"],
     "nova_metadata_ip" => metadata_ip,
-    "neutron_plugin" => node["neutron"]["plugin"],
-    "l3_router_id" => node["neutron"]["l3"]["router_id"],
-    "l3_gateway_net_id" => node["neutron"]["l3"]["gateway_external_net_id"]
+    "neutron_plugin" => node["neutron"]["plugin"]
   )
   notifies :restart, "service[neutron-l3-agent]", :delayed
   notifies :enable, "service[neutron-l3-agent]", :delayed

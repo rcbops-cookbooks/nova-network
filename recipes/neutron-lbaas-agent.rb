@@ -20,37 +20,31 @@ include_recipe "osops-utils"
 include_recipe "nova-network::neutron-common"
 
 platform_options = node["neutron"]["platform"]
-plugin = node["neutron"]["plugin"]
 
-#Must set neutron lbaas attr to true to install lbaas
-if node["neutron"]["lbaas"]
+#Must set neutron lbaas enabled attr to true to install lbaas
+if node["neutron"]["lbaas"]["enabled"]
   platform_options["neutron_lbaas_packages"].each do |pkg|
     package pkg do
       action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
       options platform_options["package_options"]
     end
   end
-  
+
   service "neutron-lbaas-agent" do
     service_name platform_options["neutron-lbaas-agent"]
     supports :status => true, :restart => true
     action :nothing
     subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
-    subscribes :restart, "template[/etc/lbaas_agent.ini]", :delayed
+    subscribes :restart, "template[/etc/neutron/lbaas_agent.ini]", :delayed
   end
-  
-  ks_admin_endpoint =
-    get_access_endpoint("keystone-api", "keystone", "admin-api")
-  neutron_info =
-    get_settings_by_recipe("nova-network\\:\\:nova-controller", "neutron")
-    
+
     template "/etc/neutron/lbaas_agent.ini" do
     source "lbaas_agent.ini.erb"
     owner "root"
     group "neutron"
     mode "0640"
     variables(
-      "neutron_plugin" => node["neutron"]["plugin"]
-    )
+      "neutron_plugin" => node["neutron"]["plugin"],
+      "device_driver" => node["neutron"]["lbaas"]["device_driver"])
   end
 end

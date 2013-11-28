@@ -94,9 +94,9 @@ else
   Chef::Application.fatal! msg
 end
 
-# Use service_plugins arry to pass all service plugins to the conf at once
+# Use service_plugins array to pass all service plugins to the conf at once
 service_plugins = []
-if node["neutron"]["lbaas"]
+if node["neutron"]["lbaas"]["enabled"]
   #Add Load balancer to service_plugins array
   service_plugins << "neutron.services.loadbalancer.plugin.LoadBalancerPlugin"
   lbaas_provider = "LOADBALANCER:Haproxy:neutron.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default"
