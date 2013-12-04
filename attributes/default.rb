@@ -54,6 +54,16 @@ default["nova"]["network"]["dhcp_lease_time"] = 120
 default["nova"]["network"]["fixed_ip_disassociate_timeout"] = 600
 
 # ######################################################################### #
+# RPCDaemon Configuration Attributes
+# ######################################################################### #
+# how long to sleep between L3/DHCP status checks
+default["rpcdaemon"]["check_interval"] = 1
+# x-expires settings for rabbit recv queues
+default["rpcdaemon"]["queue_expire"] = 60
+# quantum API timeouts
+default["rpcdaemon"]["timeout"] = 20
+
+# ######################################################################### #
 # Neutron Configuration Attributes
 # ######################################################################### #
 # nova.conf options for neutron
