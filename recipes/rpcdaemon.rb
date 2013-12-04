@@ -18,13 +18,6 @@
 #
 
 platform_options = node["neutron"]["platform"]
-
-# install the rpc daemon package
-package "rpcdaemon" do
-  action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
-  options platform_options["package_options"]
-end
-
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
 # drop the config file
@@ -34,12 +27,22 @@ template "/etc/rpcdaemon.conf" do
   group "neutron"
   mode "0640"
   variables(
-    "rabbit_ipaddress" => rabbit_info["host"]
+    "rabbit_ipaddress" => rabbit_info["host"],
+    "check_interval" => node["rpcdaemon"]["check_interval"],
+    "queue_expire" => node["rpcdaemon"]["queue_expire"],
+    "timeout" => node["rpcdaemon"]["timeout"]
   )
+end
+
+# install the rpc daemon package
+package "rpcdaemon" do
+  action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+  options platform_options["package_options"]
 end
 
 # Ensure service is started and running.
 service "rpcdaemon" do
   supports :status => true, :restart => true
   action [ :enable, :start ]
+  subscribes :restart, "template[/etc/rpcdaemon.conf]", :delayed
 end
