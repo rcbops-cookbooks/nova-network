@@ -1,21 +1,35 @@
 [Daemon]
-# Comma-separated list of plugins to load, no spaces
+# Comma-separated list of plugins to load
 # Available plugins: L3Agent, DHCPAgent, Dump
-plugins = L3Agent,DHCPAgent
+plugins = L3Agent DHCPAgent
 
 rpchost = <%= @rabbit_ipaddress %>
 pidfile = /var/run/rpcdaemon.pid
 logfile = /var/log/rpcdaemon.log
 loglevel = INFO
 
+# How often to run plugin checks
+check_interval = <%= @check_interval %>
+
 [L3Agent]
 conffile = /etc/neutron/neutron.conf
 loglevel = INFO
+
+# Max time for neutron API calls to complete -- also affects failover speed
+timeout = <%= @timeout %>
+# Auto-terminate rabbit queues if no activity
+queue_expire = <%= @queue_expire %>
 
 [DHCPAgent]
 conffile = /etc/neutron/neutron.conf
 loglevel = INFO
 
+# Max time for neutron API calls to complete -- also affects failover speed
+timeout = <%= @timeout %>
+# Auto-terminate rabbit queues if no activity
+queue_expire = <%= @queue_expire %>
+
 [Dump]
 # Only writes to DEBUG
 loglevel = DEBUG
+queue = neutron
