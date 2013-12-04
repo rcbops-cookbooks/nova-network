@@ -34,7 +34,10 @@ template "/etc/rpcdaemon.conf" do
   group "quantum"
   mode "0640"
   variables(
-    "rabbit_ipaddress" => rabbit_info["host"]
+    "rabbit_ipaddress" => rabbit_info["host"],
+    "check_interval" => node["rpcdaemon"]["check_interval"],
+    "queue_expire" => node["rpcdaemon"]["queue_expire"],
+    "timeout" => node["rpcdaemon"]["timeout"]
   )
 end
 
