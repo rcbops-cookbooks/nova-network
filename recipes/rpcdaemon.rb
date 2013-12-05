@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-platform_options = node["quantum"]["platform"]
+platform_options = node["nova-network"]["platform"]
 
 rabbit_info = get_access_endpoint("rabbitmq-server", "rabbitmq", "queue")
 
