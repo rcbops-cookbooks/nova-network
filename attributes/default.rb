@@ -226,8 +226,8 @@ when "ubuntu"
     "quantum_ovs_packages" => [
       "linux-headers-#{kernel['release']}",
       "openvswitch-datapath-dkms",
-      "neutron-plugin-openvswitch",
-      "neutron-plugin-openvswitch-agent"
+      "quantum-plugin-openvswitch",
+      "quantum-plugin-openvswitch-agent"
     ],
     "quantum_ovs_service_name" => "quantum-plugin-openvswitch-agent",
     "quantum_openvswitch_service_name" => "openvswitch-switch",
