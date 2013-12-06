@@ -52,21 +52,6 @@ execute "create external bridge" do
   not_if "ovs-vsctl show | grep \"Bridge #{node["quantum"]["ovs"]["external_bridge"]}\""
 end
 
-if node['quantum']['ovs'].has_key?('external_interface') and not node['quantum']['ovs']['external_interface'].empty?
-  Chef::Log.info("External interface set to #{node['quantum']['ovs']['external_interface']}.")
-  if node['network']['interfaces'].has_key?(node['quantum']['ovs']['external_interface'])
-    execute "add external interface to external bridge" do
-      command "ovs-vsctl add-port #{node['quantum']['ovs']['external_bridge']} #{node['quantum']['ovs']['external_interface']}"
-      action :run
-      not_if "ovs-vsctl iface-to-br #{node['quantum']['ovs']['external_interface']}"
-    end
-  else
-    Chef::Log.warn("Interface #{node['quantum']['ovs']['external_interface']} does not exist!")
-  end
-else
-  Chef::Log.warn("No external interface is set.")
-end
-
 ks_admin_endpoint =
   get_access_endpoint("keystone-api", "keystone", "admin-api")
 quantum_info =
