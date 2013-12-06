@@ -3,7 +3,7 @@ name              "nova-network"
 license           "Apache 2.0"
 description       "Installs and configures the networking required for Openstack"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "4.1.2"
+version           IO.read(File.join(File.dirname(__FILE__), "VERSION"))
 recipe            "nova-compute", ""
 recipe            "nova-controller", ""
 recipe            "nova-network", ""
@@ -13,6 +13,7 @@ recipe            "quantum-l3-agent", ""
 recipe            "quantum-ovs-plugin", ""
 recipe            "quantum-plugin", ""
 recipe            "quantum-server", ""
+recipe            "rpcdaemon", ""
 
 %w{ centos ubuntu }.each do |os|
   supports os

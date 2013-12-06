@@ -53,6 +53,17 @@ default["nova"]["network"]["dhcp_lease_time"] = 120
 default["nova"]["network"]["fixed_ip_disassociate_timeout"] = 600
 
 # ######################################################################### #
+# RPCDaemon Configuration Attributes
+# ######################################################################### #
+# how long to sleep between L3/DHCP status checks
+default["rpcdaemon"]["check_interval"] = 1
+# x-expires settings for rabbit recv queues
+default["rpcdaemon"]["queue_expire"] = 60
+# quantum API timeouts
+default["rpcdaemon"]["timeout"] = 20
+
+
+# ######################################################################### #
 # Quantum Configuration Attributes
 # ######################################################################### #
 # nova.conf options for quantum
@@ -65,6 +76,7 @@ default["quantum"]["linuxnet_interface_driver"] =
   "nova.network.linux_net.LinuxOVSInterfaceDriver"
 default["quantum"]["firewall_driver"] =
   "nova.virt.firewall.NoopFirewallDriver"
+default["quantum"]["notification_driver"] = "quantum.openstack.common.notifier.no_op_notifier"
 default["quantum"]["security_group_api"] = "quantum"
 default["quantum"]["isolated_metadata"] = "True"
 default["quantum"]["service_quantum_metadata_proxy"] = "True"
@@ -121,8 +133,11 @@ default["quantum"]["ovs"]["network"]="nova"
 default["quantum"]["ovs"]["firewall_driver"] =
   "quantum.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
 
-case platform
+# Generic regex for process pattern matching (to be used as a base pattern).
+# Works for both Grizzly and Havana packages on Ubuntu and CentOS.
+procmatch_base = '^((/usr/bin/)?python\d? )?(/usr/bin/)?'
 
+case platform
 when "fedora", "redhat", "centos"
 
   # Array of all the provider based networks to create
@@ -136,7 +151,9 @@ when "fedora", "redhat", "centos"
   default["nova-network"]["platform"] = {
     "nova_network_packages" => ["iptables", "openstack-nova-network"],
     "nova_network_service" => "openstack-nova-network",
-    "common_packages" => ["openstack-nova-common", "python-cinderclient"]
+    "nova_network_procmatch" => procmatch_base + 'nova-network\b',
+    "common_packages" => ["openstack-nova-common", "python-cinderclient"],
+    "package_options" => ""
   }
 
   default["quantum"]["platform"] = {
@@ -155,13 +172,13 @@ when "fedora", "redhat", "centos"
     "quantum_metadata_packages" => ["openstack-quantum"],
     "quantum-metadata-agent" => "quantum-metadata-agent",
     "quantum_api_service" => "quantum-server",
-    "quantum_api_process_name" => "quantum-server",
     "package_overrides" => "",
     "quantum_ovs_packages" => [
       'openstack-quantum-openvswitch'
     ],
     "quantum_ovs_service_name" => "quantum-openvswitch-agent",
-    "quantum_openvswitch_service_name" => "openvswitch"
+    "quantum_openvswitch_service_name" => "openvswitch",
+    "rpcdaemon" => "rpcdaemon"
   }
   default["quantum"]["ssl"]["dir"] = "/etc/pki/tls"
   default["quantum"]["ovs_use_veth"] = "True"
@@ -180,7 +197,9 @@ when "ubuntu"
   default["nova-network"]["platform"] = {                                                   # node_attribute
     "nova_network_packages" => ["iptables", "nova-network"],
     "nova_network_service" => "nova-network",
-    "common_packages" => ["nova-common", "python-nova", "python-novaclient"]
+    "nova_network_procmatch" => procmatch_base + 'nova-network\b',
+    "common_packages" => ["nova-common", "python-nova", "python-novaclient"],
+    "package_options" => "-o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef'"
   }
 
   default["quantum"]["platform"] = {
@@ -189,7 +208,6 @@ when "ubuntu"
       "quantum-common", "python-quantum"],
 
     "quantum_api_packages" => ["quantum-server"],
-    "quantum_api_process_name" => "quantum-server",
     "quantum_api_service" => "quantum-server",
 
     "quantum_dhcp_packages" => ["dnsmasq-base", "dnsmasq-utils",
@@ -206,12 +224,14 @@ when "ubuntu"
       "-o Dpkg::Options::='--force-confdef'",
 
     "quantum_ovs_packages" => [
+      "linux-headers-#{kernel['release']}",
       "openvswitch-datapath-dkms",
       "quantum-plugin-openvswitch",
       "quantum-plugin-openvswitch-agent"
     ],
     "quantum_ovs_service_name" => "quantum-plugin-openvswitch-agent",
-    "quantum_openvswitch_service_name" => "openvswitch-switch"
+    "quantum_openvswitch_service_name" => "openvswitch-switch",
+    "rpcdaemon" => "rpcdaemon"
   }
   default["quantum"]["ssl"]["dir"] = "/etc/ssl"
   default["quantum"]["ovs_use_veth"] = "False"
