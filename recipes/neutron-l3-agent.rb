@@ -49,7 +49,7 @@ end
 execute "create external bridge" do
   command "ovs-vsctl add-br #{node["neutron"]["ovs"]["external_bridge"]}"
   action :run
-  not_if "ovs-vsctl show | grep \"Bridge #{node["neutron"]["ovs"]["external_bridge"]}\""
+  not_if "ovs-vsctl get bridge \"#{node["neutron"]["ovs"]["external_bridge"]}\" name"
 end
 
 nova_info =
