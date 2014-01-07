@@ -185,6 +185,7 @@ template "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini" do
     "ovs_tunnel_ranges" => node["neutron"]["ovs"]["tunnel_ranges"],
     "ovs_integration_bridge" => node["neutron"]["ovs"]["integration_bridge"],
     "ovs_tunnel_bridge" => node["neutron"]["ovs"]["tunnel_bridge"],
+    "sqlalchemy_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
     "ovs_vlan_range" => vlan_ranges,
     "ovs_bridge_mapping" => bridge_mappings,
     "ovs_debug" => node["neutron"]["debug"],
