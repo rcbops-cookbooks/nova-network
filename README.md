@@ -99,6 +99,7 @@ Neutron Networking
 * `neutron["db"]["service_tenant_name"]` - defaults to `service`
 * `neutron["db"]["service_user"]` - defaults to `neutron`
 * `neutron["db"]["service_role"]` - defaults to `admin`
+* `neutron["database"]["sqlalchemy_pool_size"]` - defaults to 5
 * `neutron["debug"]` - default log level is INFO
 * `neutron["verbose"]` - default log level is INFO
 * `neutron["overlap_ips"]` - Enable or disable overlapping IPs for subnets. MUST be set to False if Neutron is being used in conjunction with nova security groups and/or metadata service.
