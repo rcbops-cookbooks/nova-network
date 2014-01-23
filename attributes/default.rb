@@ -88,6 +88,9 @@ default["neutron"]["security_group_api"] = "neutron"
 default["neutron"]["isolated_metadata"] = "True"
 default["neutron"]["metadata_network"] = "False"
 default["neutron"]["dnsmasq_lease_max"] = 16777216
+default["neutron"]["dnsmasq_config_file"] = "/etc/neutron/dsnmasq-neutron.conf"
+default["neutron"]["dnsmasq_dns_server"] = nil # this is a single string, not an array
+default["neutron"]["dnsmasq_dhcp_script"] = nil
 default["neutron"]["service_neutron_metadata_proxy"] = "True"
 default["neutron"]["agent_down_time"] = 30
 
