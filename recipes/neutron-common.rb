@@ -29,6 +29,13 @@ packages.each do |pkg|
   end
 end
 
+#Kill quantum-ns-metadata-proxy proccess per GH 761
+execute "kill quantum metadata-proxy proccess" do
+  command "pkill -9 -f quantum-ns-metadata-proxy"
+  action :run
+  only_if { node["osops"]["do_package_upgrades"] }
+end
+
 ks_admin_endpoint =
   get_access_endpoint("keystone-api", "keystone", "admin-api")
 ks_service_endpoint =
