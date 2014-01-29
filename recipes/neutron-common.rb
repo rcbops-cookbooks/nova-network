@@ -32,6 +32,7 @@ end
 #Kill quantum-ns-metadata-proxy proccess per GH 761
 execute "kill quantum metadata-proxy proccess" do
   command "pkill -9 -f quantum-ns-metadata-proxy"
+  returns [1,0]
   action :run
   only_if { node["osops"]["do_package_upgrades"] }
 end
