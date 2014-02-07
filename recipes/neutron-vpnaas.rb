@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nova-network
-# Recipe:: neutron-lbaas-agent
+# Recipe:: neutron-vpnaas
 #
 # Copyright 2012-2013, Rackspace US, Inc.
 #
