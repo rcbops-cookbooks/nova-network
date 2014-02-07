@@ -92,7 +92,7 @@ end
 notification_provider = node["neutron"]["notification"]["driver"]
 case notification_provider
 when "no_op"
-  notification_driver = "neutron.openstack.common.notifier.rpc_notifier"
+  notification_driver = "neutron.openstack.common.notifier.no_op_notifier"
 when "rpc"
   notification_driver = "neutron.openstack.common.notifier.rpc_notifier"
 when "log"
