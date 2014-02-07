@@ -108,12 +108,33 @@ if node["neutron"]["lbaas"]["enabled"]
   #Add Load balancer to service_plugins array
   service_plugins << "neutron.services.loadbalancer.plugin.LoadBalancerPlugin"
   lbaas_provider = "LOADBALANCER:Haproxy:neutron.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default"
-  case node['platform']
-    when 'redhat', 'centos'
-    #Don't set the provider on rhel/cent as it's set in neutron-dist.conf
-    # https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1022725
-    lbaas_provider = false
-  end
+else
+  lbaas_provider = false
+end
+
+if node["neutron"]["fwaas"]["enabled"]
+  # Add Firewall to service_plugins array
+  service_plugins << "neutron.services.firewall.fwaas_plugin.FirewallPlugin"
+  fwaas_provider = "FIREWALL:Iptables:neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver:default"
+  include_recipe "nova-network::neutron-fwaas"
+else
+  fwaas_provider = false
+end
+
+if node["neutron"]["vpnaas"]["enabled"]
+  # Add Firewall to service_plugins array
+  service_plugins << "neutron.services.vpn.plugin.VPNDriverPlugin"
+  vpnaas_provider = "VPN:Vpn:neutron.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default"
+  include_recipe "nova-network::neutron-vpnaas"
+else
+  vpnaas_provider = false
+end
+
+cookbook_file "/etc/neutron/policy.json" do
+  source "policy.json"
+  mode 0644
+  owner "root"
+  group "neutron"
 end
 
 template "/etc/neutron/neutron.conf" do
@@ -152,6 +173,8 @@ template "/etc/neutron/neutron.conf" do
     "notification_driver" => notification_driver,
     "notification_topics" => node["neutron"]["notification"]["topics"],
     "lbaas_provider" => lbaas_provider,
+    "fwaas_provider" => fwaas_provider,
+    "vpnaas_provider" => vpnaas_provider,
     "service_plugins" => service_plugins
   )
 end
@@ -196,8 +219,8 @@ template "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini" do
 end
 
 case node['platform']
-when 'redhat', 'centos'
-  link "/etc/neutron/plugin.ini" do
-    to "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
-  end
+  when 'redhat', 'centos'
+    link "/etc/neutron/plugin.ini" do
+      to "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
+    end
 end

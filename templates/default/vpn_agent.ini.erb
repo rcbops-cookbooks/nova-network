@@ -1,0 +1,11 @@
+[DEFAULT]
+<% if @neutron_plugin == "ovs" %>
+# OVS
+interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
+<% end %>
+
+[vpnagent]
+vpn_device_driver = <%= @device_driver %>
+
+[ipsec]
+ipsec_status_check_interval = <%= @ipsec_status_check_interval %>
