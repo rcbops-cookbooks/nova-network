@@ -143,6 +143,17 @@ default["neutron"]["lbaas"]["enabled"] = false
 default["neutron"]["lbaas"]["device_driver"] =
   "neutron.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver"
 
+# FWaaS defaults
+default["neutron"]["fwaas"]["enabled"] = false
+default["neutron"]["fwaas"]["device_driver"] =
+  "neutron.services.firewall.drivers.linux.iptables_fwaas.IptablesFwaasDriver"
+
+# VPNaaS defaults
+default["neutron"]["vpnaas"]["enabled"] = false
+default["neutron"]["vpnaas"]["device_driver"] =
+  "neutron.services.vpn.device_drivers.ipsec.OpenSwanDriver"
+default["neutron"]["vpnaas"]["ipsec_status_check_interval"] = 60
+
 # Generic regex for process pattern matching (to be used as a base pattern).
 # Works for both Grizzly and Havana packages on Ubuntu and CentOS.
 procmatch_base = '^((/usr/bin/)?python\d? )?(/usr/bin/)?'
@@ -178,6 +189,8 @@ when "fedora", "redhat", "centos"
     "neutron-dhcp-agent" => "neutron-dhcp-agent",
     "neutron_lbaas_packages" => [],
     "neutron-lbaas-agent" => "neutron-lbaas-agent",
+    "neutron_vpnaas_packages" => ["openswan", "openstack-neutron-vpn-agent"],
+    "neutron-vpnaas-agent" => "neutron-vpn-agent",
     "neutron_l3_packages" => ["openstack-neutron"],
     "neutron-l3-agent" => "neutron-l3-agent",
     "neutron_metadata_packages" => ["openstack-neutron"],
@@ -229,6 +242,9 @@ when "ubuntu"
 
     "neutron_lbaas_packages" => ["neutron-lbaas-agent"],
     "neutron-lbaas-agent" => "neutron-lbaas-agent",
+
+    "neutron_vpnaas_packages" => ["openswan", "neutron-plugin-vpn-agent"],
+    "neutron-vpnaas-agent" => "neutron-plugin-vpn-agent",
 
     "neutron_metadata_packages" => ["neutron-metadata-agent"],
     "neutron-metadata-agent" => "neutron-metadata-agent",
