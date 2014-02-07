@@ -19,7 +19,7 @@ notification_driver = <%= @notification_driver %>
 notification_topics = <%= @notification_topics %>
 
 <% if ! @service_plugins.empty? %>
-service_plugins= <%= @service_plugins.join(",") %>
+service_plugins = <%= @service_plugins.join(",") %>
 <% end %>
 
 # keystone auth - this will cascade to all agents/services
@@ -58,4 +58,10 @@ quota_driver = <%= @quota_driver %>
 [SERVICE_PROVIDERS]
 <% if @lbaas_provider %>
 service_provider = <%= @lbaas_provider %>
+<%end%>
+<% if @vpnaas_provider %>
+service_provider = <%= @vpnaas_provider %>
+<%end%>
+<% if @fwaas_provider %>
+service_provider = <%= @fwaas_provider %>
 <%end%>
