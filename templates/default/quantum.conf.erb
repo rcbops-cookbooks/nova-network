@@ -31,6 +31,10 @@ dhcp_lease_duration = <%= @dhcp_lease_time %>
 # Seconds elapsed until an agent is considered down
 agent_down_time = <%= @agent_down_time %>
 
+# Disable builtin schedulers
+network_auto_schedule = False
+router_auto_schedule = False
+
 [AGENT]
 root_helper = sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf
 polling_interval = 2
