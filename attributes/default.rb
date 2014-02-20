@@ -77,6 +77,7 @@ default["quantum"]["linuxnet_interface_driver"] =
 default["quantum"]["firewall_driver"] =
   "nova.virt.firewall.NoopFirewallDriver"
 default["quantum"]["notification_driver"] = "quantum.openstack.common.notifier.no_op_notifier"
+default["quantum"]["database"]["sqlalchemy_pool_size"] = 5
 default["quantum"]["security_group_api"] = "quantum"
 default["quantum"]["isolated_metadata"] = "True"
 default["quantum"]["service_quantum_metadata_proxy"] = "True"
