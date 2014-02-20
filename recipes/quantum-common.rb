@@ -148,6 +148,7 @@ template "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini" do
     "ovs_tunnel_ranges" => node["quantum"]["ovs"]["tunnel_ranges"],
     "ovs_integration_bridge" => node["quantum"]["ovs"]["integration_bridge"],
     "ovs_tunnel_bridge" => node["quantum"]["ovs"]["tunnel_bridge"],
+    "sqlalchemy_pool_size" => node["quantum"]["database"]["sqlalchemy_pool_size"],
     "ovs_vlan_range" => vlan_ranges,
     "ovs_bridge_mapping" => bridge_mappings,
     "ovs_debug" => node["quantum"]["debug"],

@@ -1,5 +1,6 @@
 [DATABASE]
 sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
+sqlalchemy_pool_size = <%= @sqlalchemy_pool_size %>
 reconnect_interval = 2
 
 [OVS]

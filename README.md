@@ -99,6 +99,7 @@ Quantum Networking
 * `quantum["db"]["service_tenant_name"]` - defaults to `service`
 * `quantum["db"]["service_user"]` - defaults to `quantum`
 * `quantum["db"]["service_role"]` - defaults to `admin`
+* `quantum["database"]["sqlalchemy_pool_size"]` - defaults to 5
 * `quantum["debug"]` - default log level is INFO
 * `quantum["verbose"]` - default log level is INFO
 * `quantum["overlap_ips"]` - Enable or disable overlapping IPs for subnets. MUST be set to False if Quantum is being used in conjunction with nova security groups and/or metadata service.
