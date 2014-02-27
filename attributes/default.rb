@@ -82,7 +82,9 @@ default["neutron"]["firewall_driver"] =
 default["neutron"]["notification"]["driver"] = "no_op"
 default["neutron"]["notification"]["topics"] = "notifications"
 
-default["neutron"]["database"]["sqlalchemy_pool_size"] = 5
+default["neutron"]["database"]["sqlalchemy_pool_size"] = 10
+default["neutron"]["database"]["max_overflow"] = 20
+default["neutron"]["database"]["pool_timeout"] = 10
 
 default["neutron"]["security_group_api"] = "neutron"
 default["neutron"]["isolated_metadata"] = "True"
