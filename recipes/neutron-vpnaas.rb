@@ -50,6 +50,14 @@ template "/etc/neutron/vpn_agent.ini" do
   )
 end
 
+# Create our root wrap directory
+directory "/etc/neutron/rootwrap.d" do
+  action :create
+  owner "root"
+  group "neutron"
+  mode "755"
+end
+
 cookbook_file "/etc/neutron/rootwrap.d/vpnaas.filters" do
   source "vpnaas.filters"
   owner "root"
