@@ -98,6 +98,7 @@ when "rpc"
 when "log"
   notification_driver = "neutron.openstack.common.notifier.log_notifier"
 else
+  notification_driver = nil
   msg = "#{notification_provider}, is not currently supported by these cookbooks."
   Chef::Application.fatal! msg
 end
@@ -175,7 +176,10 @@ template "/etc/neutron/neutron.conf" do
     "lbaas_provider" => lbaas_provider,
     "fwaas_provider" => fwaas_provider,
     "vpnaas_provider" => vpnaas_provider,
-    "service_plugins" => service_plugins
+    "service_plugins" => service_plugins,
+    "sql_max_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
+    "sql_max_overflow" => node["neutron"]["database"]["max_overflow"],
+    "sql_pool_timeout" => node["neutron"]["database"]["pool_timeout"]
   )
 end
 
@@ -223,4 +227,12 @@ case node['platform']
     link "/etc/neutron/plugin.ini" do
       to "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
     end
+
+  # RHEL YOUR DOING IT WRONG!
+  cookbook_file "/usr/share/neutron/neutron-dist.conf" do
+    source "neutron-dist.conf"
+    mode 0644
+    owner "root"
+    group "neutron"
+  end
 end
