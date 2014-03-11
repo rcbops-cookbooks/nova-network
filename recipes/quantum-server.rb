@@ -178,7 +178,7 @@ keystone_register "Register Quantum Endpoint" do
   api_ver ks_admin_endpoint["path"]
   auth_token keystone["admin_token"]
   service_type "network"
-  endpoint_region "RegionOne"
+  endpoint_region node["osops"]["region"]
   endpoint_adminurl access_endpoint["uri"]
   endpoint_internalurl access_endpoint["uri"]
   endpoint_publicurl access_endpoint["uri"]
