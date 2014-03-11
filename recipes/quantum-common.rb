@@ -108,6 +108,7 @@ template "/etc/quantum/quantum.conf" do
     "service_pass" => quantum_info["service_pass"],
     "service_user" => quantum_info["service_user"],
     "service_tenant_name" => quantum_info["service_tenant_name"],
+    "auth_region" => node["osops"]["region"],
     "keystone_protocol" => ks_admin_endpoint["scheme"],
     "keystone_api_ipaddress" => ks_admin_endpoint["host"],
     "dhcp_lease_time" => node["quantum"]["dhcp_lease_time"],
