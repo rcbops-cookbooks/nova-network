@@ -70,6 +70,7 @@ template "/etc/quantum/l3_agent.ini" do
     "quantum_external_bridge" => node["quantum"][plugin]["external_bridge"],
     "nova_metadata_ip" => metadata_ip,
     "quantum_plugin" => node["quantum"]["plugin"],
+    "send_arp_for_ha" => node["quantum"]["send_arp_for_ha"],
     "l3_router_id" => node["quantum"]["l3"]["router_id"],
     "l3_gateway_net_id" => node["quantum"]["l3"]["gateway_external_net_id"]
   )

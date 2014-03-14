@@ -4,6 +4,8 @@ external_network_bridge = <%= @quantum_external_bridge %>
 metadata_ip = <%= @nova_metadata_ip %>
 metadata_port = 8775
 
+send_arp_for_ha = <%= @send_arp_for_ha %>
+
 <% if @quantum_plugin == "ovs" %>
 # OVS
 interface_driver = quantum.agent.linux.interface.OVSInterfaceDriver
