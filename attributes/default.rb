@@ -47,6 +47,7 @@ default["nova"]["network"]["network_manager"] = "nova.network.manager.FlatDHCPMa
 default["nova"]["network"]["dhcp_domain"] = "novalocal"
 default["nova"]["network"]["force_dhcp_release"] = true
 default["nova"]["network"]["send_arp_for_ha"] = true
+default['nova']["network"]["send_arp_for_ha_count"] = 3
 default["nova"]["network"]["auto_assign_floating_ip"] = false
 default["nova"]["network"]["floating_pool_name"] = "nova"
 default["nova"]["network"]["multi_host"] = true
@@ -76,6 +77,7 @@ default["neutron"]["linuxnet_interface_driver"] =
   "nova.network.linux_net.LinuxOVSInterfaceDriver"
 default["neutron"]["firewall_driver"] =
   "nova.virt.firewall.NoopFirewallDriver"
+default['neutron']["send_arp_for_ha"] = 3
 
 # Set the notification Driver
 # Options are no_op, rpc, log, rabbit
