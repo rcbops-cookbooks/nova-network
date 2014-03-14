@@ -75,6 +75,7 @@ Nova Networking
 * `nova["network"]["dhcp_domain"]` - Domain to use for building hostnames
 * `nova["network"]["force_dhcp_release"]` - Send DHCP release on instance termination?
 * `nova["network"]["send_arp_for_ha"]` - Send gratuitous ARPs for HA setup?
+* `nova["network"]["send_arp_for_ha_count"]` - Number of gratuitous ARPs to send. defaults to 3
 * `nova["network"]["auto_assign_floating_ip"]` - Auto-assigning floating ip to VM?
 * `nova["network"]["floating_pool_name"]` - if creating a floating ip pool, what to name it
 * `nova["network"]["multi_host"]` - Use multi-host mode?
@@ -88,6 +89,7 @@ Neutron Networking
 * `neutron["linuxnet_interface_driver"]` - used in nova.conf. the linux net interface driver, by default nova.network.linux_net.LinuxOVSInterfaceDriver
 * `neutron["firewall_driver"]` - used in nova.conf. the firewall driver to use, by default nova.virt.libvirt.firewall.IptablesFirewallDriver
 * `neutron["agent_down_time"]` - Seconds elapsed until an agent is considered down
+* `neutron["send_arp_for_ha"]` - Number of gratuitous ARPs to send. defaults to 3. 0 disables arps completely.
 * `neutron["services"]["api"]["scheme"]` - scheme for service (http/https)
 * `neutron["services"]["api"]["network"]` - `osops_networks` network name which service operates on
 * `neutron["services"]["api"]["port"]` - port service binds to
