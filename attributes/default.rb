@@ -45,6 +45,7 @@ default["nova"]["network"]["dmz_cidr"] = "10.128.0.0/24"                        
 default["nova"]["network"]["network_manager"] = "nova.network.manager.FlatDHCPManager"         # cluster_attribute
 default["nova"]["network"]["dhcp_domain"] = "novalocal"                                        # cluster_attribute
 default["nova"]["network"]["force_dhcp_release"] = true                                        # cluster_attribute
+default["nova"]["network"]["send_arp_for_ha_count"] = 3                                        # cluster_attribute
 default["nova"]["network"]["send_arp_for_ha"] = true                                           # cluster_attribute
 default["nova"]["network"]["auto_assign_floating_ip"] = false                                  # cluster_attribute
 default["nova"]["network"]["floating_pool_name"] = "nova"                             # cluster_attribute
@@ -82,6 +83,7 @@ default["quantum"]["security_group_api"] = "quantum"
 default["quantum"]["isolated_metadata"] = "True"
 default["quantum"]["service_quantum_metadata_proxy"] = "True"
 default["quantum"]["agent_down_time"] = 30
+default["quantum"]["send_arp_for_ha"] = 3
 
 default["quantum"]["services"]["api"]["scheme"] = "http"
 default["quantum"]["services"]["api"]["network"] = "public"
