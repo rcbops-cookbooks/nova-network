@@ -46,7 +46,7 @@ end
 execute "create integration bridge" do
   command "ovs-vsctl add-br #{node["neutron"]["ovs"]["integration_bridge"]}"
   action :run
-  not_if "ovs-vsctl list-br | grep #{node["neutron"]["ovs"]["integration_bridge"]}"
+  not_if "ovs-vsctl get bridge \"#{node["neutron"]["ovs"]["integration_bridge"]}\" name"
 end
 
 node["neutron"]["ovs"]["provider_networks"].each do |network|
@@ -54,7 +54,7 @@ node["neutron"]["ovs"]["provider_networks"].each do |network|
     command "ovs-vsctl add-br #{network['bridge']}"
     action :run
     notifies :restart, "service[neutron-plugin-openvswitch-agent]", :delayed
-    not_if "ovs-vsctl list-br | grep #{network['bridge']}" ## FIXME
+    not_if "ovs-vsctl get bridge \"#{network['bridge']}\" name" ## FIXME
   end
 end
 

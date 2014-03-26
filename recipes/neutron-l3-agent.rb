@@ -46,11 +46,15 @@ service "neutron-l3-agent" do
   subscribes :restart, "template[/etc/neutron/l3-agent.ini]", :delayed
 end
 
+
 execute "create external bridge" do
   command "ovs-vsctl add-br #{node["neutron"]["ovs"]["external_bridge"]}"
   action :run
-  not_if "ovs-vsctl show | grep \"Bridge #{node["neutron"]["ovs"]["external_bridge"]}\""
+  not_if "ovs-vsctl get bridge \"#{node["neutron"]["ovs"]["external_bridge"]}\" name"
+  not_if { node["neutron"]["ovs"]["external_bridge"].nil? }
+  not_if { node["neutron"]["ovs"]["external_bridge"].empty? }
 end
+
 
 nova_info =
   get_access_endpoint("nova-api-os-compute", "nova", "api")
@@ -65,7 +69,8 @@ template "/etc/neutron/l3_agent.ini" do
   variables(
     "neutron_external_bridge" => node["neutron"][plugin]["external_bridge"],
     "nova_metadata_ip" => metadata_ip,
-    "neutron_plugin" => node["neutron"]["plugin"]
+    "neutron_plugin" => node["neutron"]["plugin"],
+    "send_arp_for_ha" => node["neutron"]["send_arp_for_ha"]
   )
   notifies :restart, "service[neutron-l3-agent]", :delayed
   notifies :enable, "service[neutron-l3-agent]", :delayed

@@ -29,6 +29,14 @@ packages.each do |pkg|
   end
 end
 
+#Kill quantum-ns-metadata-proxy proccess per GH 761
+execute "kill quantum metadata-proxy proccess" do
+  command "pkill -9 -f quantum-ns-metadata-proxy"
+  returns [1,0]
+  action :run
+  only_if { node["osops"]["do_package_upgrades"] }
+end
+
 ks_admin_endpoint =
   get_access_endpoint("keystone-api", "keystone", "admin-api")
 ks_service_endpoint =
@@ -84,12 +92,13 @@ end
 notification_provider = node["neutron"]["notification"]["driver"]
 case notification_provider
 when "no_op"
-  notification_driver = "neutron.openstack.common.notifier.rpc_notifier"
+  notification_driver = "neutron.openstack.common.notifier.no_op_notifier"
 when "rpc"
   notification_driver = "neutron.openstack.common.notifier.rpc_notifier"
 when "log"
   notification_driver = "neutron.openstack.common.notifier.log_notifier"
 else
+  notification_driver = nil
   msg = "#{notification_provider}, is not currently supported by these cookbooks."
   Chef::Application.fatal! msg
 end
@@ -100,12 +109,33 @@ if node["neutron"]["lbaas"]["enabled"]
   #Add Load balancer to service_plugins array
   service_plugins << "neutron.services.loadbalancer.plugin.LoadBalancerPlugin"
   lbaas_provider = "LOADBALANCER:Haproxy:neutron.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default"
-  case node['platform']
-    when 'redhat', 'centos'
-    #Don't set the provider on rhel/cent as it's set in neutron-dist.conf
-    # https://bugzilla.redhat.com/show_bug.cgi?format=multiple&id=1022725
-    lbaas_provider = false
-  end
+else
+  lbaas_provider = false
+end
+
+if node["neutron"]["fwaas"]["enabled"]
+  # Add Firewall to service_plugins array
+  service_plugins << "neutron.services.firewall.fwaas_plugin.FirewallPlugin"
+  fwaas_provider = "FIREWALL:Iptables:neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver:default"
+  include_recipe "nova-network::neutron-fwaas"
+else
+  fwaas_provider = false
+end
+
+if node["neutron"]["vpnaas"]["enabled"]
+  # Add Firewall to service_plugins array
+  service_plugins << "neutron.services.vpn.plugin.VPNDriverPlugin"
+  vpnaas_provider = "VPN:Vpn:neutron.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default"
+  include_recipe "nova-network::neutron-vpnaas"
+else
+  vpnaas_provider = false
+end
+
+cookbook_file "/etc/neutron/policy.json" do
+  source "policy.json"
+  mode 0644
+  owner "root"
+  group "neutron"
 end
 
 template "/etc/neutron/neutron.conf" do
@@ -144,7 +174,12 @@ template "/etc/neutron/neutron.conf" do
     "notification_driver" => notification_driver,
     "notification_topics" => node["neutron"]["notification"]["topics"],
     "lbaas_provider" => lbaas_provider,
-    "service_plugins" => service_plugins
+    "fwaas_provider" => fwaas_provider,
+    "vpnaas_provider" => vpnaas_provider,
+    "service_plugins" => service_plugins,
+    "sql_max_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
+    "sql_max_overflow" => node["neutron"]["database"]["max_overflow"],
+    "sql_pool_timeout" => node["neutron"]["database"]["pool_timeout"]
   )
 end
 
@@ -188,8 +223,16 @@ template "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini" do
 end
 
 case node['platform']
-when 'redhat', 'centos'
-  link "/etc/neutron/plugin.ini" do
-    to "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
+  when 'redhat', 'centos'
+    link "/etc/neutron/plugin.ini" do
+      to "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
+    end
+
+  # RHEL YOUR DOING IT WRONG!
+  cookbook_file "/usr/share/neutron/neutron-dist.conf" do
+    source "neutron-dist.conf"
+    mode 0644
+    owner "root"
+    group "neutron"
   end
 end

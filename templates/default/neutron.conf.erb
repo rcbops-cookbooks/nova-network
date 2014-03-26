@@ -2,6 +2,8 @@
 root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
 debug = <%= @neutron_debug %>
 verbose = <%= @neutron_verbose %>
+lock_path = $state_path/lock
+
 bind_host = <%= @neutron_ipaddress %>
 bind_port = <%= @neutron_port %>
 <% if @neutron_plugin == "ovs" %>
@@ -19,7 +21,7 @@ notification_driver = <%= @notification_driver %>
 notification_topics = <%= @notification_topics %>
 
 <% if ! @service_plugins.empty? %>
-service_plugins= <%= @service_plugins.join(",") %>
+service_plugins = <%= @service_plugins.join(",") %>
 <% end %>
 
 # keystone auth - this will cascade to all agents/services
@@ -36,6 +38,15 @@ dhcp_lease_duration = <%= @dhcp_lease_time %>
 
 # Seconds elapsed until an agent is considered down
 agent_down_time = <%= @agent_down_time %>
+
+# Disable builtin schedulers
+network_auto_schedule = False
+router_auto_schedule = False
+
+[database]
+max_pool_size = <%= @sql_max_pool_size %>
+max_overflow = <%= @sql_max_overflow %>
+pool_timeout = <%= @sql_pool_timeout %>
 
 [AGENT]
 root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
@@ -58,4 +69,10 @@ quota_driver = <%= @quota_driver %>
 [SERVICE_PROVIDERS]
 <% if @lbaas_provider %>
 service_provider = <%= @lbaas_provider %>
+<%end%>
+<% if @vpnaas_provider %>
+service_provider = <%= @vpnaas_provider %>
+<%end%>
+<% if @fwaas_provider %>
+service_provider = <%= @fwaas_provider %>
 <%end%>

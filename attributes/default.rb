@@ -47,6 +47,7 @@ default["nova"]["network"]["network_manager"] = "nova.network.manager.FlatDHCPMa
 default["nova"]["network"]["dhcp_domain"] = "novalocal"
 default["nova"]["network"]["force_dhcp_release"] = true
 default["nova"]["network"]["send_arp_for_ha"] = true
+default['nova']["network"]["send_arp_for_ha_count"] = 3
 default["nova"]["network"]["auto_assign_floating_ip"] = false
 default["nova"]["network"]["floating_pool_name"] = "nova"
 default["nova"]["network"]["multi_host"] = true
@@ -76,13 +77,16 @@ default["neutron"]["linuxnet_interface_driver"] =
   "nova.network.linux_net.LinuxOVSInterfaceDriver"
 default["neutron"]["firewall_driver"] =
   "nova.virt.firewall.NoopFirewallDriver"
+default['neutron']["send_arp_for_ha"] = 3
 
 # Set the notification Driver
 # Options are no_op, rpc, log, rabbit
 default["neutron"]["notification"]["driver"] = "no_op"
 default["neutron"]["notification"]["topics"] = "notifications"
 
-default["neutron"]["database"]["sqlalchemy_pool_size"] = 5
+default["neutron"]["database"]["sqlalchemy_pool_size"] = 10
+default["neutron"]["database"]["max_overflow"] = 20
+default["neutron"]["database"]["pool_timeout"] = 10
 
 default["neutron"]["security_group_api"] = "neutron"
 default["neutron"]["isolated_metadata"] = "True"
@@ -132,7 +136,7 @@ default["neutron"]["ovs"]["network_type"] = "vlan"
 default["neutron"]["ovs"]["tunnel_ranges"] = "1:1000"           # Enumerating ranges of GRE tunnel IDs that are available for tenant network allocation (if GRE)
 default["neutron"]["ovs"]["integration_bridge"] = "br-int"      # Don't change without a good reason..
 default["neutron"]["ovs"]["tunnel_bridge"] = "br-tun"           # only used if tunnel_ranges is set
-default["neutron"]["ovs"]["external_bridge"] = "br-ex"
+default["neutron"]["ovs"]["external_bridge"] = ""
 default["neutron"]["ovs"]["external_interface"] = "eth1"
 default["neutron"]["ovs"]["network"]="nova"
 default["neutron"]["ovs"]["firewall_driver"] =
@@ -142,6 +146,17 @@ default["neutron"]["ovs"]["firewall_driver"] =
 default["neutron"]["lbaas"]["enabled"] = false
 default["neutron"]["lbaas"]["device_driver"] =
   "neutron.services.loadbalancer.drivers.haproxy.namespace_driver.HaproxyNSDriver"
+
+# FWaaS defaults
+default["neutron"]["fwaas"]["enabled"] = false
+default["neutron"]["fwaas"]["device_driver"] =
+  "neutron.services.firewall.drivers.linux.iptables_fwaas.IptablesFwaasDriver"
+
+# VPNaaS defaults
+default["neutron"]["vpnaas"]["enabled"] = false
+default["neutron"]["vpnaas"]["device_driver"] =
+  "neutron.services.vpn.device_drivers.ipsec.OpenSwanDriver"
+default["neutron"]["vpnaas"]["ipsec_status_check_interval"] = 60
 
 # Generic regex for process pattern matching (to be used as a base pattern).
 # Works for both Grizzly and Havana packages on Ubuntu and CentOS.
@@ -178,6 +193,8 @@ when "fedora", "redhat", "centos"
     "neutron-dhcp-agent" => "neutron-dhcp-agent",
     "neutron_lbaas_packages" => [],
     "neutron-lbaas-agent" => "neutron-lbaas-agent",
+    "neutron_vpnaas_packages" => ["openswan", "openstack-neutron-vpn-agent"],
+    "neutron-vpnaas-agent" => "neutron-vpn-agent",
     "neutron_l3_packages" => ["openstack-neutron"],
     "neutron-l3-agent" => "neutron-l3-agent",
     "neutron_metadata_packages" => ["openstack-neutron"],
@@ -230,6 +247,9 @@ when "ubuntu"
     "neutron_lbaas_packages" => ["neutron-lbaas-agent"],
     "neutron-lbaas-agent" => "neutron-lbaas-agent",
 
+    "neutron_vpnaas_packages" => ["openswan", "neutron-plugin-vpn-agent"],
+    "neutron-vpnaas-agent" => "neutron-plugin-vpn-agent",
+
     "neutron_metadata_packages" => ["neutron-metadata-agent"],
     "neutron-metadata-agent" => "neutron-metadata-agent",
 
@@ -239,6 +259,8 @@ when "ubuntu"
     "neutron_ovs_packages" => [
       "linux-headers-#{kernel['release']}",
       "openvswitch-datapath-dkms",
+      "openvswitch-switch",
+      "openvswitch-common",
       "neutron-plugin-openvswitch",
       "neutron-plugin-openvswitch-agent"
     ],
