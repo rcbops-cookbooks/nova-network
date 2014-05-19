@@ -1,7 +1,7 @@
 [Daemon]
 # Space-separated list of plugins to load
 # Available plugins: L3Agent, DHCPAgent, Dump
-plugins = L3Agent DHCPAgent
+plugins = <%= @enabled_plugins.join(' ') %>
 
 # Rabbit server IP
 rpchost = <%= @rabbit_ipaddress %>
