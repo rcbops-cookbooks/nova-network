@@ -34,18 +34,14 @@ if get_role_count("nova-network-controller") > 1
   node.set["neutron"]["neutron_metadata_proxy_shared_secret"] =
     neutron["neutron_metadata_proxy_shared_secret"]
 else # Make some stuff up
-  if node["developer_mode"] == true
-    node.set_unless["neutron"]["db"]["password"] =
-      "neutron"
+  if node["developer_mode"]
+    node.set_unless["neutron"]["db"]["password"] = "neutron"
   else
-    node.set_unless["neutron"]["db"]["password"] =
-      secure_password
+    node.set_unless["neutron"]["db"]["password"] = secure_password
   end
 
-  node.set_unless['neutron']['service_pass'] =
-    secure_password
-  node.set_unless["neutron"]["neutron_metadata_proxy_shared_secret"] =
-    secure_password
+  node.set_unless["neutron"]["service_pass"] = secure_password
+  node.set_unless["neutron"]["neutron_metadata_proxy_shared_secret"] = secure_password
 end
 
 unless Chef::Config[:solo]
@@ -55,26 +51,20 @@ end
 # Only do this setup once the db/service pass has been set.
 include_recipe "nova-network::neutron-common"
 
-packages = platform_options["neutron_api_packages"]
-
 platform_options["neutron_api_packages"].each do |pkg|
   package pkg do
-    action node["osops"]["do_package_upgrades"] == true ? :upgrade : :install
+    action node["osops"]["do_package_upgrades"] ? :upgrade : :install
     options platform_options["package_options"]
   end
 end
 
-ks_admin_endpoint =
-  get_access_endpoint("keystone-api", "keystone", "admin-api")
-ks_service_endpoint =
-  get_access_endpoint("keystone-api", "keystone", "service-api")
-keystone =
-  get_settings_by_role("keystone-setup", "keystone")
+ks_admin_endpoint = get_access_endpoint("keystone-api", "keystone", "admin-api")
+keystone = get_settings_by_role("keystone-setup", "keystone")
 
 # Create db and user
 # return connection info
 # defined in osops-utils/libraries
-mysql_info = create_db_and_user(
+create_db_and_user(
   "mysql",
   node["neutron"]["db"]["name"],
   node["neutron"]["db"]["username"],
@@ -84,16 +74,34 @@ mysql_info = create_db_and_user(
 api_endpoint = get_bind_endpoint("neutron", "api")
 access_endpoint = get_access_endpoint("nova-network-controller", "neutron", "api")
 
+# Get stamp hash
+stamp = node["neutron"]["db"]["stamp"]
+
+# Add a revision
+execute 'add_revision' do
+  command "neutron-db-manage revision -m 'RCBOPS Deployment #{stamp["revision"]}'"
+  action :nothing
+end
+
+# Stamp the DB
+execute 'stamp_db' do
+  command "neutron-db-manage --config-file #{stamp["config"]} --config-file #{stamp["plugin"]} stamp #{stamp["revision"]}"
+  action :run
+  not_if "neutron-db-manage history | grep \"RCBOPS Deployment #{stamp["revision"]}\""
+  notify :run, 'execute[add_revision]', :immediately
+end
+
+
 service "neutron-server" do
   service_name platform_options["neutron_api_service"]
   supports :status => true, :restart => true
-  unless api_endpoint["scheme"] == "https"
+  if api_endpoint["scheme"] == "https"
+    action [:disable, :stop]
+  else
     action :enable
     subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
     subscribes :restart, "template[/etc/neutron/api-paste.ini]", :delayed
     subscribes :restart, "template[/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini]", :delayed
-  else
-    action [ :disable, :stop ]
   end
 end
 
