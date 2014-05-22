@@ -88,7 +88,7 @@ execute 'stamp_db' do
   command "neutron-db-manage --config-file #{stamp["config"]} --config-file #{stamp["plugin"]} stamp #{stamp["revision"]}"
   action :run
   not_if "neutron-db-manage history | grep \"RCBOPS Deployment #{stamp["revision"]}\""
-  notifies :run, 'execute[add_revision]', :immediately
+  notifies :run, 'execute[add_revision]', :delayed
 end
 
 
