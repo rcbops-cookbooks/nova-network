@@ -86,15 +86,16 @@ end
 # Stamp the DB
 execute 'stamp_db' do
   command "neutron-db-manage --config-file #{stamp["config"]} --config-file #{stamp["plugin"]} stamp #{stamp["revision"]}"
-  action :run
+  action :nothing
   not_if "neutron-db-manage history | grep \"RCBOPS Deployment #{stamp["revision"]}\""
   notifies :run, 'execute[add_revision]', :delayed
 end
 
-
+# Register the Neutron-Server Service and notify the DBStamp
 service "neutron-server" do
   service_name platform_options["neutron_api_service"]
   supports :status => true, :restart => true
+  notifies :run, 'execute[stamp_db]', :delayed
   if api_endpoint["scheme"] == "https"
     action [:disable, :stop]
   else
