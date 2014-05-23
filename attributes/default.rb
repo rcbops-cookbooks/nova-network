@@ -106,6 +106,11 @@ default["neutron"]["services"]["api"]["wsgi_file"] = "neutron-server"
 default["neutron"]["db"]["name"] = "neutron"
 default["neutron"]["db"]["username"] = "neutron"
 
+# this is set for the DB Stamp, REQUIRED in later Havana and >
+default["neutron"]["db"]["stamp"]["revision"] = "havana"
+default["neutron"]["db"]["stamp"]["plugin"] = "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
+default["neutron"]["db"]["stamp"]["config"] = "/etc/neutron/neutron.conf"
+
 default["neutron"]["service_tenant_name"] = "service"
 default["neutron"]["service_user"] = "neutron"
 default["neutron"]["service_role"] = "admin"
