@@ -21,6 +21,10 @@ when "ovs"
   include_recipe "nova-network::neutron-ovs-plugin"
 end
 
+# This should be better however getting the DB stamped as the release in a RHEL
+# System seems to be impossible without some hackyness, thus here is the hack.
+# TODO(cloudnull) if we continue with these cookbooks this should be better...
+
 # Get stamp hash
 stamp = node["neutron"]["db"]["stamp"]
 
@@ -35,5 +39,5 @@ execute 'stamp_db' do
   command "neutron-db-manage --config-file #{stamp["config"]} --config-file #{stamp["plugin"]} stamp #{stamp["revision"]}"
   action :run
   not_if "neutron-db-manage history | grep \"RCBOPS Deployment #{stamp["revision"]}\""
-  notifies :run, 'execute[add_revision]', :delayed
+  notifies :run, 'execute[add_revision]', :immediately
 end
