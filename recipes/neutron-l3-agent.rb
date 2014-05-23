@@ -70,6 +70,8 @@ template "/etc/neutron/l3_agent.ini" do
     "neutron_external_bridge" => node["neutron"][plugin]["external_bridge"],
     "nova_metadata_ip" => metadata_ip,
     "neutron_plugin" => node["neutron"]["plugin"],
+    "l3_router_id" => (node["neutron"]["l3"]["router_id"] rescue nil),
+    "l3_gateway_net_id" => (node["neutron"]["l3"]["gateway_external_net_id"] rescue nil),
     "send_arp_for_ha" => node["neutron"]["send_arp_for_ha"]
   )
   notifies :restart, "service[neutron-l3-agent]", :delayed
