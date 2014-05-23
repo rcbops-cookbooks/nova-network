@@ -24,20 +24,23 @@ end
 # This should be better however getting the DB stamped as the release in a RHEL
 # System seems to be impossible without some hackyness, thus here is the hack.
 # TODO(cloudnull) if we continue with these cookbooks this should be better...
+plugin_count = get_nodes_by_recipe("nova-network::neutron-plugin").length
 
-# Get stamp hash
-stamp = node["neutron"]["db"]["stamp"]
+if plugin_count <= 1
+  # Get stamp hash
+  stamp = node["neutron"]["db"]["stamp"]
 
-# Add a revision
-execute 'add_revision' do
-  command "neutron-db-manage revision -m 'RCBOPS Deployment #{stamp["revision"]}'"
-  action :nothing
-end
+  # Add a revision
+  execute 'add_revision' do
+    command "neutron-db-manage revision -m 'RCBOPS Deployment #{stamp["revision"]}'"
+    action :nothing
+  end
 
-# Stamp the DB
-execute 'stamp_db' do
-  command "neutron-db-manage --config-file #{stamp["config"]} --config-file #{stamp["plugin"]} stamp #{stamp["revision"]}"
-  action :run
-  not_if "neutron-db-manage history | grep \"RCBOPS Deployment #{stamp["revision"]}\""
-  notifies :run, 'execute[add_revision]', :immediately
+  # Stamp the DB
+  execute 'stamp_db' do
+    command "neutron-db-manage --config-file #{stamp["config"]} --config-file #{stamp["plugin"]} stamp #{stamp["revision"]}"
+    action :run
+    not_if "neutron-db-manage history | grep \"RCBOPS Deployment #{stamp["revision"]}\""
+    notifies :run, 'execute[add_revision]', :immediately
+  end
 end
