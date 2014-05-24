@@ -70,6 +70,7 @@ default["rpcdaemon"]["enabled_plugins"] = ["L3Agent", "DHCPAgent"]
 # Neutron Configuration Attributes
 # ######################################################################### #
 # nova.conf options for neutron
+default["neutron"]["api_workers"] = 0
 default["neutron"]["network_api_class"] = "nova.network.neutronv2.api.API"
 default["neutron"]["auth_strategy"] = "keystone"
 default["neutron"]["libvirt_vif_type"] = "ethernet"
