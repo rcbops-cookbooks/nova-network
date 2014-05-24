@@ -144,6 +144,7 @@ template "/etc/neutron/neutron.conf" do
   group "neutron"
   mode "0640"
   variables(
+    "api_workers" => node["neutron"]["api_workers"],
     "neutron_debug" => node["neutron"]["debug"],
     "neutron_verbose" => node["neutron"]["verbose"],
     "neutron_ipaddress" => api_endpoint["host"],

@@ -83,6 +83,7 @@ Nova Networking
 
 Neutron Networking
 ----
+* `neutron["api_workers"]` - number of api worksers to start in wsgi. defaults to 0
 * `neutron["network_api_class"]` - used in nova.conf.the neutron api driver class. 
 * `neutron["auth_strategy"]` - used in nova.conf. the authentication strategy to use, by default this is set to keystone
 * `neutron["libvirt_vif_driver"]`- used in nova.conf. the virtual interface driver, by default nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
