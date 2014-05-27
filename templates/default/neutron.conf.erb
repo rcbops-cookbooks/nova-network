@@ -13,6 +13,7 @@ ovs_use_veth = <%= @neutron_ovs_use_veth %>
 allow_overlapping_ips = <%= @overlapping_ips %>
 use_namespaces = <%= @neutron_namespace %>
 api_paste_config = /etc/neutron/api-paste.ini
+api_workers = <%= @api_workers %>
 control_exchange = neutron
 rabbit_host = <%= @rabbit_ipaddress %>
 rabbit_ha_queues = <%= @rabbit_ha_queues %>
