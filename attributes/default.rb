@@ -63,6 +63,8 @@ default["rpcdaemon"]["check_interval"] = 1
 default["rpcdaemon"]["queue_expire"] = 60
 # quantum API timeouts
 default["rpcdaemon"]["timeout"] = 20
+# which plugins should be enabled
+default["rpcdaemon"]["enabled_plugins"] = ["L3Agent", "DHCPAgent"]
 
 # ######################################################################### #
 # Neutron Configuration Attributes

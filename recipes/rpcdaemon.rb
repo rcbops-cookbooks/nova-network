@@ -30,7 +30,8 @@ template "/etc/rpcdaemon.conf" do
     "rabbit_ipaddress" => rabbit_info["host"],
     "check_interval" => node["rpcdaemon"]["check_interval"],
     "queue_expire" => node["rpcdaemon"]["queue_expire"],
-    "timeout" => node["rpcdaemon"]["timeout"]
+    "timeout" => node["rpcdaemon"]["timeout"],
+    "enabled_plugins" => node["rpcdaemon"]["enabled_plugins"]
   )
 end
 
