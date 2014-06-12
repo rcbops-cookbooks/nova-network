@@ -183,7 +183,7 @@ template "/etc/neutron/neutron.conf" do
     "sql_pool_timeout" => node["neutron"]["database"]["pool_timeout"],
     "network_auto_schedule" => node["neutron"]["network_auto_schedule"],
     "router_auto_schedule" => node["neutron"]["router_auto_schedule"],
-    "dhcp_agents_per_network" => node["neutron"]["dhcp_agents_per_network"],
+    "dhcp_agents_per_network" => node["neutron"]["dhcp_agents_per_network"]
   )
 end
 
