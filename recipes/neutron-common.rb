@@ -180,7 +180,10 @@ template "/etc/neutron/neutron.conf" do
     "service_plugins" => service_plugins,
     "sql_max_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
     "sql_max_overflow" => node["neutron"]["database"]["max_overflow"],
-    "sql_pool_timeout" => node["neutron"]["database"]["pool_timeout"]
+    "sql_pool_timeout" => node["neutron"]["database"]["pool_timeout"],
+    "network_auto_schedule" => node["neutron"]["network_auto_schedule"],
+    "router_auto_schedule" => node["neutron"]["router_auto_schedule"],
+    "dhcp_agents_per_network" => node["neutron"]["dhcp_agents_per_network"],
   )
 end
 
