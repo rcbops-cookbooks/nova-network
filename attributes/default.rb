@@ -130,6 +130,13 @@ default["neutron"]["plugin"] = "ovs"
 default["neutron"]["dhcp_lease_time"] = "1440"
 default["neutron"]["dhcp_domain"] = "openstacklocal"
 
+# dhcp network -> dhcp agent autoscheduling, l3 router -> l3 agent
+# autoscheduling, dhcp redundancy.  In the default configuration, rpcdaemon
+# takes over these responsibilities, so these are disabled by default.
+default["neutron"]["network_auto_schedule"] = "False"
+default["neutron"]["router_auto_schedule"] = "False"
+default["neutron"]["dhcp_agents_per_network"] = "False"
+
 # neutron.conf options
 default["neutron"]["quota_items"] = "network,subnet,port"
 default["neutron"]["default_quota"] = "-1"
