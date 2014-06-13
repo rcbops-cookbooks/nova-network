@@ -40,9 +40,17 @@ dhcp_lease_duration = <%= @dhcp_lease_time %>
 # Seconds elapsed until an agent is considered down
 agent_down_time = <%= @agent_down_time %>
 
-# Disable builtin schedulers
-network_auto_schedule = False
-router_auto_schedule = False
+# RPC: if you disable rpcdaemon via node["rpcdaemon"]["enabled_plugins"] = [],
+# then these should both be set to True.
+network_auto_schedule = <%= @network_auto_schedule %>
+router_auto_schedule = <%= @router_auto_schedule %>
+
+# Number of DHCP agents scheduled to host a network. This enables redundant
+# DHCP agents for configured networks.
+#
+# RPC: only relevant when network_auto_schedule = True and rpcdaemon
+# is not in use.
+dhcp_agents_per_network = <%= @dhcp_agents_per_network %>
 
 [database]
 max_pool_size = <%= @sql_max_pool_size %>
