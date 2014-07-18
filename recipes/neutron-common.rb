@@ -287,7 +287,7 @@ if node["neutron"]["plugin"] == "ml2_linuxbridge"
       "lb_vlan_range" => vlan_ranges,
       "lb_bridge_mapping" => bridge_mappings,
       "lb_debug" => node["neutron"]["debug"],
-      "lb_verbose" => node["neutron"]["verbose"],
+      "lb_verbose" => node["neutron"]["verbose"]
     )
   end
 
@@ -303,7 +303,7 @@ if node["neutron"]["plugin"] == "ml2_linuxbridge"
       "db_password" => neutron_info["db"]["password"],
       "db_name" => neutron_info["db"]["name"],
       "sqlalchemy_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
-      "lb_vlan_range" => vlan_ranges,
+      "lb_vlan_range" => vlan_ranges
     )
   end
 end
