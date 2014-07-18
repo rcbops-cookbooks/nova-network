@@ -91,7 +91,9 @@ service "neutron-server" do
     action :enable
     subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
     subscribes :restart, "template[/etc/neutron/api-paste.ini]", :delayed
+    subscribes :restart, "template[/etc/neutron/plugins/ml2/ml2_conf.ini]", :delayed
     subscribes :restart, "template[/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini]", :delayed
+    subscribes :restart, "template[/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini]", :delayed
   else
     action [ :disable, :stop ]
   end

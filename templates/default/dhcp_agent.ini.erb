@@ -29,3 +29,8 @@ dnsmasq_lease_max = <%= @dnsmasq_lease %>
 ##### OVS PLUGIN #####
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 <% end %>
+
+<% if @neutron_plugin == "ml2_linuxbridge" %>
+##### LINUXBRIDGE PLUGIN #####
+interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver
+<% end %>

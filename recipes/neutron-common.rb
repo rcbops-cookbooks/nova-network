@@ -55,21 +55,43 @@ local_ip = get_ip_for_net(node["neutron"]["ovs"]["network"], node)
 
 # A comma-separated list of provider network vlan ranges
 # => "ph-eth1:1:1000,ph-eth0:1001:1024"
-vlan_ranges = node["neutron"]["ovs"]["provider_networks"].map do |network|
-  if network.has_key?('vlans') and not network['vlans'].empty?
-    network['vlans'].split(',').each do |vlan_range|
-      vlan_range.prepend("#{network['label']}:")
+if node["neutron"]["plugin"] == "ovs"
+  vlan_ranges = node["neutron"]["ovs"]["provider_networks"].map do |network|
+    if network.has_key?('vlans') and not network['vlans'].empty?
+      network['vlans'].split(',').each do |vlan_range|
+        vlan_range.prepend("#{network['label']}:")
+      end
+    else
+      network['label']
     end
-  else
-    network['label']
-  end
-end.join(',')
+  end.join(',')
+end
+
+if node["neutron"]["plugin"] == "ml2_linuxbridge"
+  vlan_ranges = node["neutron"]["ml2_linuxbridge"]["provider_networks"].map do |network|
+    if network.has_key?('vlans') and not network['vlans'].empty?
+      network['vlans'].split(',').each do |vlan_range|
+        vlan_range.prepend("#{network['label']}:")
+      end
+    else
+      network['label']
+    end
+ end.join(',')
+end
 
 # A comma-separated list of provider network to bridge mappings
 # => "ph-eth1:br-eth1,ph-eth0:br-eth0"
-bridge_mappings = node["neutron"]["ovs"]["provider_networks"].map do |network|
-  "#{network['label']}:#{network['bridge']}"
-end.join(',')
+if node["neutron"]["plugin"] == "ovs"
+  bridge_mappings = node["neutron"]["ovs"]["provider_networks"].map do |network|
+    "#{network['label']}:#{network['bridge']}"
+  end.join(',')
+end
+
+if node["neutron"]["plugin"] == "ml2_linuxbridge"
+  bridge_mappings = node["neutron"]["ml2_linuxbridge"]["provider_networks"].map do |network|
+    "#{network['label']}:#{network['bridge']}"
+  end.join(',')
+end
 
 # Make sure our permissions are not too, well, permissive
 directory "/etc/neutron/" do
@@ -82,6 +104,22 @@ end
 # *-controller role by itself won't install the OVS plugin, despite
 # neutron-server requiring the plugin's config file, so... make go
 directory "/etc/neutron/plugins/openvswitch" do
+  action :create
+  owner "root"
+  group "neutron"
+  mode "750"
+  recursive true
+end
+
+directory "/etc/neutron/plugins/ml2" do
+  action :create
+  owner "root"
+  group "neutron"
+  mode "750"
+  recursive true
+end
+
+directory "/etc/neutron/plugins/linuxbridge" do
   action :create
   owner "root"
   group "neutron"
@@ -136,6 +174,17 @@ cookbook_file "/etc/neutron/policy.json" do
   mode 0644
   owner "root"
   group "neutron"
+end
+
+#Drop the config file for /etc/default/neutron-server
+template "/etc/default/neutron-server" do
+  source "neutron-server.erb"
+  owner "root"
+  group "neutron"
+  mode "0640"
+  variables(
+    "neutron_plugin" => node["neutron"]["plugin"]
+  )
 end
 
 template "/etc/neutron/neutron.conf" do
@@ -198,28 +247,65 @@ template "/etc/neutron/api-paste.ini" do
   )
 end
 
-template "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini" do
-  source "ovs_neutron_plugin.ini.erb"
-  owner "root"
-  group "neutron"
-  mode "0640"
-  variables(
-    "db_ip_address" => mysql_info["host"],
-    "db_user" => neutron_info["db"]["username"],
-    "db_password" => neutron_info["db"]["password"],
-    "db_name" => neutron_info["db"]["name"],
-    "ovs_firewall_driver" => node["neutron"]["ovs"]["firewall_driver"],
-    "ovs_network_type" => node["neutron"]["ovs"]["network_type"],
-    "ovs_tunnel_ranges" => node["neutron"]["ovs"]["tunnel_ranges"],
-    "ovs_integration_bridge" => node["neutron"]["ovs"]["integration_bridge"],
-    "ovs_tunnel_bridge" => node["neutron"]["ovs"]["tunnel_bridge"],
-    "sqlalchemy_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
-    "ovs_vlan_range" => vlan_ranges,
-    "ovs_bridge_mapping" => bridge_mappings,
-    "ovs_debug" => node["neutron"]["debug"],
-    "ovs_verbose" => node["neutron"]["verbose"],
-    "ovs_local_ip" => local_ip
-  )
+
+if node["neutron"]["plugin"] == "ovs"
+  template "/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini" do
+    source "ovs_neutron_plugin.ini.erb"
+    owner "root"
+    group "neutron"
+    mode "0640"
+    variables(
+      "db_ip_address" => mysql_info["host"],
+      "db_user" => neutron_info["db"]["username"],
+      "db_password" => neutron_info["db"]["password"],
+      "db_name" => neutron_info["db"]["name"],
+      "ovs_firewall_driver" => node["neutron"]["ovs"]["firewall_driver"],
+      "ovs_network_type" => node["neutron"]["ovs"]["network_type"],
+      "ovs_tunnel_ranges" => node["neutron"]["ovs"]["tunnel_ranges"],
+      "ovs_integration_bridge" => node["neutron"]["ovs"]["integration_bridge"],
+      "ovs_tunnel_bridge" => node["neutron"]["ovs"]["tunnel_bridge"],
+      "sqlalchemy_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
+      "ovs_vlan_range" => vlan_ranges,
+      "ovs_bridge_mapping" => bridge_mappings,
+      "ovs_debug" => node["neutron"]["debug"],
+      "ovs_verbose" => node["neutron"]["verbose"],
+      "ovs_local_ip" => local_ip
+    )
+  end
+end
+
+if node["neutron"]["plugin"] == "ml2_linuxbridge"
+  template "/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini" do
+    source "linuxbridge_conf.ini.erb"
+    owner "root"
+    group "neutron"
+    mode "0640"
+    variables(
+      "neutron_plugin" => node["neutron"]["plugin"],
+      "lb_firewall_driver" => node["neutron"]["ml2_linuxbridge"]["firewall_driver"],
+      "lb_network_type" => node["neutron"]["ml2_linuxbridge"]["network_type"],
+      "lb_vlan_range" => vlan_ranges,
+      "lb_bridge_mapping" => bridge_mappings,
+      "lb_debug" => node["neutron"]["debug"],
+      "lb_verbose" => node["neutron"]["verbose"],
+    )
+  end
+
+  template "/etc/neutron/plugins/ml2/ml2_conf.ini" do
+    source "ml2_conf.ini.erb"
+    owner "root"
+    group "neutron"
+    mode "0640"
+    variables(
+      "neutron_plugin" => node["neutron"]["plugin"],
+      "db_ip_address" => mysql_info["host"],
+      "db_user" => neutron_info["db"]["username"],
+      "db_password" => neutron_info["db"]["password"],
+      "db_name" => neutron_info["db"]["name"],
+      "sqlalchemy_pool_size" => node["neutron"]["database"]["sqlalchemy_pool_size"],
+      "lb_vlan_range" => vlan_ranges,
+    )
+  end
 end
 
 case node['platform']

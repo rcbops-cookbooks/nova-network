@@ -21,7 +21,7 @@ include_recipe "nova-network::neutron-common"
 platform_options = node["neutron"]["platform"]
 plugin = node["neutron"]["plugin"]
 
-return if node["neutron"]["plugin"] == "ml2_linuxbridge"
+return if node["neutron"]["plugin"] == "ovs"
 
 platform_options["neutron_#{plugin}_packages"].each do |pkg|
   package pkg do
@@ -30,33 +30,12 @@ platform_options["neutron_#{plugin}_packages"].each do |pkg|
   end
 end
 
-service "neutron-plugin-openvswitch-agent" do
-  service_name platform_options["neutron_ovs_service_name"]
+service "neutron-plugin-linuxbridge-agent" do
+  service_name platform_options["neutron_linuxbridge_service_name"]
   supports :status => true, :restart => true
   action :enable
   subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
-  subscribes :restart, "template[/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini]", :delayed
-end
-
-service "openvswitch-switch" do
-  service_name platform_options['neutron_openvswitch_service_name']
-  supports :status => true, :restart => true
-  action [:enable, :start]
-end
-
-execute "create integration bridge" do
-  command "ovs-vsctl add-br #{node["neutron"]["ovs"]["integration_bridge"]}"
-  action :run
-  not_if "ovs-vsctl get bridge \"#{node["neutron"]["ovs"]["integration_bridge"]}\" name"
-end
-
-node["neutron"]["ovs"]["provider_networks"].each do |network|
-  execute "create provider bridge #{network['bridge']}" do
-    command "ovs-vsctl add-br #{network['bridge']}"
-    action :run
-    notifies :restart, "service[neutron-plugin-openvswitch-agent]", :delayed
-    not_if "ovs-vsctl get bridge \"#{network['bridge']}\" name" ## FIXME
-  end
+  subscribes :restart, "template[/etc/neutron/plugins/ml2/ml2_conf.ini]", :delayed
 end
 
 case node['platform']
