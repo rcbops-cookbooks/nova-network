@@ -10,3 +10,8 @@ send_arp_for_ha = <%= @send_arp_for_ha %>
 # OVS
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 <% end %>
+
+<% if @neutron_plugin == "ml2_linuxbridge" %>
+##### LINUXBRIDGE PLUGIN #####
+interface_driver = neutron.agent.linux.interface.BridgeInterfaceDriver
+<% end %>

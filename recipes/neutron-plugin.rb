@@ -19,4 +19,6 @@
 case node["neutron"]["plugin"]
 when "ovs"
   include_recipe "nova-network::neutron-ovs-plugin"
+when "ml2_linuxbridge"
+  include_recipe "nova-network::neutron-linuxbridge-plugin"
 end

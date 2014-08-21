@@ -10,6 +10,10 @@ bind_port = <%= @neutron_port %>
 core_plugin = neutron.plugins.openvswitch.ovs_neutron_plugin.OVSNeutronPluginV2
 ovs_use_veth = <%= @neutron_ovs_use_veth %>
 <% end %>
+<% if @neutron_plugin == "ml2_linuxbridge" %>
+core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
+service_plugins = neutron.services.l3_router.l3_router_plugin.L3RouterPlugin
+<% end %>
 allow_overlapping_ips = <%= @overlapping_ips %>
 use_namespaces = <%= @neutron_namespace %>
 api_paste_config = /etc/neutron/api-paste.ini

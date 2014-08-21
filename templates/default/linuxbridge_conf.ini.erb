@@ -1,0 +1,14 @@
+[vlans]
+tenant_network_type = <%= @lb_network_type %>
+<% if not @lb_vlan_range.empty? %>
+network_vlan_ranges = <%= @lb_vlan_range %>
+<% end %>
+
+[linux_bridge]
+<% if not @lb_bridge_mapping.empty? %>
+physical_interface_mappings = <%= @lb_bridge_mapping %>
+<% end %>
+
+[securitygroup]
+firewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+

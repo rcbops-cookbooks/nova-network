@@ -75,6 +75,14 @@ default["neutron"]["libvirt_vif_driver"] =
   "nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver"
 default["neutron"]["linuxnet_interface_driver"] =
   "nova.network.linux_net.LinuxOVSInterfaceDriver"
+
+if node["neutron"]["plugin"] == "ml2_linuxbridge"
+  default["neutron"]["libvirt_vif_driver"] =
+    "nova.virt.libvirt.vif.NeutronLinuxBridgeVIFDriver"
+  default["neutron"]["linuxnet_interface_driver"] =
+    "nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver"  
+end
+  
 default["neutron"]["firewall_driver"] =
   "nova.virt.firewall.NoopFirewallDriver"
 default['neutron']["send_arp_for_ha"] = 3
@@ -104,6 +112,11 @@ default["neutron"]["services"]["api"]["key_file"] = "neutron.key"
 default["neutron"]["services"]["api"]["wsgi_file"] = "neutron-server"
 
 default["neutron"]["db"]["name"] = "neutron"
+
+if node["neutron"]["plugin"] == "ml2_linuxbridge"
+  default["neutron"]["db"]["name"] = "neutron_ml2"
+end
+
 default["neutron"]["db"]["username"] = "neutron"
 
 default["neutron"]["service_tenant_name"] = "service"
@@ -116,7 +129,12 @@ default["neutron"]["overlap_ips"] = "True"
 default["neutron"]["use_namespaces"] = "True" # should correspond to overlap_ips used for dhcp agent and l3 agent.
 
 # Manage plugins here, currently only supports openvswitch (ovs)
+
 default["neutron"]["plugin"] = "ovs"
+
+if node["neutron"]["plugin"] == "ml2_linuxbridge"
+  default["neutron"]["plugin"] = "ml2_linuxbridge"
+end
 
 # dhcp agent options
 default["neutron"]["dhcp_lease_time"] = "1440"
@@ -264,6 +282,12 @@ when "ubuntu"
       "neutron-plugin-openvswitch",
       "neutron-plugin-openvswitch-agent"
     ],
+    "neutron_ml2_linuxbridge_packages" => [
+      "neutron-plugin-linuxbridge",
+      "neutron-plugin-linuxbridge-agent",
+      "python-pip"
+    ],
+    "neutron_linuxbridge_service_name" => "neutron-plugin-linuxbridge-agent",
     "neutron_ovs_service_name" => "neutron-plugin-openvswitch-agent",
     "neutron_openvswitch_service_name" => "openvswitch-switch",
     "rpcdaemon" => "rpcdaemon"
