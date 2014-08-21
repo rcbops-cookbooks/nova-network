@@ -36,6 +36,7 @@ service "neutron-plugin-linuxbridge-agent" do
   action :enable
   subscribes :restart, "template[/etc/neutron/neutron.conf]", :delayed
   subscribes :restart, "template[/etc/neutron/plugins/ml2/ml2_conf.ini]", :delayed
+  subscribes :restart, "template[/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini]", :delayed
 end
 
 case node['platform']
