@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [[ $1 == "start" ]]
+then
+  start-stop-daemon --make-pidfile --pidfile /var/run/rpcwatcher.pid --background --start --exec /root/rpcwatcher.py <%= @other_controller %>
+elif [[ $1 == "stop" ]]
+then
+  start-stop-daemon --pidfile /var/run/rpcwatcher.pid --stop
+  rm -f /var/run/rpcwatcher.pid
+fi
