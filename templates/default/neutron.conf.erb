@@ -50,7 +50,9 @@ router_auto_schedule = <%= @router_auto_schedule %>
 #
 # RPC: only relevant when network_auto_schedule = True and rpcdaemon
 # is not in use.
+<% if @dhcp_agents_per_network != "False" %>
 dhcp_agents_per_network = <%= @dhcp_agents_per_network %>
+<% end %>
 
 [database]
 max_pool_size = <%= @sql_max_pool_size %>
