@@ -47,3 +47,27 @@ service "rpcdaemon" do
   action [ :enable, :start ]
   subscribes :restart, "template[/etc/rpcdaemon.conf]", :delayed
 end
+
+cookbook_file "/root/rpcwatcher.py" do
+  source "rpcwatcher.py"
+  mode 0744
+  owner "root"
+  group "root"
+end
+
+ha1 = get_nodes_by_role("ha-controller1")
+ha2 = get_nodes_by_role("ha-controller2")
+if ha1.include? node
+  other_controller = ha2[0]['hostname']
+elsif ha2.include? node
+  other_controller = ha1[0]['hostname']
+end
+template "/root/rpcwatcher.sh" do
+  source "rpcwatcher.sh.erb"
+  owner "root"
+  group "root"
+  mode "0744"
+  variables(
+    "other_controller" => other_controller
+  )
+end
