@@ -135,7 +135,7 @@ default["neutron"]["dhcp_domain"] = "openstacklocal"
 # takes over these responsibilities, so these are disabled by default.
 default["neutron"]["network_auto_schedule"] = "False"
 default["neutron"]["router_auto_schedule"] = "False"
-default["neutron"]["dhcp_agents_per_network"] = "False"
+default["neutron"]["dhcp_agents_per_network"] = "1"
 
 # neutron.conf options
 default["neutron"]["quota_items"] = "network,subnet,port"
