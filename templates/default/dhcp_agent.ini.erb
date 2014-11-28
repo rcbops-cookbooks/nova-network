@@ -23,6 +23,10 @@ enable_metadata_network = <%= @neutron_metadata_network %>
 ##### DNS MASQ #####
 # Limit number of leases to prevent a denial-of-service.
 dnsmasq_lease_max = <%= @dnsmasq_lease %>
+dnsmasq_config_file = <%= @dnsmasq_config_file %>
+<% unless @dnsmasq_dns_server.nil? %>
+dnsmasq_dns_server = <%= @dnsmasq_dns_server %>
+<% end %>
 
 
 <% if @neutron_plugin == "ovs" %>

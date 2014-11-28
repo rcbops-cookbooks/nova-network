@@ -50,9 +50,21 @@ template "/etc/neutron/dhcp_agent.ini" do
   variables(
     "use_debug" => node["neutron"]["debug"],
     "dnsmasq_lease" => node["neutron"]["dnsmasq_lease_max"],
+    "dnsmasq_config_file" => node["neutron"]["dnsmasq_config_file"],
+    "dnsmasq_dns_server" => node["neutron"]["dnsmasq_dns_server"],
     "neutron_metadata_network" => node["neutron"]["metadata_network"],
     "neutron_isolated" => node["neutron"]["isolated_metadata"],
     "neutron_plugin" => node["neutron"]["plugin"],
     "neutron_dhcp_domain" => node["neutron"]["dhcp_domain"]
+  )
+end
+
+template node["neutron"]["dnsmasq_config_file"] do
+  source "dnsmasq-neutron.conf.erb"
+  owner "root"
+  group "neutron"
+  mode "0640"
+  variables(
+    "dhcp_script" => node["neutron"]["dnsmasq_dhcp_script"]
   )
 end
